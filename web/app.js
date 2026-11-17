@@ -84,7 +84,7 @@ function connectSvg(object) {
     for (const name of ["pointerup", "pointercancel"]) svg.addEventListener(name, () => { drag = null; });
     resets.set(object, () => { box = { ...initial }; draw(); });
   } catch {
-    document.getElementById("viewer-status").textContent = "For interactive SVG/3D, open this site using "node preview.mjs" rather than a file:// URL.";
+    document.getElementById("viewer-status").textContent = "For interactive SVG/3D, open this site using 'node preview.mjs' rather than a file:// URL.";
   }
 }
 document.querySelectorAll("object[type='image/svg+xml']").forEach(object => { object.addEventListener("load", () => connectSvg(object)); connectSvg(object); });
