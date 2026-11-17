@@ -1,0 +1,51 @@
+name: Release checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tooling:
+    name: Tooling tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  kicad:
+    name: KiCad validation and release build
+    runs-on: ubuntu-latest
+    # Exact patch tags of the official image are locked to one KiCad release.
+    # The -full variant ships the 3D model library used by the STEP/GLB exports.
+    container:
+      image: kicad/kicad:10.0.7-full
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate (ERC, DRC, parity, dimensions)
+        run: node release.mjs --validate-only
+      - name: Full prototype release build
+        run: node release.mjs
+      - name: Upload build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build
+          path: build/releases/
+          if-no-files-found: warn
+          retention-days: 14

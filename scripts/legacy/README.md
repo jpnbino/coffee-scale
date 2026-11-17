@@ -2,7 +2,7 @@
 
 These scripts preserve the historical placement, routing, enclosure, revision
 promotion and packaging workflow used while developing the board. They are not
-the maintained release entrypoint: use `release.ps1` and `tools/` for the
+the maintained release entrypoint: use `release.mjs` and `tools/` for the
 current reproducible release workflow.
 
 Run them from the repository root so their existing `src/`,
