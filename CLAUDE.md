@@ -39,7 +39,7 @@ standard install location (on macOS
 `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`).
 
 CI (`.github/workflows/release.yml`) runs `npm test` on Linux, macOS and
-Windows, then validation and a full build in `kicad/kicad:10.0.7-full`. Keep
+Windows, then validation and a full build in `kicad/kicad:10.0.8-full`. Keep
 local and CI commands identical; pin tool versions.
 
 ## Rules
