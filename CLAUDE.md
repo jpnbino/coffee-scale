@@ -52,6 +52,10 @@ local and CI commands identical; pin tool versions.
   files are deliberately stored with CRLF. Do not normalise line endings or
   reformat KiCad, Gerber, vendor or historical files.
 - Check every path reference before moving or renaming source files.
+- Project 3D models in `src/models/` come in `.wrl` (KiCad viewer) and `.step`
+  (STEP/GLB exports, portal 3D view) pairs. After regenerating a pair, run
+  `node tools/color-step-models.mjs src/models/<name>.step` to copy the VRML
+  colours into the STEP; `tests/models.test.mjs` fails until you do.
 - Do not invent manufacturer part numbers, battery specifications, supplier
   approvals or test results. Unknowns stay marked as unknown.
 - Distinguish CAD validation (ERC/DRC) from physical testing and supplier
