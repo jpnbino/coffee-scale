@@ -68,4 +68,4 @@ try{
   for(const id of ["comparison-layer","comparison-kind","comparison-mode","show-common"])byId(id).addEventListener("change",repaint);
   byId("comparison-reset").addEventListener("click",()=>initialBox&&viewport.set(initialBox));
   await compare(catalog);
-}catch(error){byId("comparison-status").textContent=`Review unavailable: ${error.message}. Run preview.ps1 to serve the generated site.`;}
+}catch(error){byId("comparison-status").textContent=`Review unavailable: ${error.message}. Run "node preview.mjs" to serve the generated site.`;}

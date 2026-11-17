@@ -1,0 +1,5 @@
+# Check out every file byte-for-byte on every OS. The release verifies
+# SHA-256 hashes of KiCad sources, historical manufacturing files and
+# vendored viewer assets; line-ending conversion (e.g. core.autocrlf on
+# Windows) would change those bytes and fail the build.
+* -text

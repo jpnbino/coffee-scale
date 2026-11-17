@@ -2,7 +2,7 @@
 
 ## Delivered local foundation
 
-- Configurable PowerShell release command using installed KiCad 10.
+- Cross-platform Node.js release command (Windows, macOS, Linux) using installed KiCad 10.
 - Isolated source snapshot, electrical/parity checks and geometry/revision gates.
 - Input and artifact checksums, tool version and explicit failure status.
 - Fabrication package, assembly candidates, stencil layers and reference drawings.
@@ -34,11 +34,12 @@ Current assembly outputs remain DRAFT; successful export does not approve an ord
 
 - Choose GitHub or GitLab and hardware/documentation license.
 - Prepare a clean source tree, keeping historical/generated files out of the main tree.
-- Add CI using the same build after reviewing its platform/runtime dependencies.
+- CI runs the same release command in a pinned KiCad container (added; review first runs).
 - Add validation on proposed changes and explicit versioned release publication.
 - Publish the documentation only after the destination and content are reviewed.
 
-No repository, CI workflow, external publication or order has been created.
+A public GitHub repository and a CI workflow exist; no documentation has been
+published externally and no order has been placed.
 
 ## Later: richer design review
 

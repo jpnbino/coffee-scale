@@ -36,24 +36,28 @@ documentation licenses; no legal license was guessed.
 
 ## Quick start
 
-Requirements:
+Requirements (Windows, macOS or Linux):
 
-- PowerShell 7
-- KiCad 10 and `kicad-cli`
-- Node.js
+- KiCad 10, which provides `kicad-cli`
+- Node.js 22 or newer — no `npm install` needed; the tooling has no dependencies
 
 From the repository root:
 
-```powershell
-./release.ps1 -ValidateOnly
-./release.ps1
-./preview.ps1
+```sh
+node release.mjs --validate-only   # ERC, DRC, schematic parity and dimensions
+node release.mjs                   # full prototype release build
+node preview.mjs                   # serve the newest build on http://127.0.0.1:8787
 ```
 
-The release command creates a new timestamped build under
-`build/releases/`. Use `-KiCadCli` when KiCad is installed in a non-standard
-location. The preview serves the latest successful site on
-`http://127.0.0.1:8787`.
+The same commands are available as `npm run validate`, `npm run release` and
+`npm run preview`. `node release.mjs --require-assembly-ready` additionally
+fails the build while assembly blockers remain.
+
+`kicad-cli` is found from `--kicad-cli <path>`, then the `KICAD_CLI`
+environment variable, then `PATH`, then the standard install location
+(`C:/Program Files/KiCad/10.0/bin` on Windows,
+`/Applications/KiCad/KiCad.app/Contents/MacOS` on macOS, `/usr/bin` on Linux).
+Each build creates a new timestamped folder under `build/releases/`.
 
 ## Release contents
 
@@ -74,11 +78,13 @@ approval.
 
 ## Checks
 
-```powershell
-./tests/Test-Release.ps1
-node --test tests/portal.test.mjs tests/viewer.test.mjs
-node --test tests/viewer-controls.test.mjs tests/revision.test.mjs
+```sh
+npm test        # or: node --test tests/*.test.mjs
 ```
+
+GitHub Actions runs these tests on Windows, macOS and Linux, then runs the
+validation and a full release build inside the official, version-pinned
+`kicad/kicad` container. The build is attached to each run as an artifact.
 
 See `docs/board/` for the detailed circuit, assembly, mechanical, viewer, and
 manufacturing notes. Legacy utilities should be run from the repository root;
