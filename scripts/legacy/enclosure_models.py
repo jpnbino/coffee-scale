@@ -3,7 +3,7 @@ from pathlib import Path
 import FreeCAD as A
 import Part
 
-out=Path('pico_scale_controller/models');out.mkdir(exist_ok=True)
+out=Path('src/models');out.mkdir(exist_ok=True)
 doc=A.newDocument('EnclosureReferences')
 def obj(name,shape,color):
     o=doc.addObject('PartDesign::Feature',name);o.Shape=shape

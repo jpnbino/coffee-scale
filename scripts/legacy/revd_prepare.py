@@ -1,7 +1,7 @@
 """Replace the rotary encoder with the specified TS43 directional switch."""
 from audit_symbols import *
 import shutil,uuid,copy
-ROOT=pathlib.Path('pico_scale_controller');REV=ROOT/'concept-revD';REV.mkdir(exist_ok=True)
+ROOT=pathlib.Path('src');REV=ROOT/'concept-revD';REV.mkdir(exist_ok=True)
 backup=ROOT/'backup-before-revD';backup.mkdir(exist_ok=True)
 for name in ['pico_scale_controller.kicad_pcb','pico_scale_controller.kicad_sch','pico_scale_controller.kicad_pro','pico_scale_controller.kicad_dru','Scale.kicad_sym']:
     if not (backup/name).exists():shutil.copy2(ROOT/name,backup/name)

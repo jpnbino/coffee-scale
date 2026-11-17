@@ -1,7 +1,7 @@
 """Generate reviewable KiCad corrections; emit apply_patch, never overwrite source files."""
 from audit_symbols import *
 import copy,uuid,math,difflib
-ROOT=pathlib.Path.cwd()/'pico_scale_controller'
+ROOT=pathlib.Path.cwd()/'src'
 def uid():return q(str(uuid.uuid4()))
 schpath=ROOT/'pico_scale_controller.kicad_sch'
 old=schpath.read_text(encoding='utf-8'); root=parse(old)

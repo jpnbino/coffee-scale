@@ -1,7 +1,7 @@
 """Package validated Rev E fabrication data with current-source checksums."""
 from pathlib import Path
 import json,zipfile,hashlib,re,shutil
-root=Path('pico_scale_controller');rev=root/'revision-revE';release=root/'fabrication/revE';g=release/'gerbers'
+root=Path('src');rev=root/'revision-revE';release=root/'fabrication/revE';g=release/'gerbers'
 d=json.loads((release/'final-drc.json').read_text(encoding='utf-8'));assert not d['violations'] and not d['unconnected_items'] and not d['schematic_parity']
 assert '** ERC messages: 0  Errors 0  Warnings 0' in (release/'final-erc.rpt').read_text()
 assert '288 pads match schematic' in (release/'verification.txt').read_text()

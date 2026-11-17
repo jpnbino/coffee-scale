@@ -1,7 +1,7 @@
 """Validate preserved owner placements, passive axes and schematic connectivity."""
 from audit_symbols import *
 import pcbnew as k,sys
-root=pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else pathlib.Path('pico_scale_controller/revision-revE')
+root=pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else pathlib.Path('src/revision-revE')
 netlist=parse((root/'current.net').read_text(encoding='utf-8'));mapping={}
 for net in cs(one(netlist,'nets'),'net'):
     for node in cs(net,'node'):mapping[val(one(node,'ref')[1]),val(one(node,'pin')[1])]=val(one(net,'name')[1])

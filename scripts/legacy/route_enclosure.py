@@ -3,7 +3,7 @@ import sys,pathlib
 import route_board as r
 from audit_symbols import parse,dump
 r.TMP=pathlib.Path('tmp/enclosure-routing');r.TMP.mkdir(exist_ok=True)
-candidate=pathlib.Path('pico_scale_controller/enclosure-revB/pico_scale_controller.kicad_pcb')
+candidate=pathlib.Path('src/enclosure-revB/pico_scale_controller.kicad_pcb')
 if sys.argv[1]=='prepare':
     tree=parse(candidate.read_text(encoding='utf-8'))
     tree=[i for i in tree if not(isinstance(i,list) and i[0]=='zone')]

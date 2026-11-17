@@ -1,6 +1,6 @@
 """Validate manufacturing export contents and build a reproducible ZIP/manifest."""
 import pathlib,json,re,zipfile,hashlib,datetime
-root=pathlib.Path('pico_scale_controller');release=root/'fabrication/revA';g=release/'gerbers'
+root=pathlib.Path('src');release=root/'fabrication/revA';g=release/'gerbers'
 d=json.loads((root/'final-drc.json').read_text(encoding='utf-8'))
 assert not d['violations'] and not d['unconnected_items'] and not d['schematic_parity'],'Final DRC is not clean'
 assert '** ERC messages: 0  Errors 0  Warnings 0' in (root/'final-erc.rpt').read_text(encoding='utf-8')

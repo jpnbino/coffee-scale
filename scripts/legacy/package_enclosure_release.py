@@ -1,7 +1,7 @@
 """Validate and package fabrication files for the saved Rev B PCB."""
 from pathlib import Path
 import json,zipfile,hashlib
-root=Path('pico_scale_controller');release=root/'fabrication/revB';g=release/'gerbers'
+root=Path('src');release=root/'fabrication/revB';g=release/'gerbers'
 d=json.loads((root/'final-drc.json').read_text(encoding='utf-8'))
 assert not d['violations'] and not d['unconnected_items'] and not d['schematic_parity']
 assert '** ERC messages: 0  Errors 0  Warnings 0' in (release/'final-erc.rpt').read_text()

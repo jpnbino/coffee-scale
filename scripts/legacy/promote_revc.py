@@ -2,7 +2,7 @@
 from pathlib import Path
 import difflib,sys
 sys.stdout.reconfigure(encoding='utf-8',newline='\n')
-root=Path.cwd()/'pico_scale_controller';rev=root/'concept-revC';lines=['*** Begin Patch']
+root=Path.cwd()/'src';rev=root/'concept-revC';lines=['*** Begin Patch']
 for name in ['pico_scale_controller.kicad_pcb','pico_scale_controller.kicad_sch','Scale.kicad_sym']:
     before=(root/name).read_text(encoding='utf-8');after=(rev/name).read_text(encoding='utf-8')
     assert (root/name).read_bytes()==(root/'backup-before-revC'/name).read_bytes() if name!='Scale.kicad_sym' else True

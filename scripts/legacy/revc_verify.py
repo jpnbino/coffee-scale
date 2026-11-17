@@ -2,7 +2,7 @@
 from audit_symbols import *
 import pcbnew as k
 import sys
-root=pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else pathlib.Path('pico_scale_controller/concept-revC');n=parse((root/'current.net').read_text(encoding='utf-8'));mapping={}
+root=pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else pathlib.Path('src/concept-revC');n=parse((root/'current.net').read_text(encoding='utf-8'));mapping={}
 for net in cs(one(n,'nets'),'net'):
     for node in cs(net,'node'):mapping[val(one(node,'ref')[1]),val(one(node,'pin')[1])]=val(one(net,'name')[1])
 expected={'J2':{'11':'BTN1','12':'BTN2','14':'ENC_A','15':'ENC_B','19':'ENC_PUSH','17':'PWR_HOLD','36':'3V3','37':'GND'},'SW1':{'A':'ENC_A','B':'ENC_B','C':'GND','SH':'GND','S1':'WAKE_N','S2':'GND'},'Q5':{'1':'WAKE_N','2':'RAW_SW','3':'WAKE_HI'},'Q6':{'1':'WAKE_N','2':'GND','3':'ENC_PUSH'},'D3':{'1':'HOLD_EN','2':'WAKE_HI'},'D2':{'1':'HOLD_EN','2':'PWR_HOLD'},'R18':{'1':'RAW_SW','2':'WAKE_N'},'R17':{'1':'3V3','2':'ENC_PUSH'},'C20':{'1':'HOLD_EN','2':'GND'},'J4':{'1':'BAT_P','2':'BATT_NEG'},'J6':{'1':'3V3','2':'GND','3':'CELL_A_P','4':'CELL_A_N'}}

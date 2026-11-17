@@ -1,7 +1,7 @@
 """Remove exact retraced duplicates and keep encoder filters in their block."""
 from audit_symbols import *
 import pcbnew as k
-REV=pathlib.Path('pico_scale_controller/concept-revC');p=pathlib.Path('tmp/revc-routing/routing-candidate.kicad_pcb')
+REV=pathlib.Path('src/concept-revC');p=pathlib.Path('tmp/revc-routing/routing-candidate.kicad_pcb')
 tree=parse(p.read_text(encoding='utf-8'));seen=set();clean=[];count=0
 for i in tree:
     key=None

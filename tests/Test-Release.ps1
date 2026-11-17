@@ -17,8 +17,8 @@ Check 'Schematic parity issues block validation' { Expect-Failure {Assert-CleanR
 Check 'Decimal commas are normalized' { Assert ((ConvertTo-Millimetres '100,0000 mm') -eq 100) }
 Check 'Output path traversal is rejected' { Expect-Failure {Resolve-ChildPath $root '../outside'} }
 Check 'Absolute configured paths are rejected' { Expect-Failure {Resolve-ChildPath $root $root} }
-Check 'Actual hardware revision matches the declared release' {Assert-HardwareRevision "$root/pico_scale_controller/pico_scale_controller.kicad_pcb" 'E'}
-Check 'Wrong hardware revision is rejected' {Expect-Failure {Assert-HardwareRevision "$root/pico_scale_controller/pico_scale_controller.kicad_pcb" 'INCORRECT'}}
+Check 'Actual hardware revision matches the declared release' {Assert-HardwareRevision "$root/src/pico_scale_controller.kicad_pcb" 'E'}
+Check 'Wrong hardware revision is rejected' {Expect-Failure {Assert-HardwareRevision "$root/src/pico_scale_controller.kicad_pcb" 'INCORRECT'}}
 Check 'Validation-only cannot bypass strict assembly approval' {Expect-Failure {& "$root/release.ps1" -ValidateOnly -RequireAssemblyReady}}
 Check 'Assembly strict gate rejects incomplete profiles' { Expect-Failure {Assert-AssemblyReady @{ready=$false;blockers=@('MPN missing')}} }
 Check 'Assembly strict gate rejects contradictory readiness' { Expect-Failure {Assert-AssemblyReady @{ready=$true;blockers=@('Placement not reviewed')}} }

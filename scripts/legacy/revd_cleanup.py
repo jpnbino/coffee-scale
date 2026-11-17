@@ -1,7 +1,7 @@
 """Deduplicate retraced copper and update navigation notes without moving nets."""
 from audit_symbols import *
 import pcbnew as k
-root=pathlib.Path('pico_scale_controller/concept-revD');p=pathlib.Path('tmp/revd-routing/routing-candidate.kicad_pcb');tree=parse(p.read_text(encoding='utf-8'));seen=set();clean=[];count=0
+root=pathlib.Path('src/concept-revD');p=pathlib.Path('tmp/revd-routing/routing-candidate.kicad_pcb');tree=parse(p.read_text(encoding='utf-8'));seen=set();clean=[];count=0
 for i in tree:
     key=None
     if isinstance(i,list) and i[0]=='segment':key=(one(i,'net')[1],one(i,'layer')[1],one(i,'width')[1],*sorted([tuple(one(i,'start')[1:]),tuple(one(i,'end')[1:])]))

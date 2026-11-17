@@ -1,7 +1,7 @@
 """Align the manufacturer TS43 model to its recommended PCB land pattern."""
 import FreeCAD as A,Part
 from pathlib import Path
-out=Path('pico_scale_controller/concept-revD/models');s=Part.read('tmp/ts43-manufacturer.step')
+out=Path('src/concept-revD/models');s=Part.read('tmp/ts43-manufacturer.step')
 s.rotate(A.Vector(),A.Vector(0,0,1),-90);s.translate(A.Vector(0,3.6,.45))
 doc=A.newDocument('TS43');o=doc.addObject('PartDesign::Feature','TS43');o.Shape=s;Part.export([o],str(out/'TS43_manufacturer.step'))
 lines=['#VRML V2.0 utf8']

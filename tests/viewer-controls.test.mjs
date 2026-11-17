@@ -7,7 +7,7 @@ import { dimensions } from '../web/ruler.mjs';
 import { attachViewport } from '../web/review-draw.mjs';
 const root=new URL('../',import.meta.url);
 test('Real stackup retains material provenance and nominal thickness',async()=>{
-  const stack=stackupData(await readFile(new URL('pico_scale_controller/pico_scale_controller.kicad_pcb',root),'utf8'));
+  const stack=stackupData(await readFile(new URL('src/pico_scale_controller.kicad_pcb',root),'utf8'));
   assert.equal(stack.layers.filter(layer=>layer.type==='copper').length,2);
   assert.equal(stack.layers.find(layer=>layer.material).thicknessMm,1.51);
   assert.ok(Math.abs(stack.layers.reduce((sum,layer)=>sum+(layer.thicknessMm??0),0)-stack.boardThicknessMm)<1e-9);
@@ -17,7 +17,7 @@ test('Compatibility conversion changes numeric tokens, never quoted text or comm
   assert.deepEqual(normalizeViewerNumbers('(x .254 -.5 +.2 1.2 ".25") ; .4'),{content:'(x 0.254 -0.5 +0.2 1.2 ".25") ; .4',replacements:3});
 });
 test('Actual schematic compatibility conversion preserves parsed numeric meaning',async()=>{
-  const source=await readFile(new URL('pico_scale_controller/pico_scale_controller.kicad_sch',root),'utf8');
+  const source=await readFile(new URL('src/pico_scale_controller.kicad_sch',root),'utf8');
   const normalized=normalizeViewerNumbers(source);assert.ok(normalized.replacements>0);
   const canonical=node=>Array.isArray(node)?node.map(canonical):/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(node)?Number(node):node;
   assert.deepEqual(canonical(parseSexpr(normalized.content)),canonical(parseSexpr(source)));

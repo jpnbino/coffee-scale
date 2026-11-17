@@ -5,7 +5,7 @@ only after validation.
 """
 import argparse, math, pathlib, collections, json
 import pcbnew as k
-ROOT=pathlib.Path('pico_scale_controller');TMP=pathlib.Path('tmp');TMP.mkdir(exist_ok=True)
+ROOT=pathlib.Path('src');TMP=pathlib.Path('tmp');TMP.mkdir(exist_ok=True)
 STEP=.05;OX=85.;OY=74.;W=2001;H=1001
 def mm(v):return k.ToMM(v)
 def xy(p):return mm(p.x),mm(p.y)

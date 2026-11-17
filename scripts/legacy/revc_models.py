@@ -3,7 +3,7 @@ from pathlib import Path
 import math
 import FreeCAD as A
 import Part,Mesh
-out=Path('pico_scale_controller/concept-revC/models');out.mkdir(exist_ok=True)
+out=Path('src/concept-revC/models');out.mkdir(exist_ok=True)
 doc=A.newDocument('RevCControls')
 def box(x,y,z,dx,dy,dz):return Part.makeBox(dx,dy,dz,A.Vector(x,y,z))
 def cyl(radius,length,x,y,z):return Part.makeCylinder(radius,length,A.Vector(x,y,z),A.Vector(1,0,0))
