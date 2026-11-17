@@ -4,6 +4,11 @@ Open-hardware electronics for a coffee scale controller. The project contains
 the KiCad design, revision history, manufacturing records, release tooling, and
 a browser-based review portal.
 
+![Coffee Scale Controller Revision E prototype board, rendered isometrically from the authoritative KiCad design](docs/assets/coffee-scale-controller-revE-isometric.png)
+
+*Revision E routed prototype, shown as a faithful KiCad-derived isometric render.
+The image is for design review; the hardware is not yet production-approved.*
+
 ## Current status
 
 - **Hardware:** Revision E routed prototype.
