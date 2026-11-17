@@ -1,0 +1,1 @@
+PASS: 288 named pads match schematic; TS43 UP/DOWN/select pinout and isolated wake; 68 footprints; left Pico/debug, upper ADC/pads, battery near USB; 100x60x1.6mm.

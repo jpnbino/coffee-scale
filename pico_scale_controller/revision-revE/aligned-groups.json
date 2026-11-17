@@ -1,0 +1,171 @@
+[
+  {
+    "group": "regulator switching cell",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "U3",
+      "L1",
+      "C13",
+      "C14",
+      "C15",
+      "C16"
+    ]
+  },
+  {
+    "group": "ADC supply and differential filter",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ]
+  },
+  {
+    "group": "Pico bypass bank",
+    "offset": [
+      -1.0,
+      0.0
+    ],
+    "parts": [
+      "C2",
+      "C1"
+    ]
+  },
+  {
+    "group": "load switch and local capacitors",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "U4",
+      "C11",
+      "C12"
+    ]
+  },
+  {
+    "group": "charger and input network",
+    "offset": [
+      -1.0,
+      0.0
+    ],
+    "parts": [
+      "U1",
+      "R11",
+      "R12",
+      "R1",
+      "C8",
+      "C9",
+      "Q4",
+      "R13",
+      "D1"
+    ]
+  },
+  {
+    "group": "battery protection",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "U2",
+      "Q2",
+      "Q3",
+      "R14",
+      "C10",
+      "R15"
+    ]
+  },
+  {
+    "group": "hold diode and RC row",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "C20",
+      "D2",
+      "D3",
+      "R16"
+    ]
+  },
+  {
+    "group": "navigation RC bank",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "C17",
+      "C18",
+      "C19",
+      "R6",
+      "R7",
+      "R17"
+    ]
+  },
+  {
+    "group": "buzzer driver",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "Q1",
+      "R8",
+      "R9",
+      "R10"
+    ]
+  },
+  {
+    "group": "display interface",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "R2",
+      "R3",
+      "C7"
+    ]
+  },
+  {
+    "group": "wake source",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "Q5",
+      "R18"
+    ]
+  },
+  {
+    "group": "wake sense",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "Q6"
+    ]
+  },
+  {
+    "group": "button pullups",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "parts": [
+      "R4",
+      "R5"
+    ]
+  }
+]

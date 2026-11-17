@@ -1,0 +1,27 @@
+{
+  "revision": "D prototype",
+  "board_sha256": "86205228d0a0ca2cb2612ca8c9ba86a3b0b04d6440b68ed9f3012d61fe8a707b",
+  "schematic_sha256": "8b55abfdcc27fce096b86284b1b6ce6135dd1a6d12d26ea8f92673d0ae6ccf1f",
+  "archive_sha256": "53e050195b5e3e3e6e4516fe1c194e3719d1ca7e5de42ee4d0c86a0a55f7bed8",
+  "files": {
+    "pico_scale_controller-B_Cu.gbl": "79cfefa12d1e3aca4210499de9d4cef9ab8a5b3812be08cfbbba51197870e7f0",
+    "pico_scale_controller-B_Mask.gbs": "915baff559454f4c7118d79338ab9496cabb628d886ed410c7f08d3bbca102cb",
+    "pico_scale_controller-B_Silkscreen.gbo": "68216d3308b29da5fc21234dff610ef0107d6f02d6468d61c05903a159922987",
+    "pico_scale_controller-Edge_Cuts.gm1": "2d0eaa7c729084445a4c91b2ae3182805f33915f9b35fd7e12e3f52d44cef034",
+    "pico_scale_controller-F_Cu.gtl": "affeb8ed78ae808d2f6e017c8b4f08b577cf8195cbfda6dd24a868d97eadd2c3",
+    "pico_scale_controller-F_Mask.gts": "f83c42c4b2916088241d0dfe868df30173b4ecd3304615da46b38b19c25d6cd0",
+    "pico_scale_controller-F_Silkscreen.gto": "f484cc9081186fbd9d80c3e7e9a3f891ee318dfb410163ef798856d9751b0506",
+    "pico_scale_controller-job.gbrjob": "2cae6a104032c535c920acafab91e211e12e10d5354a4c2ff6e2dc354a4268ae",
+    "pico_scale_controller-NPTH.drl": "c53e50724946c80a04701672046b4e611d0e29d9b3ad48ba73b95bb9c8dbcaf7",
+    "pico_scale_controller-PTH.drl": "eff7649bb36efe48a82894ae67de7e2abcd37ae54f84c61c781c44b21bf3506b"
+  },
+  "STEP_sha256": "1e414a910ed03d162b194d9f0e35e78ebe5de6848b8464d49b996e8d9f9675b8",
+  "checks": {
+    "ERC": 0,
+    "DRC": 0,
+    "unconnected": 0,
+    "parity": 0,
+    "named_pads": 288,
+    "valid_STEP_shapes": 740
+  }
+}

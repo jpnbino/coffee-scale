@@ -1,0 +1,7 @@
+Reference,Stage,Manufacturer,MPN,Supplier,SupplierPart,RotationOffsetDeg,Verified,Notes
+J2,manual,,,,,0,false,Pico W module; choose sockets or direct soldering before assembly release
+J6,wire-pad,,,,,0,false,Integral PCB pads; attach load-cell wires during final assembly
+H1,mechanical,,,,,0,false,NPTH mounting feature; screw and standoff not yet specified
+H2,mechanical,,,,,0,false,NPTH mounting feature; screw and standoff not yet specified
+H3,mechanical,,,,,0,false,NPTH mounting feature; screw and standoff not yet specified
+H4,mechanical,,,,,0,false,NPTH mounting feature; screw and standoff not yet specified

@@ -1,0 +1,14 @@
+# Generated release outputs and local application state
+/build/
+/work/
+/tmp/
+/outputs/
+/.kicad-config/
+/.kicad-documents/
+**/.DS_Store
+**/.history/
+__pycache__/
+*.pyc
+*.kicad_prl
+*.lck
+*.bak

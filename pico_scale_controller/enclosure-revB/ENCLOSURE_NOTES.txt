@@ -1,0 +1,85 @@
+COFFEE SCALE - REV B ENCLOSURE REFERENCE - 2026-11-04
+
+This revision is the current primary PCB. Rev A fabrication files are retained
+for history and do not describe this revised placement. Use fabrication/revB.
+The board is an unbuilt prototype; clean CAD checks do not establish weighing
+accuracy, EMC, battery qualification or enclosure fit.
+
+PLACEMENT
+- Original 100 x 50mm, R5 outline and four 3.2mm mounting holes retained.
+- Battery JST PH horizontal connector retained in its original location.
+- Load-cell solder pads moved to the top edge near the battery side.
+- HX711 and input filter/decoupling parts moved into the top analogue region.
+- USB-C opening faces the right edge; opening centre is 22mm below the top.
+- Four main buttons remain top operated, at X=84mm, Y=13/21/29/37mm.
+  These are BTN1 / BTN3 / BTN4 / BTN2 respectively; firmware may map functions.
+- WAKE moved to X=56mm, Y=44.5mm, clear of the display actuator opening.
+- Buzzer and two support resistors (R3, R15) are on the bottom face.
+- Both ground pours are electrically connected. Analogue performance still
+  requires an assembled-board noise/zero-drift test with WiFi and buzzer active.
+
+OLED MODEL - PROVISIONAL HEIGHT APPROVED BY USER
+Photo-based PCB size: 27.38 x 27.72mm.
+Photo-based mounting-hole centre spacing: 21.24 x 21.70mm.
+Four 2.54mm header pins match J3: GND, 3V3, SCL, SDA.
+Assumed module PCB thickness 1.2mm; assumed hole diameter 2.2mm.
+Assumed module PCB underside 10mm above the main PCB top surface.
+Assumed glass/window adds 1.3mm above the module PCB top; total 12.5mm
+above the main PCB top surface. Header/edge offsets and glass/active window
+dimensions are illustrative; verify with the physical display before printing.
+The model is a locally generated clearance reference, not a manufacturer model.
+Use all four module holes for case supports; do not rely on the header alone.
+The main PCB has no additional OLED mounting holes; the case supplies supports.
+
+3D / COORDINATES
+coffee-scale-enclosure-reference.step includes the PCB, installed library
+models, OLED reference, square 12 x 12 x 3mm buzzer envelope and power-switch
+body/travel envelope. All included STEP shapes were checked for validity.
+The OLED pin centres were checked against the four J3 pin coordinates.
+enclosure-coordinates.json and enclosure-layout.svg use a top view with origin
+at the PCB upper-left outline corner; X goes right, Y goes down, units mm.
+The STEP uses the same X origin; its Y is negative down the board and Z is up.
+STEP PCB bottom is Z=0; nominal board thickness is 1.6mm. KiCad splits substrate,
+mask and conductor thickness, so its substrate solid alone measures 1.51mm.
+The stock Pico model represents direct mounting. Socket bodies/heights are not
+modelled; add the chosen socket stack height when checking a removable Pico.
+
+CASE STARTING POINT
+Allow at least 4mm clear space below the PCB for the 3mm nominal buzzer body,
+including its stated dimensional tolerance and solder height; 6mm standoffs
+are a useful starting assumption. Keep a sound opening below the buzzer.
+Allow at least 13mm above the PCB top for this provisional display stack.
+Main buttons and WAKE need guided case plungers because the lid is above their
+stock actuators. Size plungers from the chosen switch drawing and actual travel,
+with free clearance and no preload. Keep the main button caps clear of the OLED
+module edge; their centres are only 2.5mm beyond its right-hand PCB edge.
+The master switch faces the lower edge. Its travel envelope ends 1.7mm inside
+the PCB outline, so provide a recessed access pocket or a guided slider extension.
+Include USB plug overmould clearance and strain relief, not only the metal socket.
+Keep screw heads/washers inside the provided mounting-hole clearance envelopes.
+
+COFFEE-SCALE MECHANICS
+Fix one end of the load cell to the rigid case base and the other to the weighing
+platform, following the actual cell's mounting drawing. PCB supports and display/
+button supports belong to the fixed structure. No case wall, cable, screw or
+plunger may bridge the moving platform to the base or rub the platform.
+Add overload stops with clearance appropriate to the cell's rated deflection.
+Route and strain-relieve the four load-cell wires on the fixed side; do not let
+wire tension bias the measurement. Keep analogue wiring away from USB/power paths.
+Reserve battery space from its real dimensions, with no foil or metal near the
+Pico antenna. Battery polarity and the actual cell charging limits remain to be
+confirmed; the 100mA charge setting and protection circuit are unchanged.
+Place spill barriers/drainage away from USB, the buzzer opening and electronics.
+No water-ingress rating has been established.
+
+SOURCES
+OLED identification: https://wiki.elegoo.com/oshw-getting-started-&-kits/oled
+OLED outer/spacing dimensions: user's annotated photograph.
+Buzzer dimensions: https://www.sameskydevices.com/product/resource/cpt-1203-03-smt-tr.pdf
+Switch drawing: https://www.littelfuse.com/assetdocs/littelfuse-ck-slide-js-series-datasheet?assetguid=aba42b08-0d2c-423b-813d-a2faa5a3bb14
+USB drawing: https://gct.co/files/drawings/usb4105.pdf
+
+BEFORE FABRICATION / ASSEMBLY
+Review this STEP in the enclosure CAD program. Confirm module height, header
+orientation, hole diameters and switch travel against the physical parts.
+This is a PCB/clearance export, not a completed enclosure or weighing platform.

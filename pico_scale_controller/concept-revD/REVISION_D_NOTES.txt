@@ -1,0 +1,79 @@
+COFFEE SCALE - REVISION D - 2026-11-04
+
+REQUESTED PLACEMENT
+Battery JST PH connector moved beside the USB-C/charging area, opening toward
+the upper edge. Vertical Pico W moved left with SWD/UART header beside it.
+HX711, input support parts and four load-cell solder pads occupy the upper
+portion. OLED shifted down/left to clear the analogue block. Two top buttons,
+right-side master power and bottom-side buzzer retained. Board remains
+100 x 60 x 1.6mm, R5 corners, four 3.2mm NPTH mounting holes, black mask/white
+silkscreen with ENIG finish.
+
+SPECIFIED MENU CONTROL
+SW1: Same Sky TS43-135255-10-BK-200-SMT-TR (TR denotes packaging).
+This is a momentary directional lever with centre push, not a free-spinning
+quadrature encoder. Lever travel is +/-20 degrees; contacts have two stages.
+Pin 1 is the first CCW contact, pin 5 the first CW contact; both are used.
+Pin 3 is centre push. C is common/protected GND. Pins 2 and 4 are second-stage
+direction contacts and intentionally unconnected. Shell lands are grounded.
+The previous Bourns encoder and printed wheel are not used in this revision.
+
+FOOTPRINT / CAD
+Local Scale:TS43_135255 follows the manufacturer drawing: six 0.7 x 1.7mm
+signal lands on 1.5mm pitch, 1.1 x 2.0mm outer shell lands, 0.7mm square
+inner shell lands and two locating holes. Prototype locating holes are 0.9mm
+instead of the nominal 0.7mm drawing callout, to give assembly allowance for
+the manufacturer's metal-tab CAD envelope. Hole centres are +/-4.7,-4.7mm
+relative to the footprint. Check seating of the physical part before assembly.
+The aligned manufacturer STEP tab vertex envelope radius is 0.382mm within
+each 0.45mm hole radius. This checks CAD alignment, not part tolerance/fit.
+The manufacturer model places the body about 2.7mm above the main PCB top.
+It is substantially lower than the previous encoder/printed-wheel assembly.
+The photo-based OLED stack (12.5mm provisional) again determines nominal top
+clearance; start with at least 13mm plus actual socket and enclosure tolerances.
+The manufacturer model was rotated -90 degrees around its original Z axis,
+then translated (0,3.6,0.45)mm to align its leads and body to the PCB pattern.
+Source: https://www.sameskydevices.com/product/resource/ts43-135255-10-bk-200-smt-tr.pdf
+CAD requested through the manufacturer's public 3D download page:
+https://www.sameskydevices.com/product/resource/3dmodel/ts43-135255-10-bk-200-smt-tr
+
+GPIO / WAKE
+GP0/GP1 UART TX/RX; GP4/GP5 OLED SDA/SCL; GP6/GP7 HX711 DOUT/SCK.
+GP8: BTN1/TARE active low. GP9: BTN2/START-STOP active low.
+GP10: NAV_UP/CCW contact active low. GP11: NAV_DOWN/CW contact active low.
+GP12: buzzer PWM. GP13: PWR_HOLD. GP14: NAV_PUSH active HIGH.
+Use independent debounced direction switches and repeat while held, not a
+quadrature decoder. Centre press selects and also wakes the hardware latch.
+Q5/D3 retain the RAW_SW wake path; Q6 isolates the GPIO from battery voltage.
+R6/R7 pull up the directions and C17/C18 filter them. C19 filters the push.
+Assert GP13 immediately on boot, before WiFi/display/storage initialization.
+R16/C20 give a nominal ~1s RC constant; capacitor derating and switch threshold
+reduce usable startup time. Bench-check boot margin. Before firmware shutdown,
+finish saving, wait for centre press release, drive GP13 low and wait for power
+to fall. Holding centre mechanically keeps the wake path active.
+One-hour inactivity remains a firmware setting; firmware is not supplied here.
+
+CASE / PROTOTYPE REVIEW
+coffee-scale-revD.step is the current electronics reference; use the coordinate
+JSON and actual physical parts for case openings and travel clearances.
+The OLED model uses the user's 27.38 x 27.72mm outline and 21.24 x 21.70mm
+mounting-hole spacing. Its thickness, 2.2mm hole diameter, 10mm underside height
+and glass/header offsets remain provisional. Case supports carry its four holes.
+The Pico model is direct mounted; add the selected socket height if removable.
+Allow at least 4mm below the main PCB for the buzzer; 6mm standoffs are a starting
+point. Provide guided top-button plungers with free travel and no preload.
+Support the TS43 on the fixed enclosure; provide room for its lever and press.
+Keep the weighing platform mechanically independent of PCB/control supports.
+Follow the actual load-cell mounting drawing, relieve its wires and add overload
+stops. Do not bridge the moving platform to the base through cables or case parts.
+
+POWER UNCHANGED
+USB-C is charge/power only. 100mA nominal MCP73831 charging, DW01A cell protection,
+load sharing and external 3.3V buck-boost retained. No cell thermistor is fitted.
+Verify the actual LP503040 cell limits and JST polarity before powering.
+JST pin1=BAT_P, pin2=raw BATT_NEG. Never short raw BATT_NEG to protected GND.
+Pico pin36 is supplied externally; pin37 disables its regulator. Do not connect
+Pico USB. Debug 3V3 is reference only; socketed Pico needs three SWD jumpers.
+Master OFF shuts the load off while charging/protection remain active.
+This is unbuilt hardware: measure charging, shutdown current, wake margin and
+load-cell noise with WiFi/buzzer/USB active before treating it as validated.

@@ -1,0 +1,130 @@
+{
+  "J1": {
+    "position": [
+      181.325,
+      88.0
+    ],
+    "orientation": 90.0,
+    "layer": "F.Cu"
+  },
+  "J2": {
+    "position": [
+      108.0,
+      100.5
+    ],
+    "orientation": 180.0,
+    "layer": "F.Cu"
+  },
+  "J3": {
+    "position": [
+      134.0,
+      96.0
+    ],
+    "orientation": 90.0,
+    "layer": "F.Cu"
+  },
+  "J4": {
+    "position": [
+      169.0,
+      80.45
+    ],
+    "orientation": 180.0,
+    "layer": "F.Cu"
+  },
+  "J5": {
+    "position": [
+      90.0,
+      94.15
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "J6": {
+    "position": [
+      136.0,
+      77.2
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "SW1": {
+    "position": [
+      178.2,
+      117.0
+    ],
+    "orientation": -90.0,
+    "layer": "F.Cu"
+  },
+  "SW2": {
+    "position": [
+      165.5,
+      109.5
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "SW3": {
+    "position": [
+      165.5,
+      123.0
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "SW6": {
+    "position": [
+      182.5,
+      100.0
+    ],
+    "orientation": 90.0,
+    "layer": "F.Cu"
+  },
+  "U5": {
+    "position": [
+      142.0,
+      86.5
+    ],
+    "orientation": 90.0,
+    "layer": "F.Cu"
+  },
+  "H1": {
+    "position": [
+      90.0,
+      79.0
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "H2": {
+    "position": [
+      180.0,
+      79.0
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "H3": {
+    "position": [
+      90.0,
+      129.0
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "H4": {
+    "position": [
+      180.0,
+      129.0
+    ],
+    "orientation": 0.0,
+    "layer": "F.Cu"
+  },
+  "BZ1": {
+    "position": [
+      148.0,
+      117.0
+    ],
+    "orientation": 0.0,
+    "layer": "B.Cu"
+  }
+}

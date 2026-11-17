@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Coffee Scale Controller",
+    "revision": "E",
+    "sourceDirectory": "pico_scale_controller",
+    "basename": "pico_scale_controller",
+    "kicadMajor": 10
+  },
+  "outputDirectory": "build/releases",
+  "inputFiles": [
+    "pico_scale_controller.kicad_pcb", "pico_scale_controller.kicad_sch",
+    "pico_scale_controller.kicad_pro", "pico_scale_controller.kicad_dru",
+    "Scale.kicad_sym", "fp-lib-table", "sym-lib-table", "user-placement-lock.json"
+  ],
+  "inputDirectories": ["Scale.pretty", "models"],
+  "manufacturing": {
+    "material": "FR-4", "widthMm": 100, "heightMm": 60, "thicknessMm": 1.6,
+    "copperLayers": 2, "copperWeight": "1 oz", "mask": "Black",
+    "silkscreen": "White", "finish": "ENIG", "mountingHoleMm": 3.2
+  },
+  "mechanical": {
+    "originAbsoluteMm": [85, 74],
+    "reference": "pico_scale_controller/revision-revE/enclosure-coordinates.json",
+    "referenceBoardSha256": "7715d9f54051ca9113451f8828de7425e69eca6a65a4b9f7e02173f16d2c00f9",
+    "assumptions": [
+      "OLED underside is provisionally 10 mm above PCB top; measure actual assembly.",
+      "Pico socket height, battery envelope and load-cell mounting are not modelled.",
+      "Check switch travel, sound opening and load-cell/platform isolation with case designer."
+    ]
+  },
+  "assembly": {
+    "profile": "assembly/profile.csv",
+    "target": "JLCPCB candidate; not submitted or supplier-approved",
+    "placementReviewBoardSha256": ""
+  },
+  "history": [
+    {"id":"revD","label":"Rev D","projectDirectory":"pico_scale_controller/concept-revD","releaseDirectory":"pico_scale_controller/fabrication/revD"},
+    {"id":"revE-archive","label":"Rev E · archived fabrication","projectDirectory":"pico_scale_controller/revision-revE","releaseDirectory":"pico_scale_controller/fabrication/revE"}
+  ],
+  "documentationDirectory": "docs/board",
+  "siteDirectory": "web"
+}

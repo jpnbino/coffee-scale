@@ -1,0 +1,2 @@
+Valid STEP shapes: 750 of 750
+[('PEC12R_clearance_reference', 'BoundBox (79.6, -50.15, -1.205, 100, -35.85, 18.295)'), ('Thumbwheel_D14_prototype', 'BoundBox (97.25, -49.9936, 4.60143, 103.25, -36.0064, 18.5886)'), ('OLED_096_photo_reference', 'BoundBox (50.31, -37.86, 1.595, 77.69, -10.14, 14.095)')]

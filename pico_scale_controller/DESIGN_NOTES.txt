@@ -1,0 +1,106 @@
+PICO SCALE CONTROLLER - ROUTED REVISION E / OWNER PLACEMENT
+
+SCHEMATIC / BOARD
+The schematic and PCB use matching named nets. All connections are routed on
+two copper layers, with filled ground pours and ground stitching vias.
+Final KiCad checks: zero ERC violations, zero DRC violations, zero unconnected
+items and zero schematic/PCB parity issues. All 288 named pads were checked
+against the exported schematic netlist.
+The board has 68 footprints, 501 track segments and 165 vias. Signal tracks
+are 0.20mm; wider power tracks are 0.40mm. Outline: 100x60mm, R5 corners.
+These are prototype fabrication outputs, not electrically tested hardware.
+Verify the battery specification, connector polarity and enclosure/display fit
+before ordering/assembly. See fabrication/revE/README.txt for ordering settings.
+See concept-revD/REVISION_D_NOTES.txt for the TS43/wake circuit, manufacturer
+control model, OLED reference, case coordinates and firmware interface.
+Battery connector is beside USB; Pico/debug are left; HX711/pads are upper.
+Rev E preserves all 16 owner/mechanical anchors from the saved November 4
+layout. Supporting circuitry was repositioned and rerouted; all 38 R/C parts
+have horizontal physical axes, grouped by function. Local decoupling and the
+switching cell remain compact. See revision-revE/REVISION_E_NOTES.txt.
+Rev A/B/C/D exports are historical; the main PCB matches revision-revE.
+The exact owner layout is backed up in backup-user-layout-before-revE.
+Original files are in backup-before-corrections-2225. The pre-routing board is
+also preserved in backup-before-routing.
+
+PICO PIN ASSIGNMENT
+GP0 UART_TX; GP1 UART_RX; GP4 I2C_SDA; GP5 I2C_SCL.
+GP6 HX_DOUT; GP7 HX_SCK; GP8 BTN1/TARE; GP9 BTN2/START-STOP.
+GP10 NAV_UP; GP11 NAV_DOWN; GP12 BUZZ_PWM; GP13 PWR_HOLD; GP14 NAV_PUSH.
+SW2/SW3 and TS43 direction contacts are active low with external 10k pull-ups.
+NAV_PUSH is active HIGH through Q6, isolated from RAW_SW/battery voltage.
+TS43 uses momentary directions and centre press, not quadrature decoding.
+
+POWER
+The carrier supplies regulated 3.3V directly to Pico pin 36.
+Pico pin 37 (3V3_EN) is grounded to disable its onboard switching regulator.
+Pico VSYS and VBUS are intentionally not used. Do not connect its USB port.
+The local Pico symbol reflects this external-power mode in its ERC pin types.
+
+USB-C is charging/power only, with separate 5.1k CC pull-down resistors.
+MCP73831T-2ACI/OT is the 4.2V charger; R1=10k sets nominal 100mA charging.
+Schottky diode and P-channel MOSFET provide USB/battery load sharing.
+DW01A and two opposing N-channel MOSFETs provide cell protection.
+BAT_P is cell positive; BATT_NEG is RAW cell negative; GND is protected return.
+Do not short BATT_NEG to GND or bypass the protection MOSFETs.
+
+SW6 disconnects the system load. Charging and battery protection stay active.
+Press SW1 TS43 centre to wake; firmware must assert GP13 HIGH immediately.
+Q5/D3 provide hardware wake. Q6 translates the press into an isolated GPIO.
+C20 provides a nominal ~1s HOLD_EN RC constant; bench-check usable startup time.
+Wait for centre press release before dropping PWR_HOLD for shutdown.
+Firmware must assert GP13 early, before Wi-Fi initialization. After one hour
+without button activity, meaningful load-cell change or user Wi-Fi activity,
+firmware releases GP13 LOW to remove system power. Background Wi-Fi traffic
+should not by itself reset the inactivity timer. Firmware is not included here.
+
+BATTERY VERIFICATION STILL REQUIRED
+LP503040 is a size designation, not a complete manufacturer specification.
+Verify 4.2V chemistry, charge/discharge limits, low-voltage limits, polarity,
+connector wiring and allowable charging temperature against the actual cell.
+100mA is a provisional conservative setting, not cell-specific approval.
+The charger monitors its die temperature; no cell thermistor is implemented.
+
+CONNECTORS
+J3 OLED: 1 GND, 2 3V3, 3 SCL, 4 SDA. 2.54mm pitch.
+J4 JST PH S2B-PH-K-S: 1 BAT_P, 2 BATT_NEG. 2.00mm pitch.
+J5 debug: 1 SWCLK, 2 SWDIO, 3 GND, 4 3V3 reference, 5 UART_TX, 6 UART_RX.
+J5 pin 4 is a target voltage reference, not an independent power input.
+UART connections cross to the probe: target TX to probe RX and vice versa.
+J6 load-cell pads: 1 E+ (3V3), 2 E- (GND), 3 A+, 4 A-.
+Wire colours depend on the load cell; identify its wires from its specification.
+
+FOOTPRINTS / MECHANICS
+Pico hybrid footprint includes official castellated hand-solder pads and
+1.0mm holes on the correct 17.78mm row spacing for removable sockets.
+The three debug contacts are not in the 40-pin socket rows: socket-mounted
+Pico requires SWD jumper connections from the module debug pads to the carrier.
+The Pico antenna is toward the upper board edge. Keep its RF area free of
+copper, metal enclosure material, battery foil and nearby wiring.
+OLED module enclosure/standoff clearance must be reviewed in final assembly;
+the PCB header footprint alone does not define the display's mounting height.
+
+Buzzer land pattern follows Same Sky CPT-1203-03-SMT-TR drawing 2025-08-04:
+two 6x3mm pads on 12mm centres. External PWM drive is required (~4kHz).
+The local buzzer footprint does not include a manufacturer 3D body model.
+
+USB4105 ground pads retain their centre positions and 0.6x1.15mm envelope;
+corner radius is increased to 0.30mm. Its scoped NPTH clearance is 0.20mm,
+matching JLCPCB's published NPTH-to-copper minimum. General board clearance
+constraints remain unchanged. Review the local land-pattern modification
+before manufacturing.
+
+REFERENCE DOCUMENTS
+Raspberry Pi: https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf
+Microchip charger: https://ww1.microchip.com/downloads/en/DeviceDoc/MCP73831-Family-Data-Sheet-DS20001984H.pdf
+Load sharing: https://ww1.microchip.com/downloads/en/appnotes/01149c.pdf
+Regulator: https://www.ti.com/lit/ds/symlink/tps63031.pdf
+Load switch: https://www.ti.com/lit/ds/symlink/tps22919.pdf
+Protection: https://www.ic-fortune.com/upload/Download/DW01A-DS-13_EN.pdf
+HX711: https://akizukidenshi.com/goodsaffix/hx711.pdf
+Battery connector: https://www.jst-mfg.com/product/pdf/eng/ePH.pdf
+Buzzer: https://www.sameskydevices.com/product/resource/cpt-1203-03-smt-tr.pdf
+USB: https://gct.co/files/drawings/usb4105.pdf
+Inductor: https://www.bourns.com/docs/Product-Datasheets/SRN4018.pdf
+MOSFET: https://www.aosmd.com/sites/default/files/res/data_sheets/AO3400A.pdf
+Fabrication: https://jlcpcb.com/capabilities/pcb-capabilities/

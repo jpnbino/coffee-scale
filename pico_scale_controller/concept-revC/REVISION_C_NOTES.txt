@@ -1,0 +1,90 @@
+COFFEE SCALE - IMPLEMENTED REVISION C - 2026-11-04
+
+APPROVED CONCEPT
+100 x 60 x 1.6mm PCB with R5 corners and four 3.2mm mounting holes.
+Pico W rotated vertically, antenna at the upper edge and its unused USB below.
+Battery connector retained; load-cell pads/HX711 at the left edge.
+OLED above the PCB; two top buttons. USB-C, master power and scroll/select on
+the right edge. Charger/protection/regulation grouped on the right; debug
+header beside Pico. Bottom-side buzzer. Black solder mask, white silkscreen,
+ENIG finish; restrained silkscreen curves do not add decorative copper.
+
+ENCODER AND HARDWARE WAKE
+SW1: Bourns PEC12R-2217F-S0024, incremental quadrature encoder with momentary
+push. Footprint: RotaryEncoder_Bourns_Horizontal_PEC12R-2x17F-Sxxxx.
+Electrical pins A/B/C are encoder channels/common; S1/S2 are push contacts.
+Mechanical SH anchors are tied to protected GND. The stock footprint has
+generous plated anchor slots; check physical seating before final assembly.
+Manufacturer drawing: https://www.bourns.com/docs/product-datasheets/pec12r.pdf
+
+The encoder press grounds WAKE_N. Q5 (AO3401A) turns on from RAW_SW and feeds
+HOLD_EN through D3. R18 pulls Q5 gate to its source when the button is released.
+D2 allows Pico PWR_HOLD to sustain HOLD_EN independently. D2/D3 isolate the
+two drive paths. R16=100k discharges HOLD_EN; C20=10uF gives a nominal ~1s RC
+time constant, with a shorter effective startup/off interval due to capacitor
+DC-bias derating and the switch threshold. Measure the usable startup interval.
+Q6 (AO3400A) isolates the 3.3V GPIO from WAKE_N/RAW_SW: ENC_PUSH is ACTIVE HIGH
+while pressed, LOW when released. No battery-voltage divider drives a GPIO.
+The A/B channels have 10k pull-ups and 10nF capacitors; use proper quadrature
+state decoding and software debounce. C19 filters the press input.
+
+FIRMWARE INTERFACE
+GP0/GP1 UART TX/RX; GP4/GP5 OLED SDA/SCL; GP6/GP7 HX711 DOUT/SCK.
+GP8: BTN1 / TARE, active low. GP9: BTN2 / START-STOP, active low.
+GP10: ENC_A, active low contact. GP11: ENC_B, active low contact.
+GP12: buzzer PWM. GP13: PWR_HOLD. GP14: ENC_PUSH, active high.
+Assert GP13 immediately at boot, before display/WiFi startup or file operations.
+Scroll changes the menu; press selects and also provides hardware wake.
+For firmware shutdown, finish saving data and wait for the press to be released,
+then drive GP13 LOW and wait for power to fall. A held press keeps Q5 on.
+The inactivity timeout remains a firmware setting; the planned default is one
+hour. Firmware has not been supplied or tested in this hardware revision.
+
+MECHANICAL FILES / LIMITATIONS
+coffee-scale-revC.step includes the PCB and parts, a photo-based OLED reference,
+an encoder clearance envelope, and a separate proposed edge wheel.
+models/Thumbwheel_D14_prototype.stl is oriented for printing, rim face down.
+Wheel: 14mm nominal diameter, 6mm total axial depth, D bore with 6.2mm circular
+diameter and 4.7mm flat-to-opposite-wall dimension. It is a fit prototype;
+printer tolerances, shaft engagement, 0.5mm press travel and retainer/clearance
+must be checked physically. Support the encoder on the fixed case structure.
+The encoder body model is locally generated and conservative, not a supplier
+production model: assumed axis height 10mm, body envelope top 16.7mm above
+PCB top. Start with at least 17.5mm top clearance plus enclosure tolerances.
+The actual selected encoder and wheel may set the case height, not the OLED.
+The side wheel extends about 3.25mm beyond the right PCB edge.
+
+OLED photo dimensions: 27.38 x 27.72mm PCB, 21.24 x 21.70mm mounting-hole spacing.
+PCB underside is provisionally 10mm above main PCB top; modelled total height
+12.5mm. Hole diameter 2.2mm, thickness 1.2mm, header offsets and glass dimensions
+remain assumptions. Measure the real module before printing the enclosure.
+Its four supports attach to the case; no OLED carrier mounting holes were added.
+The Pico model shows direct mounting. Add the actual socket height if socketed.
+Allow at least 4mm below PCB for the buzzer; 6mm standoffs are a starting point.
+The two top buttons need guided case plungers; provide free travel and no preload.
+Keep metal screws, battery foil and wiring out of the Pico antenna region.
+
+COFFEE-SCALE STRUCTURE
+Mount one load-cell end to the rigid base and the other to the weighing platform
+according to its actual drawing. PCB, encoder and button supports belong to the
+fixed base. Avoid rubbing, cable tension and any bridge to the moving platform.
+Add overload stops appropriate to the rated cell deflection. No enclosure or
+load-cell mounting assembly is included in this electronics export.
+
+UNCHANGED POWER / PROTOTYPE REVIEW
+USB-C is charge/power only. Charging nominally 100mA using MCP73831; load sharing,
+DW01A protection and buck-boost 3.3V retained. No cell thermistor is implemented.
+JST PH S2B-PH-K-S is 2.00mm pitch: pin1 BAT_P, pin2 raw BATT_NEG.
+Do not short raw BATT_NEG to protected GND. Verify the real cell specification,
+polarity, charging/discharging limits and temperature limits before powering.
+Pico pin36 receives external 3.3V; pin37 disables its onboard regulator. Do not
+connect the Pico USB. Socket mounting needs SWD jumpers to its three debug pads.
+Master OFF disconnects system power while USB charging/protection remain active.
+This is unbuilt hardware. Measure startup, shutdown current, charging behaviour
+and weighing noise with WiFi/buzzer/USB active before treating it as validated.
+
+CHECKS
+Configured ERC/DRC, unconnected items and schematic parity are clean. All 285
+named PCB pads match the exported schematic, including the isolated wake path.
+No DRC exclusions were added. STEP shape validity is checked separately; this
+does not prove physical fit. Manufacturing outputs are in fabrication/revC.

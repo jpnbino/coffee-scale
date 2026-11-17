@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{TITLE}} · Hardware reference</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="review.css">
+  <script src="data.js" defer></script><script src="app.js" defer></script>
+  <script type="module" src="vendor/model-viewer-4.4.0.min.js"></script>
+  <script type="module" src="review.mjs"></script><script type="module" src="gerber.mjs"></script>
+</head>
+<body>
+  <aside class="rail">
+    <a class="brand" href="#overview"><span class="mark">≈</span> COFFEE SCALE<span class="edition">OPEN HARDWARE / REV {{REVISION}}</span></a>
+    <label class="search-label" for="search">Find in this reference</label>
+    <input id="search" type="search" placeholder="Pinout, battery, HX711…">
+    <nav aria-label="Project sections">
+      <a href="#overview">01 <span>Overview</span></a><a href="#inspect">02 <span>Inspect the design</span></a>
+      <a href="#parts">03 <span>Parts & assembly</span></a><a href="#mechanical">04 <span>Enclosure handoff</span></a>
+      <a href="#statistics">↗ <span>Board statistics</span></a><a href="#compare">↗ <span>Compare versions</span></a><a href="#gerbers">↗ <span>Gerber inspection</span></a>
+      <a href="#documentation">05 <span>Project documentation</span></a><a href="#downloads">06 <span>Release files</span></a>
+    </nav>
+    <p class="rail-note">A browser-readable reference, generated from the saved KiCad design.</p>
+    <a class="small-link" href="vendor/lock.json">Viewer versions & checksums ↗</a>
+  </aside>
+  <main>
+    <header class="topline"><span>COFFEE / ELECTRONICS / EXPERIMENTS</span><span>REV {{REVISION}} <b class="status-dot"></b> PROTOTYPE</span></header>
+    <section id="overview" class="searchable">
+      <p class="eyebrow">THE HARDWARE REFERENCE</p><h1>A little precision.<br>A better daily ritual.</h1>
+      <p class="lead">{{TITLE}} — a Wi-Fi enabled weighing controller built around Pico W, HX711 and an OLED display.</p>
+      <p class="revision-badge"><strong>Rev {{REVISION}}</strong> · hardware revision</p>
+      <figure class="hero"><img src="top.png" alt="Top view of the current PCB with OLED, Pico W and navigation controls"><figcaption>Current saved layout. Display stack height and socket geometry remain provisional.</figcaption></figure>
+      <div class="notice"><strong>Prototype, not bench-validated hardware.</strong> Electrical rule checks pass. Assembly sourcing, battery approval, firmware and physical fit still need review.</div>
+    </section>
+    <section id="stackup" class="searchable">
+      <p class="eyebrow">FABRICATION / TRACEABILITY</p><h1>Layer stackup.</h1>
+      <div id="stackup-content" aria-live="polite">Loading the stackup recorded in KiCad…</div>
+      <p><a href="stackup.json">Download source-linked stackup JSON</a> · <a href="doc-08-manufacturing-control.html">Manufacturing control roadmap</a></p>
+      <p class="notice">Supplier stackup, material substitutions, thickness tolerances and impedance approval are not recorded for this prototype. The drawing represents design intent, not a supplier-qualified process.</p>
+    </section>
+    <section id="statistics" class="searchable">
+      <p class="eyebrow">MEASURE / UNDERSTAND</p><h2>The board in numbers.</h2><p>Selected comparison target: <strong id="statistics-version">Current build</strong>.</p>
+      <p class="muted">Footprints include mounting holes and integral pads. These are not all purchased components. Track length below includes straight tracks only.</p>
+      <dl id="board-statistics" class="statistics-grid"></dl>
+      <details><summary>Drill sizes, shapes and plating</summary><div class="table-scroll"><table><thead><tr><th>Count</th><th>Source</th><th>Shape</th><th>Size</th><th>Plating</th><th>Span</th></tr></thead><tbody id="drill-table-body"></tbody></table></div></details>
+    </section>
+    <section id="compare" class="searchable">
+      <p class="eyebrow">REVISIONS / REVIEW</p><h2>See what changed.</h2>
+      <p>These are local revision snapshots. Git commit/tag selection is not configured. Routing/placement views omit filled zones, artwork and design rules; schematic changes are identified by source hash, not semantically compared.</p>
+      <div class="review-controls"><label>Base version<select id="base-version" aria-label="Base version"></select></label><label>Compare version<select id="head-version" aria-label="Compare version"></select></label><label>View mode<select id="comparison-mode" aria-label="View mode"><option value="overlay">Change overlay</option><option value="side">Side by side</option><option value="blink">Blink base / compare</option></select></label></div>
+      <div class="review-controls"><label>Layer<select id="comparison-layer" aria-label="Layer"><option value="all">Both copper layers</option><option value="F.Cu">Top copper</option><option value="B.Cu">Bottom copper</option></select></label><label>Change type<select id="comparison-kind" aria-label="Change type"><option value="all">All changes</option><option value="components">Components</option><option value="tracks">Tracks and arcs</option><option value="vias">Vias</option></select></label><label class="inline-check"><input type="checkbox" id="show-common" checked>Fade unchanged geometry</label><button id="comparison-reset" type="button">Reset comparison view</button></div>
+      <p id="comparison-status" aria-live="polite">Loading version catalogue…</p><p id="comparison-deltas" class="muted"></p>
+      <p class="change-legend"><span>● Added / compare</span><span>◌ Removed / base</span><span>→ Moved / modified</span></p>
+      <svg id="comparison-overlay" class="review-canvas" role="img" aria-label="Routing and component change overlay"></svg>
+      <div id="comparison-pair" class="comparison-pair" hidden><figure><figcaption id="base-caption">Base</figcaption><svg id="comparison-base" class="review-canvas" role="img" aria-label="Base revision routing"></svg></figure><figure><figcaption id="head-caption">Compare</figcaption><svg id="comparison-head" class="review-canvas" role="img" aria-label="Compare revision routing"></svg></figure></div>
+      <p class="muted">Scroll to zoom; drag to pan. Side-by-side viewports stay synchronized. Straight collinear splits/merges are normalized; equivalent arc resegmentation is not.</p>
+      <details><summary>Change list — click an entry to zoom</summary><p id="change-count"></p><ul id="change-list" class="change-list"></ul></details>
+      <h3>Version artifacts</h3><div id="version-catalog" class="version-grid"></div>
+    </section>
+    <section id="gerbers" class="searchable">
+      <p class="eyebrow">MANUFACTURING / INSPECT</p><h2>The files the factory receives.</h2>
+      <div class="review-controls"><label>Gerber version<select id="gerber-version" aria-label="Gerber version"></select></label><label class="inline-check"><input type="checkbox" id="gerber-mirror">Mirror board view</label><button id="gerber-reset" type="button">Reset Gerber view</button><button id="gerber-measure" type="button" aria-pressed="false">Measure two points</button></div>
+      <div id="gerber-layers" class="gerber-layers"></div><p id="gerber-status" aria-live="polite">Loading manufacturing layers…</p>
+      <svg id="gerber-canvas" class="review-canvas gerber-canvas" role="img" aria-label="Released Gerber and drill layers"></svg><p id="gerber-measure-status" aria-live="polite"></p>
+      <p class="muted">Rendered from the actual Gerber/Excellon files. Mask layers show openings. Layer extents share absolute coordinates; each layer is not independently fitted. This inspection view is not fabrication sign-off.</p>
+      <details><summary>Renderer notices and source-file checksums</summary><div id="gerber-warning-detail"></div></details>
+    </section>
+    <section id="inspect" class="searchable">
+      <p class="eyebrow">02 / EXPLORE</p><h2>From circuit to object.</h2>
+      <div class="tabs" role="tablist" aria-label="Design views">
+        <button id="tab-top" role="tab" aria-controls="view-top" aria-selected="true" data-view="top">Top copper</button>
+        <button id="tab-bottom" role="tab" aria-controls="view-bottom" aria-selected="false" data-view="bottom">Bottom copper</button>
+        <button id="tab-schematic" role="tab" aria-controls="view-schematic" aria-selected="false" data-view="schematic">Schematic</button>
+        <button id="tab-model" role="tab" aria-controls="view-model" aria-selected="false" data-view="model">3D model</button>
+      </div>
+      <div class="view-panel" id="view-top" role="tabpanel" aria-labelledby="tab-top"><object data="pcb-top.svg" type="image/svg+xml" aria-label="Top copper and silkscreen"></object></div>
+      <div class="view-panel" id="view-bottom" role="tabpanel" aria-labelledby="tab-bottom" hidden><object data="pcb-bottom.svg" type="image/svg+xml" aria-label="Bottom copper, top-view coordinate orientation"></object></div>
+      <div class="view-panel schematic-panel" id="view-schematic" role="tabpanel" aria-labelledby="tab-schematic" hidden><object data="{{SCHEMATIC_SVG}}" type="image/svg+xml" aria-label="Full schematic"></object></div>
+      <div class="model-options" id="model-options" hidden><label>Mask / silkscreen appearance<select id="model-colors"><option value="original">As exported</option><option value="purple">Purple / white</option><option value="blue">Blue / white</option><option value="green">Green / white</option><option value="black">Black / white</option><option value="white">White / black</option></select></label><span>Visual preview only; manufacturing colours remain unchanged.</span></div>
+      <div class="view-panel" id="view-model" role="tabpanel" aria-labelledby="tab-model" hidden><model-viewer src="board.glb" camera-orbit="45deg 54.7356deg auto" camera-controls touch-action="pan-y" shadow-intensity="0.6" alt="Interactive three-dimensional PCB assembly" poster="top.png"><p slot="poster">Loading the local 3D model…</p></model-viewer></div>
+      <div class="view-toolbar"><span>SVG: scroll to zoom, drag to pan. Bottom copper retains top-view coordinates.</span><button id="reset-view">Reset view</button><a href="schematic.pdf">Schematic PDF ↗</a></div>
+      <p id="viewer-status" class="muted" aria-live="polite"></p>
+      <details id="native-viewer"><summary>Interactive native schematic viewer</summary><p>The viewer uses a derived copy with leading decimal numbers normalized, for example .254 to 0.254. The original KiCad source and SVG/PDF remain authoritative. <a href="native/provenance.json">View conversion provenance</a>.</p><button id="try-native" type="button">Open native schematic viewer</button><div id="kicanvas-host"></div><p id="kicanvas-status" aria-live="polite">Loads on request. If compatibility fails, the Schematic tab and PDF remain available.</p></details>
+    </section>
+    <section id="parts" class="searchable">
+      <p class="eyebrow">03 / ASSEMBLY</p><h2>Know every part.</h2><p id="assembly-status"></p>
+      <label for="parts-search">Filter reference, value, footprint or assembly stage</label><input id="parts-search" type="search" placeholder="e.g. U5, 100n, manual…">
+      <div class="table-scroll"><table><thead><tr><th>Reference</th><th>Value</th><th>Footprint</th><th>Side</th><th>Stage</th><th>Sourcing</th></tr></thead><tbody id="parts-body"></tbody></table></div>
+      <p class="muted" id="parts-count"></p><details><summary>Assembly readiness blockers</summary><ul id="assembly-blockers"></ul></details>
+    </section>
+    <section id="mechanical" class="searchable">
+      <p class="eyebrow">04 / COLLABORATE</p><h2>Give the case designer a head start.</h2>
+      <p>Share the STEP models, outline, mounting-hole drawing and component origins together. Each coordinate convention is documented in the package.</p>
+      <ul id="mechanical-assumptions"></ul><p id="mechanical-status" class="notice"></p>
+      <div class="download-grid"><a href="files/mechanical.zip">Mechanical package <span>STEP · DXF · coordinates ↗</span></a><a href="files/mechanical/README.md">Coordinate guide <span>Origins, axes and assumptions ↗</span></a></div>
+    </section>
+    <section id="documentation" class="searchable"><p class="eyebrow">05 / UNDERSTAND</p><h2>The decisions behind the board.</h2>{{DOCUMENTATION}}</section>
+    <section id="downloads" class="searchable">
+      <p class="eyebrow">06 / REPRODUCE</p><h2>One revision. Every deliverable.</h2>
+      <div class="download-grid"><a href="files/fabrication.zip">PCB fabrication <span>Gerbers · plated/non-plated drills ↗</span></a><a href="files/assembly-DRAFT.zip">Assembly draft <span>BOM · placement candidates · drawings ↗</span></a><a href="files/source.zip">KiCad sources <span>Project · libraries · local models ↗</span></a><a href="files/validation.json">Validation summary <span>Checks, source hash and build ID ↗</span></a></div>
+      <p>Build <code>{{BUILD_ID}}</code></p><p class="muted">Nothing has been published or ordered by this build. Assembly candidates are explicitly marked as unapproved.</p>
+    </section>
+    <footer>{{TITLE}} · Open hardware project · <a href="vendor/kicanvas-LICENSE.md">KiCanvas notices</a> · <a href="vendor/model-viewer-LICENSE.txt">3D viewer notices</a></footer>
+  </main>
+</body>
+</html>

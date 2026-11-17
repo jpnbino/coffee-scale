@@ -1,0 +1,1 @@
+PASS: 285 named pads match schematic; 68 footprints; 100x60x1.6mm; four 3.2mm holes; approved Pico/control orientations; isolated active-high encoder wake interface.

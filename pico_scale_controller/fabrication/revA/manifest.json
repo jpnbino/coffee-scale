@@ -1,0 +1,24 @@
+{
+  "board_sha256": "58c2f1f3088b481bf29a1b77382a193489d1bacda34a1c4a4139c0ccd39f9dca",
+  "archive_sha256": "3b0c89b0cc6b44d77e580c7967a0b3b7a83a94b8805665d0462d8d5b8664b9cb",
+  "files": {
+    "pico_scale_controller-B_Cu.gbl": "0bd44f5993be08fbb7d76579e9a71495aaf21333ca71b97148acb7b20097034d",
+    "pico_scale_controller-B_Mask.gbs": "3a96b1fd034c4ddd8d2a788ca8018c1f6e7dd040b18dcd3131d9acbbbe9ae052",
+    "pico_scale_controller-B_Silkscreen.gbo": "48b6edc5de5fa3b0f6cdf101d92d1cda3fb8893a3691b09fd8da8bf5b3c05798",
+    "pico_scale_controller-Edge_Cuts.gm1": "09d21d28df87824bbe21a1d7d8232d663aa1e6b7a28c338a97a81da2ab423630",
+    "pico_scale_controller-F_Cu.gtl": "30fa3b4918ceb316e9c0095d4b2e3e3963b90df9790b3c20136d8a59f425189a",
+    "pico_scale_controller-F_Mask.gts": "03ad31244d4d08c229ca3308e5a92c3b95c2135b66456b212f29f0fb587d3065",
+    "pico_scale_controller-F_Silkscreen.gto": "c2bcea3f2a67dbf51d254587b822aea1058c16d25a01dc2e6cf15835ce0b5020",
+    "pico_scale_controller-job.gbrjob": "51ad5af21043b78e5443cc8c05a4cb8b1408d895f9af8d709a7ef952e2c9bece",
+    "pico_scale_controller-NPTH.drl": "8468fce203f157a5dcd2e6921d9ba416cb8ba7bb6299a911736f9ffdd729e300",
+    "pico_scale_controller-PTH.drl": "b807e065d30ce9d2d2c52a280901cdc87d78103768702aa89d2523afddbb6e4a"
+  },
+  "checks": {
+    "ERC": 0,
+    "DRC": 0,
+    "unconnected": 0,
+    "schematic_parity": 0,
+    "mounting_holes_3.2mm": 4,
+    "via_drills_0.3mm": 180
+  }
+}

@@ -1,0 +1,1 @@
+PASS: agreed interface mapping, 270 PCB pads match exported netlist, 61 footprints; routing, pours, vias, 100x50mm outline and 1.6mm thickness checked.

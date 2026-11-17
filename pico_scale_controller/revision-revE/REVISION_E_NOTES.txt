@@ -1,0 +1,53 @@
+COFFEE SCALE - REVISION E - 2026-11-04
+
+The primary PCB and this revision match. The schematic and electrical design
+are unchanged from Rev D; this revision implements the owner's saved layout.
+Original owner files: ../backup-user-layout-before-revE.
+
+PRESERVED ANCHORS
+Pico, OLED, USB-C, battery, debug, load-cell pads, HX711, both top buttons,
+TS43 navigation switch, master switch, four mounting holes and bottom buzzer.
+Exact origins, rotations and sides are recorded in user-placement-lock.json.
+The validator checks all 16 anchors against the completed board.
+Footprint origins relative to the board are in enclosure-coordinates.json.
+
+PLACEMENT AND ROUTING
+Moved supporting parts away from the owner's button and connector positions.
+Regulator, inductor and bypass/output capacitors form a compact lower cell.
+ADC filters remain near the upper HX711; charger/protection remain near USB/BAT.
+Aligned all 20 capacitors and 18 resistors on horizontal physical axes; 0/180
+degree electrical orientations keep local connections short. Thirteen functional
+groups retain intentional row spacing rather than scattering individual parts.
+Refilled top/bottom protected-ground pours and stitched separate copper areas.
+The narrow load-switch ground escape uses one 0.55mm via with 0.30mm drill;
+other vias are 0.60/0.30mm. Copper clearances remain 0.20mm minimum.
+
+Assembly alignment helps repeatability, inspection and programming. Each part
+still needs placement; actual machine time depends on feeder layout, nozzle
+changes, travel optimization and the assembler's program. Buzzer remains on
+the bottom, so SMD population still involves both sides.
+assembly-reference.csv is a generic KiCad SMD-only reference, excluding parts
+with through-hole pads and DNP parts. Coordinates use KiCad absolute origin,
+millimetres and Y-up; rotations are native KiCad conventions. It is not an
+assembler-approved CPL; feeder/nozzle/rotation verification is still required.
+No assembly service or order was submitted.
+
+CHECKS
+68 footprints, 288 named pads, 501 track segments, 165 vias.
+ERC 0; full-track DRC 0; unconnected items 0; schematic parity issues 0.
+Preserved 16 anchors and 38 horizontal R/C axes verified programmatically.
+No new DRC exclusions or schematic changes.
+100x60x1.6mm, R5 corners, four 3.2mm mounting holes; two copper layers.
+All 740 STEP shapes passed geometry validation.
+
+MECHANICAL REFERENCE
+coffee-scale-revE.step, top.png, bottom.png and isometric.png reflect this layout.
+OLED remains parallel, with underside 10mm above the main PCB top provisionally.
+Pico socket height and the battery envelope remain unmodelled.
+TS43 lever projects about 3.4mm beyond the right PCB edge in the aligned model;
+master switch projects about 1.3mm. These owner positions are intentional.
+Provide case openings and check actual actuator travel before freezing the case.
+The lower regulator cell must also clear the case and load-cell mechanics.
+Rev D notes retain the electrical interface and part/model sourcing details.
+Hardware remains an unbuilt prototype; battery ratings, polarity, wake margin
+and weighing noise still need physical verification.

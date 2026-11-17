@@ -1,0 +1,69 @@
+﻿Reference,Value / part,Footprint,Side
+BZ1,CPT-1203-03-SMT-TR,CPT-1203-03-SMT-TR,bottom
+C1,10u 10V,C_0603_1608Metric,top
+C10,100n 10V,C_0603_1608Metric,top
+C11,1u 10V,C_0603_1608Metric,top
+C12,1u 10V,C_0603_1608Metric,top
+C13,22u 10V X5R,C_0805_2012Metric,top
+C14,100n 10V,C_0603_1608Metric,top
+C15,22u 10V X5R,C_0805_2012Metric,top
+C16,22u 10V X5R,C_0805_2012Metric,top
+C17,10n,C_0603_1608Metric,top
+C18,10n,C_0603_1608Metric,top
+C19,10n,C_0603_1608Metric,top
+C2,100n 10V,C_0603_1608Metric,top
+C20,10u 10V X5R,C_0805_2012Metric,top
+C3,100n 10V,C_0603_1608Metric,top
+C4,10u 10V,C_0603_1608Metric,top
+C5,100n 10V,C_0603_1608Metric,top
+C6,10n C0G,C_0603_1608Metric,top
+C7,100n 10V,C_0603_1608Metric,top
+C8,22u 10V X5R,C_0805_2012Metric,top
+C9,22u 10V X5R,C_0805_2012Metric,top
+D1,SS14,D_SMA,top
+D2,BAT54WS,D_SOD-323,top
+D3,BAT54WS,D_SOD-323,top
+H1,MountingHole_3.2mm_M3,MountingHole_3.2mm_M3,top
+H2,MountingHole_3.2mm_M3,MountingHole_3.2mm_M3,top
+H3,MountingHole_3.2mm_M3,MountingHole_3.2mm_M3,top
+H4,MountingHole_3.2mm_M3,MountingHole_3.2mm_M3,top
+J1,USB4105-GF-A,USB4105_GND_Rounded,top
+J2,RaspberryPi_Pico_W,Pico_W_Hybrid,top
+J3,OLED_SSD1306_3V3,PinHeader_1x04_P2.54mm_Vertical,top
+J4,S2B-PH-K-S,JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal,top
+J5,DEBUG_3V3_REF_ONLY,PinHeader_1x06_P2.54mm_Vertical,top
+J6,LOAD_CELL,LoadCell_4Pads,top
+L1,SRN4018-1R5Y 1.5uH,L_Bourns-SRN4018,top
+Q1,AO3400A,SOT-23,top
+Q2,AO3400A,SOT-23,top
+Q3,AO3400A,SOT-23,top
+Q4,AO3401A,SOT-23,top
+Q5,AO3401A,SOT-23,top
+Q6,AO3400A,SOT-23,top
+R1,10k 1% (100mA),R_0603_1608Metric,top
+R10,1k,R_0603_1608Metric,top
+R11,5.1k 1%,R_0603_1608Metric,top
+R12,5.1k 1%,R_0603_1608Metric,top
+R13,100k,R_0603_1608Metric,top
+R14,100,R_0603_1608Metric,top
+R15,1k,R_0603_1608Metric,top
+R16,100k,R_0603_1608Metric,top
+R17,10k,R_0603_1608Metric,top
+R18,10k,R_0603_1608Metric,top
+R2,4.7k,R_0603_1608Metric,top
+R3,4.7k,R_0603_1608Metric,top
+R4,10k,R_0603_1608Metric,top
+R5,10k,R_0603_1608Metric,top
+R6,10k,R_0603_1608Metric,top
+R7,10k,R_0603_1608Metric,top
+R8,100,R_0603_1608Metric,top
+R9,100k,R_0603_1608Metric,top
+SW1,PEC12R-2217F-S0024,RotaryEncoder_Bourns_Horizontal_PEC12R-2x17F-Sxxxx,top
+SW2,TL3301NF160QG,SW_Push_1P1T_NO_E-Switch_TL3301NxxxxxG,top
+SW3,TL3301NF160QG,SW_Push_1P1T_NO_E-Switch_TL3301NxxxxxG,top
+SW6,JS102011SAQN,SW_SPDT_CK_JS102011SAQN,top
+U1,MCP73831T-2ACI/OT,SOT-23-5,top
+U2,DW01A-G,SOT-23-6,top
+U3,TPS63031DSKR,WSON-10-1EP_2.5x2.5mm_P0.5mm_EP1.2x2mm,top
+U4,TPS22919DCKR,SOT-363_SC-70-6,top
+U5,HX711,SOIC-16_3.9x9.9mm_P1.27mm,top

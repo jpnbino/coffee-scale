@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140mm" height="90mm" viewBox="-15 -15 140 90">
+<style>text{font:2px sans-serif} .small{font:1.5px sans-serif}</style>
+<rect x="0" y="0" width="100" height="50" rx="5" fill="#ecf5ec" stroke="#333" stroke-width=".25"/>
+<text x="0" y="-7">Coffee scale Rev B — 100 × 50 mm, R5, four Ø3.2 holes</text>
+<text x="0" y="-3">Top view: origin upper left; dimensions in mm. OLED height provisional.</text>
+<circle cx="5.5" cy="5.0" r="1.6" fill="white" stroke="#333" stroke-width=".2"/>
+<circle cx="95.0" cy="5.0" r="1.6" fill="white" stroke="#333" stroke-width=".2"/>
+<circle cx="5.5" cy="44.5" r="1.6" fill="white" stroke="#333" stroke-width=".2"/>
+<circle cx="95.0" cy="44.5" r="1.6" fill="white" stroke="#333" stroke-width=".2"/>
+<rect x="54.12" y="13.3" width="27.38" height="27.72" fill="#729ace" fill-opacity=".35" stroke="#245299" stroke-width=".2"/>
+<circle cx="57.19" cy="16.31" r="1.1" fill="white" stroke="#245299" stroke-width=".15"/>
+<circle cx="57.19" cy="38.01" r="1.1" fill="white" stroke="#245299" stroke-width=".15"/>
+<circle cx="78.43" cy="16.31" r="1.1" fill="white" stroke="#245299" stroke-width=".15"/>
+<circle cx="78.43" cy="38.01" r="1.1" fill="white" stroke="#245299" stroke-width=".15"/>
+<text x="56" y="27">OLED above PCB</text>
+<circle cx="84.0" cy="13.0" r="1.8" fill="#333"/><text x="87.0" y="13.7">BTN1</text>
+<circle cx="84.0" cy="21.0" r="1.8" fill="#333"/><text x="87.0" y="21.7">BTN3</text>
+<circle cx="84.0" cy="29.0" r="1.8" fill="#333"/><text x="87.0" y="29.7">BTN4</text>
+<circle cx="84.0" cy="37.0" r="1.8" fill="#333"/><text x="87.0" y="37.7">BTN2</text>
+<circle cx="56.0" cy="44.5" r="1.8" fill="#333"/><text x="59.0" y="45.2">WAKE</text>
+<path d="M100 22 h7" stroke="#c33" stroke-width=".5"/><text x="103" y="20">USB-C</text>
+<path d="M39 48.3 v7" stroke="#333" stroke-width=".4"/><text x="25" y="59">Power slider: recessed 1.7 mm</text>
+<rect x="67" y="24" width="12" height="12" fill="none" stroke="#995b13" stroke-dasharray="1 1" stroke-width=".2"/><text x="67" y="39" class="small">Buzzer underneath</text>
+<text x="3" y="10">Battery JST retained</text>
+<text x="38" y="7">Load-cell pads / HX711</text>
+<text x="0" y="66">Mount PCB and controls to the fixed case base; keep the weighing platform mechanically free.</text>
+</svg>

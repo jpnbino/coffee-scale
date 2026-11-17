@@ -1,0 +1,1 @@
+PASS: 16 owner anchors preserved, 38 horizontal R/C axes, 288 pads match schematic, 68 footprints, 100x60x1.6mm, two copper layers.

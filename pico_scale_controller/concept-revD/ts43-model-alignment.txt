@@ -1,0 +1,1 @@
+Locating tab vertex envelope radius: 0.38166161416733424 mm; NPTH radius 0.45mm

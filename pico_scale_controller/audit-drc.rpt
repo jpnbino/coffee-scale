@@ -1,0 +1,142 @@
+** Drc report for pico_scale_controller.kicad_pcb **
+** Created on 2026-11-03T22:21:30 **
+** Report includes: Errors, Warnings **
+
+** Found 16 DRC violations **
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0,2500 mm; actual 0,1944 mm)
+    Rule: board setup constraints hole; error
+    @(92.6800 mm, 93.8000 mm): Pad A1 [<no net>] of J1 on F.Cu
+    @(91.6050 mm, 94.1100 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0,2500 mm; actual 0,1944 mm)
+    Rule: board setup constraints hole; error
+    @(92.6800 mm, 93.8000 mm): Pad B12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+    @(91.6050 mm, 94.1100 mm): NPTH pad of J1
+[clearance]: Clearance violation ( clearance 0,2000 mm; actual 0,0000 mm)
+    Local override; error
+    @(92.6800 mm, 99.4000 mm): Pad A9 [Net-(J1-VBUS-PadA9)] of J1 on F.Cu
+    @(92.6800 mm, 99.4000 mm): Pad B4 [<no net>] of J1 on F.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0,2500 mm; actual 0,1944 mm)
+    Rule: board setup constraints hole; error
+    @(92.6800 mm, 100.2000 mm): Pad A12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+    @(91.6050 mm, 99.8900 mm): NPTH pad of J1
+[clearance]: Clearance violation ( clearance 0,2000 mm; actual 0,0000 mm)
+    Local override; error
+    @(92.6800 mm, 100.2000 mm): Pad A12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+    @(92.6800 mm, 100.2000 mm): Pad B1 [<no net>] of J1 on F.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0,2500 mm; actual 0,1944 mm)
+    Rule: board setup constraints hole; error
+    @(92.6800 mm, 100.2000 mm): Pad B1 [<no net>] of J1 on F.Cu
+    @(91.6050 mm, 99.8900 mm): NPTH pad of J1
+[clearance]: Clearance violation ( clearance 0,2000 mm; actual 0,0000 mm)
+    Local override; error
+    @(92.6800 mm, 94.6000 mm): Pad B9 [Net-(J1-VBUS-PadA9)] of J1 on F.Cu
+    @(92.6800 mm, 94.6000 mm): Pad A4 [<no net>] of J1 on F.Cu
+[clearance]: Clearance violation ( clearance 0,2000 mm; actual 0,0000 mm)
+    Local override; error
+    @(92.6800 mm, 93.8000 mm): Pad B12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+    @(92.6800 mm, 93.8000 mm): Pad A1 [<no net>] of J1 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(92.6800 mm, 93.8000 mm): Pad A1 [<no net>] of J1 on F.Cu
+    @(92.6800 mm, 93.8000 mm): Pad B12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(92.6800 mm, 94.6000 mm): Pad A4 [<no net>] of J1 on F.Cu
+    @(92.6800 mm, 94.6000 mm): Pad B9 [Net-(J1-VBUS-PadA9)] of J1 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(92.6800 mm, 99.4000 mm): Pad A9 [Net-(J1-VBUS-PadA9)] of J1 on F.Cu
+    @(92.6800 mm, 99.4000 mm): Pad B4 [<no net>] of J1 on F.Cu
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(92.6800 mm, 100.2000 mm): Pad A12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+    @(92.6800 mm, 100.2000 mm): Pad B1 [<no net>] of J1 on F.Cu
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(89.5000 mm, 79.0000 mm): Footprint H1
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(180.0000 mm, 79.0000 mm): Footprint H2
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(90.5000 mm, 118.5000 mm): Footprint H3
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(180.0000 mm, 118.5000 mm): Footprint H4
+
+** Found 16 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 102.2500 mm): Pad 1 [unconnected-(SW5-Pad1)] of SW5 on F.Cu
+    @(172.5500 mm, 102.2500 mm): Pad 1 [unconnected-(SW5-Pad1)] of SW5 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 106.7500 mm): Pad 2 [unconnected-(SW5-Pad2)] of SW5 on F.Cu
+    @(172.5500 mm, 106.7500 mm): Pad 2 [unconnected-(SW5-Pad2)] of SW5 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 92.2500 mm): Pad 1 [unconnected-(SW4-Pad1)] of SW4 on F.Cu
+    @(172.5500 mm, 92.2500 mm): Pad 1 [unconnected-(SW4-Pad1)] of SW4 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 96.7500 mm): Pad 2 [unconnected-(SW4-Pad2)] of SW4 on F.Cu
+    @(172.5500 mm, 96.7500 mm): Pad 2 [unconnected-(SW4-Pad2)] of SW4 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 82.2500 mm): Pad 1 [unconnected-(SW2-Pad1)] of SW2 on F.Cu
+    @(172.5500 mm, 82.2500 mm): Pad 1 [unconnected-(SW2-Pad1)] of SW2 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 86.7500 mm): Pad 2 [unconnected-(SW2-Pad2)] of SW2 on F.Cu
+    @(172.5500 mm, 86.7500 mm): Pad 2 [unconnected-(SW2-Pad2)] of SW2 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(92.6800 mm, 94.6000 mm): Pad B9 [Net-(J1-VBUS-PadA9)] of J1 on F.Cu
+    @(92.6800 mm, 99.4000 mm): Pad A9 [Net-(J1-VBUS-PadA9)] of J1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(92.6800 mm, 93.8000 mm): Pad B12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+    @(92.6800 mm, 100.2000 mm): Pad A12 [Net-(J1-GND-PadA12)] of J1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(87.9250 mm, 92.6800 mm): PTH pad SH [unconnected-(J1-SHIELD-PadSH)] of J1
+    @(87.9250 mm, 101.3200 mm): PTH pad SH [unconnected-(J1-SHIELD-PadSH)] of J1
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(87.9250 mm, 101.3200 mm): PTH pad SH [unconnected-(J1-SHIELD-PadSH)] of J1
+    @(92.1050 mm, 101.3200 mm): PTH pad SH [unconnected-(J1-SHIELD-PadSH)] of J1
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(92.1050 mm, 92.6800 mm): PTH pad SH [unconnected-(J1-SHIELD-PadSH)] of J1
+    @(87.9250 mm, 92.6800 mm): PTH pad SH [unconnected-(J1-SHIELD-PadSH)] of J1
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(115.0000 mm, 81.5000 mm): Pad 11 [Net-(U3-PGND-Pad11)] of U3 on F.Cu
+    @(115.0000 mm, 82.7125 mm): Pad 3 [Net-(U3-PGND-Pad11)] of U3 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 112.2500 mm): Pad 1 [unconnected-(SW3-Pad1)] of SW3 on F.Cu
+    @(172.5500 mm, 112.2500 mm): Pad 1 [unconnected-(SW3-Pad1)] of SW3 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(163.4500 mm, 116.7500 mm): Pad 2 [unconnected-(SW3-Pad2)] of SW3 on F.Cu
+    @(172.5500 mm, 116.7500 mm): Pad 2 [unconnected-(SW3-Pad2)] of SW3 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(146.9500 mm, 112.7500 mm): Pad 1 [unconnected-(SW1-Pad1)] of SW1 on F.Cu
+    @(156.0500 mm, 112.7500 mm): Pad 1 [unconnected-(SW1-Pad1)] of SW1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(146.9500 mm, 117.2500 mm): Pad 2 [unconnected-(SW1-Pad2)] of SW1 on F.Cu
+    @(156.0500 mm, 117.2500 mm): Pad 2 [unconnected-(SW1-Pad2)] of SW1 on F.Cu
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

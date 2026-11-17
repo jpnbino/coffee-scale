@@ -1,0 +1,34 @@
+{
+  "revision": "E prototype",
+  "board_sha256": "7715d9f54051ca9113451f8828de7425e69eca6a65a4b9f7e02173f16d2c00f9",
+  "schematic_sha256": "8b55abfdcc27fce096b86284b1b6ce6135dd1a6d12d26ea8f92673d0ae6ccf1f",
+  "archive_sha256": "e255812c465b0aeb9db4b47e232bb545e43df3454cba67d1aa0888e2e8af220e",
+  "files": {
+    "pico_scale_controller-B_Cu.gbl": "ff8af1f63313cfda3b78490a7e3687d23f084f7216aaacfc2e627cb208ffbbf1",
+    "pico_scale_controller-B_Mask.gbs": "4da3a5851f797b733883e01650ae426286af17e8a0b02051fa603af5345fb3da",
+    "pico_scale_controller-B_Silkscreen.gbo": "79af1e72b95b90abde9cc74c652d09fe6280fedbb97451e90b69074594954d80",
+    "pico_scale_controller-Edge_Cuts.gm1": "3a1e5ec8ad09d9b4b75732efbc9856d8a1e523e97120ea8ac465d46db4db7a00",
+    "pico_scale_controller-F_Cu.gtl": "063f795278441ca9bcd70bff99d5b19b87f06e3d446d8fbff79a784eca987f3c",
+    "pico_scale_controller-F_Mask.gts": "7df72f5daffd5fb7c154709cb173f3fbd0215474eb59d5cbef4a9acfe56c1beb",
+    "pico_scale_controller-F_Silkscreen.gto": "9e9230e05718395a118526c977ec5245712534e4da510c5d39842b56e6cf1fd4",
+    "pico_scale_controller-job.gbrjob": "6b5987cd05d9f96f7e3a18ee5996c2bfb1ffbbb8733aef482f973c3fdb8e4088",
+    "pico_scale_controller-NPTH.drl": "268c9d7aeb6738cbfbf1d013eb06fca08b46df6b8489b2aad01204250b53be2a",
+    "pico_scale_controller-PTH.drl": "00709e99b5787f4485bbf0e5970aa8e67759b95749c619869fb22c3496c3d0e2"
+  },
+  "STEP_sha256": "892cbdac9faab307ed14a977a8a7fb283024b0cc07d9b845e79dbc69efeb44f5",
+  "checks": {
+    "ERC": 0,
+    "DRC": 0,
+    "unconnected": 0,
+    "parity": 0,
+    "named_pads": 288,
+    "preserved_owner_anchors": 16,
+    "aligned_R_C_axes": 38
+  },
+  "statistics": {
+    "footprints": 68,
+    "named_pads": 288,
+    "segments": 501,
+    "vias": 165
+  }
+}

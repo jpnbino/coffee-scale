@@ -1,0 +1,6 @@
+Routed Revision E prototype: 68 footprints on a 100x60mm board.
+501 track segments, 165 vias, two filled ground pours.
+Final checks: zero unconnected items, zero DRC violations, zero schematic parity issues.
+Preserved 16 owner/mechanical anchors; aligned all 38 resistor/capacitor axes.
+See fabrication/revE for current fabrication outputs and revision-revE for STEP,
+previews, placement CSV, case coordinates and mechanical assumptions.

@@ -1,0 +1,2 @@
+PASS: all 740 STEP shapes valid
+[('TS43_manufacturer', 'BoundBox (88.7, -49.8445, 0.345, 100.2, -36.1555, 4.29578)')]

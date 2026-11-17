@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {"file":"gerber-to-svg-4.2.8.min.cjs","version":"4.2.8","source":"https://unpkg.com/gerber-to-svg@4.2.8/dist/gerber-to-svg.min.js","sha256":"8f16104893ab462f0bc1513ac2c6508fce59fcb10fab648848dddcfa7aafb76c","license":"MIT; used only by the local build"},
+    {"file":"gerber-to-svg-LICENSE.txt","source":"https://unpkg.com/gerber-to-svg@4.2.8/LICENSE","sha256":"94a11eb6dbeb1b231d3aee6d1e901efc808509c2a49cd5ab58846f0fe048ba38"},
+    {"file":"gerber-to-svg-NOTICES.txt","source":"https://unpkg.com/gerber-to-svg@4.2.8/dist/gerber-to-svg.min.js.LICENSE.txt","sha256":"a41d4ce5d77ff2e5a5c511d8287e8752530ceb955fd04c1f48855a8d9796708a"},
+    {"file":"model-viewer-4.4.0.min.js","version":"4.4.0","source":"https://unpkg.com/@google/model-viewer@4.4.0/dist/model-viewer.min.js","sha256":"18b2e711035aa4705ee281530a55dc2338ff05eed3d70ae16d54105282a75ed5","license":"Apache-2.0"},
+    {"file":"model-viewer-LICENSE.txt","source":"https://unpkg.com/@google/model-viewer@4.4.0/LICENSE","sha256":"cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"},
+    {"file":"kicanvas.js","version":"content-pinned; upstream provides no release tag","source":"https://kicanvas.org/kicanvas/kicanvas.js","sha256":"ca910f25276c3efb9aacb3a5d6341d4d9af4736d4c875fb0440d2cc856865ab7","license":"MIT with bundled third-party notices"},
+    {"file":"kicanvas-LICENSE.md","source":"https://raw.githubusercontent.com/theacodes/kicanvas/main/LICENSE.md","sha256":"a6cfd0ba995f0f74cc557b6f80bd235f35e760d1e8ca0c61cf8e3a0348bcb170"}
+  ]
+}
