@@ -43,8 +43,8 @@ published externally and no order has been placed.
 
 ## Later: richer design review
 
-- Evaluate a KiCad 10 compatible native viewer; current KiCanvas schematic test failed.
-- Add coordinated schematic/PCB selection and measurement if the chosen API supports it.
+- KiCanvas works for KiCad 10 through viewer-only copies; re-check after any bundle update.
+- Coordinated schematic/PCB part and net selection delivered (KiCanvas); measurement remains open.
 - Add Git commit/tag extraction to the existing local-snapshot comparison.
 - Extend comparisons to filled zones, design rules, artwork and schematic semantics.
 - Evaluate manufacturing-layer Boolean differences, annotations and review workflows.

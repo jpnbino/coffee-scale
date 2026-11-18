@@ -77,7 +77,7 @@ export function buildReview({ root, output, config, buildId, kicad }) {
       pcbTop: `${assetBase}pcb-top.svg`, pcbBottom: `${assetBase}pcb-bottom.svg`, schematicSvg: `${assetBase}schematic/${schematicSvg}`,
       schematicPdf: `${assetBase}schematic.pdf`, model: `${assetBase}board.glb`, modelMaterials: `${assetBase}model-materials.json`,
       hero: `${assetBase}top.png`, stackup: `${assetBase}stackup.json`, native: `${assetBase}native/schematic.kicad_sch`,
-      nativeProvenance: `${assetBase}native/provenance.json`, fabrication: `review/${id}/fabrication.zip`,
+      nativeProvenance: `${assetBase}native/provenance.json`, nativeBoard: `${assetBase}native/board.kicad_pcb`, schematicNets: `${assetBase}native/schematic-nets.json`, fabrication: `review/${id}/fabrication.zip`,
       ...(id === 'current'
         ? { source: 'files/source.zip', mechanical: 'files/mechanical.zip', mechanicalGuide: 'files/mechanical/README.md', assembly: 'files/assembly-DRAFT.zip', validation: 'files/validation.json' }
         : { source: `review/${id}/source.zip`, mechanical: `review/${id}/mechanical.zip`, mechanicalGuide: `review/${id}/mechanical/README.md`, assembly: null, validation: `review/${id}/historical-validation.json` }),

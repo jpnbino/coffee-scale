@@ -1,0 +1,11 @@
+/* Local replacement for the Google Fonts stylesheet KiCanvas requests:
+   the icon font is served from this site, so the viewer works offline and
+   makes no third-party request. Nunito is not bundled; text falls back to
+   the page's sans-serif font. */
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url("material-symbols-outlined.woff2") format("woff2");
+}
