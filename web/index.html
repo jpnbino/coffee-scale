@@ -80,7 +80,27 @@
       <div class="view-panel" id="view-model" role="tabpanel" aria-labelledby="tab-model" hidden><model-viewer src="board.glb" camera-orbit="45deg 54.7356deg auto" camera-controls touch-action="pan-y" shadow-intensity="0.6" alt="Interactive three-dimensional PCB assembly" poster="top.png"><p slot="poster">Loading the local 3D model…</p></model-viewer></div>
       <div class="view-toolbar"><span>SVG: scroll to zoom, drag to pan. Bottom copper retains top-view coordinates.</span><button id="reset-view">Reset view</button><a href="schematic.pdf">Schematic PDF ↗</a></div>
       <p id="viewer-status" class="muted" aria-live="polite"></p>
-      <details id="native-viewer"><summary>Interactive native schematic viewer</summary><p>The viewer uses a derived copy with leading decimal numbers normalized, for example .254 to 0.254. The original KiCad source and SVG/PDF remain authoritative. <a href="native/provenance.json">View conversion provenance</a>.</p><button id="try-native" type="button">Open native schematic viewer</button><div id="kicanvas-host"></div><p id="kicanvas-status" aria-live="polite">Loads on request. If compatibility fails, the Schematic tab and PDF remain available.</p></details>
+      <details id="design-viewer"><summary>Interactive design viewer — nets, layers and cross-probing</summary>
+        <p>Schematic and PCB side by side. Click a part to find it in both views; click a track, pad, wire or label, or pick a net from the list, to highlight the whole net. The PCB view has its own layer panel. Scrolling over a viewer zooms it; scroll beside it to move the page. It reads viewer-only copies: leading decimals are normalized (.254 → 0.254) and the KiCad 10 board gets a numbered net table. Schematic net highlighting is traced from the original files and checked against the board's nets. The KiCad source, SVG and PDF remain authoritative. <a href="native/provenance.json">Viewer copy provenance</a>.</p>
+        <button id="open-design-viewer" type="button">Open interactive viewer</button>
+        <div id="design-viewer-app" data-layout="both" hidden>
+          <div class="dv-toolbar">
+            <div class="dv-layouts" role="group" aria-label="Viewer layout"><button type="button" data-dv-layout="both" aria-pressed="true">Schematic + PCB</button><button type="button" data-dv-layout="sch" aria-pressed="false">Schematic</button><button type="button" data-dv-layout="pcb" aria-pressed="false">PCB</button></div>
+            <label>Viewer theme <select id="dv-theme"><option value="kicad">KiCad-style (light schematic)</option><option value="witchhazel">Witch Hazel (dark)</option></select></label>
+            <button type="button" id="dv-fit">Fit views</button><button type="button" id="dv-clear">Clear highlight</button>
+          </div>
+          <div class="dv-body">
+            <div class="dv-pane" id="dv-sch-pane" aria-label="Schematic viewer"></div>
+            <div class="dv-pane" id="dv-pcb-pane" aria-label="PCB viewer"></div>
+            <aside class="dv-nets" aria-label="Nets">
+              <label for="dv-net-search">Find a net</label><input id="dv-net-search" type="search" placeholder="GND, HX_DOUT, 3V3…">
+              <label class="inline-check"><input type="checkbox" id="dv-show-unconnected"> Show unconnected pins</label>
+              <p id="dv-net-count" class="muted"></p><ul id="dv-net-list"></ul><div id="dv-net-detail"></div>
+            </aside>
+          </div>
+          <p id="dv-status" aria-live="polite"></p><p id="dv-warnings" class="muted"></p>
+        </div>
+      </details>
     </section>
     <section id="parts" class="searchable">
       <p class="eyebrow">03 / ASSEMBLY</p><h2>Know every part.</h2><p id="assembly-status"></p>
@@ -100,7 +120,7 @@
       <div class="download-grid"><a href="files/fabrication.zip">PCB fabrication <span>Gerbers · plated/non-plated drills ↗</span></a><a href="files/assembly-DRAFT.zip">Assembly draft <span>BOM · placement candidates · drawings ↗</span></a><a href="files/source.zip">KiCad sources <span>Project · libraries · local models ↗</span></a><a href="files/validation.json">Validation summary <span>Checks, source hash and build ID ↗</span></a></div>
       <p>Build <code>{{BUILD_ID}}</code></p><p class="muted">Nothing has been published or ordered by this build. Assembly candidates are explicitly marked as unapproved.</p>
     </section>
-    <footer>{{TITLE}} · Open hardware project · <a href="vendor/kicanvas-LICENSE.md">KiCanvas notices</a> · <a href="vendor/model-viewer-LICENSE.txt">3D viewer notices</a></footer>
+    <footer>{{TITLE}} · Open hardware project · <a href="vendor/kicanvas-LICENSE.md">KiCanvas notices</a> · <a href="vendor/material-symbols-LICENSE.txt">Icon font licence</a> · <a href="vendor/model-viewer-LICENSE.txt">3D viewer notices</a></footer>
   </main>
 </body>
 </html>
