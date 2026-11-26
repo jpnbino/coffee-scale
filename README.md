@@ -86,6 +86,10 @@ GitHub Actions runs these tests on Windows, macOS and Linux, then runs the
 validation and a full release build inside the official, version-pinned
 `kicad/kicad` container. The build is attached to each run as an artifact.
 
+Each push to `main` also publishes that build's review portal to GitHub Pages
+at <https://jpnbino.github.io/coffee-scale/>. The page is public and shows a
+prototype design; it is not production or supplier approval.
+
 See `docs/board/` for the detailed circuit, assembly, mechanical, viewer, and
 manufacturing notes. Legacy utilities should be run from the repository root;
 they write candidates and intermediate files to their existing revision and
