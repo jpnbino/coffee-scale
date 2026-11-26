@@ -16,7 +16,10 @@ The image is for design review; the hardware is not yet production-approved.*
 ## Current status
 
 - **Hardware:** Revision E routed prototype.
-- **Not complete:** Firmware, physical validation, supplier approval, and final
+- **Firmware:** prototype MicroPython firmware, tested on a breadboard build, is in
+  [coffee-scale-firmware](https://github.com/jpnbino/coffee-scale-firmware);
+  it is not yet ported to this PCB.
+- **Not complete:** Firmware for Rev E, physical validation, supplier approval, and final
   assembly decisions.
 - **Authoritative design:** `src/`.
 - **Historical records:** `src/fabrication/` and revision snapshots under `src/`.
