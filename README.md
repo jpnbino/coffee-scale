@@ -142,7 +142,7 @@ GitHub Actions runs these tests on Windows, macOS and Linux, then runs the
 validation and a full release build inside the official, version-pinned
 `kicad/kicad` container. The build is attached to each run as an artifact.
 
-See `docs/board/` for the detailed circuit, assembly, mechanical, viewer, and
-manufacturing notes. Legacy utilities should be run from the repository root;
+See `docs/board/` for the detailed circuit, assembly, mechanical and
+manufacturing notes, and `docs/maintainer/` for how the portal's viewers work. Legacy utilities should be run from the repository root;
 they write candidates and intermediate files to their existing revision and
 `tmp/` locations.

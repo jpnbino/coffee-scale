@@ -1,6 +1,7 @@
 # Browser viewer compatibility
 
-How the portal's viewers read KiCad 10 files, what was tested, and what they depend on.
+Maintainer notes: how the portal's viewers read KiCad 10 files, what was tested,
+and what they depend on. Not part of the reader-facing portal documentation.
 
 Tested on hardware Rev E with KiCad 10.0.8.
 
