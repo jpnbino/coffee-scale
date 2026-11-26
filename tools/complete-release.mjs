@@ -67,6 +67,9 @@ the final-instrument BOM. No firmware/calibration or functional acceptance is im
     if (stackup.sourceSha256 !== version.boardSha256 || native.sourceSha256 !== version.schematicSha256) throw new Error(`Selected-revision provenance mismatch: ${version.id}`);
     if (fileDigest(at('model')) !== materials.sourceSha256) throw new Error(`Selected-revision 3D material map mismatch: ${version.id}`);
     if (fileDigest(at('native')) !== native.viewerSha256) throw new Error(`Selected-revision native schematic mismatch: ${version.id}`);
+    if (native.board?.sourceSha256 !== version.boardSha256 || fileDigest(at('nativeBoard')) !== native.board.viewerSha256) throw new Error(`Selected-revision viewer board mismatch: ${version.id}`);
+    const nets = readJson(at('schematicNets'));
+    if (nets.sourceSha256 !== version.schematicSha256 || nets.boardSha256 !== version.boardSha256) throw new Error(`Selected-revision schematic net map mismatch: ${version.id}`);
   }
   console.log('Selected-revision artifact existence and provenance verified.');
 }

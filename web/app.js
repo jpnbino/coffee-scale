@@ -100,17 +100,14 @@ const model = document.querySelector("model-viewer");
 model?.addEventListener("load", () => { document.getElementById("viewer-status").textContent = "3D model loaded from this release. Drag to rotate; scroll to zoom."; });
 model?.addEventListener("error", () => { document.getElementById("viewer-status").textContent = "3D could not load. The STEP package and rendered views remain available."; });
 model?.addEventListener("load", async () => { const {initializeColors}=await import("./model-colors.mjs");await initializeColors(model); });
-let nativeStarted = false;
-document.getElementById("try-native")?.addEventListener("click", async () => {
-  if (nativeStarted) return;
-  nativeStarted = true;
-  const status = document.getElementById("kicanvas-status");
-  status.textContent = "Starting the content-pinned KiCanvas compatibility viewer…";
+let designViewerStarted = false;
+document.getElementById("open-design-viewer")?.addEventListener("click", async event => {
+  if (designViewerStarted) return;
+  designViewerStarted = true; event.currentTarget.hidden = true;
   try {
-    await import("./vendor/kicanvas.js");
-    const embed = document.createElement("kicanvas-embed"); embed.setAttribute("controls", "full");
-    embed.setAttribute("src", artifactUrl(selectedVersion,'native'));
-    document.getElementById("kicanvas-host").append(embed);
-    status.textContent = "Native viewer requested using the numeric-normalized copy. SVG/PDF remain the authoritative drawing reference.";
-  } catch (error) { status.textContent = `Native viewer unavailable: ${error.message}. Use SVG/PDF above.`; }
+    const { mountDesignViewer } = await import("./design-viewer.mjs");
+    await mountDesignViewer(selectedVersion);
+  } catch (error) {
+    document.getElementById("dv-status").textContent = `Interactive viewer unavailable: ${error.message}. The SVG views and schematic PDF above remain available.`;
+  }
 });
