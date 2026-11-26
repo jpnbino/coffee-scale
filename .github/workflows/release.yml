@@ -43,6 +43,18 @@ jobs:
         run: node release.mjs --validate-only
       - name: Full prototype release build
         run: node release.mjs
+      - name: Locate the portal for GitHub Pages
+        id: site
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          site=$(ls -d build/releases/*/site | tail -n 1)
+          test -f "$site/index.html"
+          echo "path=$site" >> "$GITHUB_OUTPUT"
+      - name: Package the portal for GitHub Pages
+        if: steps.site.outcome == 'success'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ steps.site.outputs.path }}
       - name: Upload build
         if: always()
         uses: actions/upload-artifact@v7
@@ -51,3 +63,23 @@ jobs:
           path: build/releases/
           if-no-files-found: warn
           retention-days: 14
+
+  pages:
+    name: Publish portal to GitHub Pages
+    # Only builds of main are published; pull requests are checked, not deployed.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [tooling, kicad]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
