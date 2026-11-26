@@ -4,6 +4,12 @@ import { join, parse } from 'node:path';
 import { ensureDir, fileDigest, htmlEncode, htmlSafeJson, readJson, resolveChildPath, runNode, writeJson } from './lib/common.mjs';
 import { markdownToHtml, readCsv } from './lib/formats.mjs';
 
+/**
+ * Docs link to each other as `02-circuit.md` so the links also work when read on
+ * GitHub. In the portal each document is the page `doc-02-circuit.html`.
+ */
+export const portalDocLinks = html => html.replace(/href="(\d\d-[\w-]+)\.md(#[^"]*)?"/g, (_, name, anchor = '') => `href="doc-${name}.html${anchor}"`);
+
 export function buildSite({ root, output, config, buildId, assembly }) {
   const site = `${output}/site`; const web = resolveChildPath(root, config.siteDirectory);
   const name = config.project.basename;
@@ -18,7 +24,7 @@ export function buildSite({ root, output, config, buildId, assembly }) {
 
   const docs = resolveChildPath(root, config.documentationDirectory);
   const documentation = readdirSync(docs).filter(file => file.endsWith('.md')).sort().map(file => {
-    const html = markdownToHtml(readFileSync(join(docs, file), 'utf8'));
+    const html = portalDocLinks(markdownToHtml(readFileSync(join(docs, file), 'utf8')));
     return `<article class="doc-article" id="doc-${htmlEncode(parse(file).name)}">${html}</article>`;
   });
   const svg = readdirSync(`${site}/schematic`).filter(file => file.endsWith('.svg')).sort();

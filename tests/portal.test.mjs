@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { portalPages } from '../tools/build-portal.mjs';
 const template = (await readFile(new URL('../web/index.html', import.meta.url), 'utf8'))
-  .replace('{{DOCUMENTATION}}', '<article class="doc-article" id="doc-guide"><h1>Test guide</h1><p>Load-cell wiring guide.</p><p>HX711 wiring reference</p></article><article id="doc-08-manufacturing-control"><h1>Manufacturing control</h1><p>From prototype data to controlled manufacturing.</p></article>');
+  .replace('{{DOCUMENTATION}}', '<article class="doc-article" id="doc-guide"><h1>Test guide</h1><p>Load-cell wiring guide.</p><p>HX711 wiring reference</p></article><article id="doc-07-manufacturing-control"><h1>Manufacturing control</h1><p>From prototype data to controlled manufacturing.</p></article>');
 const pages = portalPages(template);
 test('Landing page contains resource links without interactive viewer payloads', () => {
   const home = pages.get('index.html');

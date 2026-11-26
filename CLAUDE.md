@@ -14,8 +14,10 @@ or supplier-approved. Keep that distinction in everything you write.
   mechanical parameters. `release.mjs` reads it.
 - `assembly/profile.csv` — assembly stages/sourcing overrides read by the
   release. It is intentionally incomplete; do not delete it.
-- `docs/board/` — maintained documentation (rendered into the portal).
-  Keep `README.md` short; put detail here.
+- `docs/board/` — maintained documentation (rendered into the portal), ordered
+  by reader journey; link between pages as `NN-name.md`. Keep `README.md`
+  short; put detail here.
+- `docs/maintainer/` — notes for maintainers (viewer internals); not in the portal.
 - `tools/` — Node.js release and portal tooling; `tools/lib/` holds shared
   helpers. `web/` — portal templates, viewer code, checksum-locked vendor assets.
 - `tests/` — `node:test` suites. `scripts/legacy/` — archived Python utilities.
