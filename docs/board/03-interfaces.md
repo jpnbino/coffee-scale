@@ -1,5 +1,7 @@
 # Interfaces and firmware contract
 
+Every Pico pin and connector the firmware relies on, and the behaviour firmware must implement.
+
 | Pico GPIO | Signal | Purpose |
 |---|---|---|
 | GP0 / GP1 | UART_TX / UART_RX | Debug UART |

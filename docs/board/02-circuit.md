@@ -1,5 +1,7 @@
 # Circuit and power
 
+How the board measures weight, powers itself from USB-C or a single lithium cell, and wakes and sleeps.
+
 ## Controller and measurements
 
 The Pico W connects to an I²C OLED and an HX711 with four solder pads for a

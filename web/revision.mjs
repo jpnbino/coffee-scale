@@ -14,7 +14,7 @@ export const selectedPromise=(async()=>{
     const historical=version.id!==catalog.current;
     document.documentElement.dataset.revision=version.id;
     for(const badge of document.querySelectorAll('.edition,.topline>span:last-child,.revision-badge'))badge.textContent=version.label;
-    status.textContent=`${version.label} · ${version.validation} · PCB SHA-256 ${version.boardSha256}`;
+    status.textContent=`${version.label} · ${version.validation} · PCB ${version.boardSha256.slice(0,12)}…`;status.title=`PCB SHA-256 ${version.boardSha256}`;
     for(const element of document.querySelectorAll('[data-artifact]')){
       const url=artifactUrl(version,element.dataset.artifact);
       if(!url){element.removeAttribute('href');element.setAttribute('aria-disabled','true');element.textContent+=' — unavailable for this revision';continue;}

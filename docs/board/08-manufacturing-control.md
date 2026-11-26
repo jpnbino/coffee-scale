@@ -1,5 +1,7 @@
 # Stackup and manufacturing control
 
+What the design records about the physical board today, and the path from prototype data to controlled manufacturing.
+
 ## What is recorded today
 
 The installed KiCad 10.0.8 project contains an explicit physical stackup:

@@ -1,5 +1,7 @@
 # Assembly and testing
 
+Build options, the state of the assembly data, and the planned bring-up sequence for a first board.
+
 ## Assembly variants
 
 - **Bare PCB:** fabrication data only.

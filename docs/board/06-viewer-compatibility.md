@@ -1,6 +1,8 @@
 # Browser viewer compatibility
 
-Local proof of concept, tested on hardware Rev E with KiCad 10.0.8.
+How the portal's viewers read KiCad 10 files, what was tested, and what they depend on.
+
+Tested on hardware Rev E with KiCad 10.0.8.
 
 | Feature | Result |
 |---|---|

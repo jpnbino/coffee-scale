@@ -1,10 +1,13 @@
 # Revision review and Gerber inspection
 
+How to compare revisions and inspect the exact files a PCB factory receives.
+
 The version catalogue retains viewable layouts, schematics and manufacturing
 files for Rev D, archived Rev E and the current build. It checks historical
 source/file hashes, then re-renders review drawings with the current toolchain.
 The manufacturing files themselves are copied unchanged from their release.
-This workspace is not yet a Git repository; these selectors are local snapshots.
+These selectors are verified release snapshots, not Git commits; linking them
+to Git tags is planned.
 
 ## Comparing layouts
 

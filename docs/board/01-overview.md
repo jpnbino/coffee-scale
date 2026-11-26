@@ -1,4 +1,6 @@
-# Coffee scale controller
+# Overview
+
+What the board is, where it stands, and how to find your way around this release.
 
 An open-hardware controller for a coffee weighing scale, using a Raspberry Pi
 Pico W, HX711 bridge ADC, SSD1306 OLED and a rechargeable single-cell battery.
