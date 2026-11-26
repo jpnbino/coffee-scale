@@ -82,6 +82,10 @@ approval.
 npm test        # or: node --test tests/*.test.mjs
 ```
 
+The review portal from the latest `main` build is published at
+<https://jpnbino.github.io/coffee-scale/>. It shows a prototype design for
+review; it is not a production or supplier approval.
+
 GitHub Actions runs these tests on Windows, macOS and Linux, then runs the
 validation and a full release build inside the official, version-pinned
 `kicad/kicad` container. The build is attached to each run as an artifact.
