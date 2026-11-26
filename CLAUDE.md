@@ -66,7 +66,8 @@ local and CI commands identical; pin tool versions.
 
 ## Hardware safety notes to keep intact
 
-Firmware is not included. Battery chemistry, ratings, polarity and thermal
+Firmware lives in jpnbino/coffee-scale-firmware; it targets the breadboard
+prototype and is not yet ported to Rev E. Battery chemistry, ratings, polarity and thermal
 limits are unverified. Do not connect the Pico's USB port while using the
 external-power arrangement. Enclosure, display and load-cell fit is
 provisional. No license has been chosen yet; do not add one without the owner.

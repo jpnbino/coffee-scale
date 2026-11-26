@@ -19,7 +19,10 @@ export function portalPages(template) {
   const articles = [...take('documentation').matchAll(/<article[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)].map(([, id, content]) => {
     const title = content.match(/<h1[^>]*>(.*?)<\/h1>/)?.[1];
     if (!title || !/^[\w-]+$/.test(id)) throw new Error('Documentation requires a safe ID and a title');
-    return { id, title, summary: 'Maintained project documentation for this build.', content: `<article class="doc-article" id="${id}">${content}</article>`, document: true };
+    // Each document opens with a one-sentence lead; it becomes the card summary.
+    const lead = content.match(/<\/h1>\s*<p>([\s\S]*?)<\/p>/)?.[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    if (!lead) throw new Error(`Documentation ${id} needs a lead paragraph under its title`);
+    return { id, title, summary: lead, content: `<article class="doc-article" id="${id}">${content}</article>`, document: true };
   });
   const cards = list => `<div class="resource-grid">${list.map(page => `<a href="${page.id}.html"><strong>${page.title}</strong><span>${page.summary}</span></a>`).join('')}</div>`;
   pages[0].content = pages[0].content.replace('<figure class="hero">', `${cards(pages.slice(1))}<figure class="hero">`);

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { portalPages } from '../tools/build-portal.mjs';
 const template = (await readFile(new URL('../web/index.html', import.meta.url), 'utf8'))
-  .replace('{{DOCUMENTATION}}', '<article class="doc-article" id="doc-guide"><h1>Test guide</h1><p>HX711 wiring reference</p></article><article id="doc-08-manufacturing-control"><h1>Manufacturing control</h1></article>');
+  .replace('{{DOCUMENTATION}}', '<article class="doc-article" id="doc-guide"><h1>Test guide</h1><p>Load-cell wiring guide.</p><p>HX711 wiring reference</p></article><article id="doc-08-manufacturing-control"><h1>Manufacturing control</h1><p>From prototype data to controlled manufacturing.</p></article>');
 const pages = portalPages(template);
 test('Landing page contains resource links without interactive viewer payloads', () => {
   const home = pages.get('index.html');
@@ -44,4 +44,16 @@ test('Revision-dependent media and downloads cannot load current artifacts befor
 });
 test('Missing content fails generation instead of emitting a partial portal', () => {
   assert.throws(() => portalPages(template.replace('id="gerbers"', 'id="missing"')), /Missing portal section/);
+});
+
+test('Documentation cards describe each document with its lead sentence', () => {
+  const docs = pages.get('documentation.html');
+  assert.match(docs, /<strong>Test guide<\/strong><span>Load-cell wiring guide\.<\/span>/);
+  assert.match(docs, /<strong>Manufacturing control<\/strong><span>From prototype data to controlled manufacturing\.<\/span>/);
+  assert.doesNotMatch(docs, /Maintained project documentation for this build/);
+});
+
+test('Documentation without a lead sentence is rejected', () => {
+  const bad = template.replace('<h1>Test guide</h1><p>Load-cell wiring guide.</p>', '<h1>Test guide</h1><table></table>');
+  assert.throws(() => portalPages(bad), /lead paragraph/);
 });

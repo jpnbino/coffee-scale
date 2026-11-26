@@ -1,5 +1,7 @@
 # Mechanics, revisions and open work
 
+What a case designer needs, what changed in Revision E, and what is still open.
+
 ## Enclosure collaboration
 
 Share the entire mechanical package. It includes populated/bare STEP, the
@@ -25,9 +27,10 @@ routing and refilled protected-ground pours. The project remains unbuilt.
 
 - Manufacturer-approved part selection and placement review.
 - Measured mechanical stack, enclosure and load-cell/platform arrangement.
-- Firmware, calibration and physical prototype testing.
-- Hardware/documentation license choice before public repository publication.
-- Repository CI, hosted documentation and more advanced review/diff functionality.
+- Firmware for this board, calibration, and physical testing of a Rev E board.
+- A hardware and documentation license. The repository is public, but until a
+  license is chosen others may read the design without permission to reuse it.
+- Tagged GitHub Releases carrying the manufacturing packages.
 
-The current local build generates deliverables; it neither publishes a website
-nor places a manufacturing order.
+Every push to `main` is validated and built in CI, and this portal is published
+from that build. No manufacturing order has been placed.

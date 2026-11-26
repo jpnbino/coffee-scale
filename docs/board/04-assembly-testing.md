@@ -1,5 +1,7 @@
 # Assembly and testing
 
+Build options, the state of the assembly data, and the planned bring-up sequence for a first board.
+
 ## Assembly variants
 
 - **Bare PCB:** fabrication data only.
@@ -29,4 +31,6 @@ must match the reviewed placement before strict assembly release is enabled.
 7. Verify case fit, button travel, sound opening and mechanical load-cell isolation.
 
 This is a planned test sequence, not a record of completed physical testing.
-There is no firmware or tested production programming procedure in this release.
+Prototype firmware for a breadboard build is in
+[coffee-scale-firmware](https://github.com/jpnbino/coffee-scale-firmware); it is
+not yet ported to this board. There is no tested production programming procedure.
