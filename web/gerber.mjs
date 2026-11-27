@@ -27,6 +27,15 @@ for(const button of presetButtons){button.disabled=true;button.addEventListener(
     byId("gerber-mirror").checked=preset.mirror;mirrorView();}finally{applyingPreset=false;}
   pressPreset(button.dataset.preset);updateSide();
 });}
+// Collapsing the stack gives its width to the board (the SVG keeps its view and
+// scales up). The choice is remembered per browser where storage is allowed.
+{
+  const workspace=byId("gerber-workspace"),toggle=byId("stack-toggle"),key="coffee-scale.gerber-stack-collapsed";
+  const apply=collapsed=>{workspace?.classList.toggle("stack-collapsed",collapsed);toggle?.setAttribute("aria-expanded",String(!collapsed));if(toggle)toggle.title=collapsed?"Show the layer stack":"Hide the layer stack to give the board more room";};
+  let stored=false;try{stored=localStorage.getItem(key)==="1";}catch{}
+  apply(stored);
+  toggle?.addEventListener("click",()=>{const collapsed=!workspace.classList.contains("stack-collapsed");apply(collapsed);try{localStorage.setItem(key,collapsed?"1":"0");}catch{}requestAnimationFrame(()=>redrawRuler());});
+}
 function redrawRuler(){drawRuler(svg,previewPoint&&measurement.length===1?[measurement[0],previewPoint]:measurement,viewport.get()[2]);}
 function clearRuler(){measurement=[];previewPoint=null;redrawRuler();byId("gerber-measure-status").textContent=measuring?"Click a start point, then an end point. Move the pointer to preview the ruler. Panning is paused while measuring.":"";}
 function eventPoint(event){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
