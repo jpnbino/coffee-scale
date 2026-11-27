@@ -4,6 +4,7 @@
 // KiCanvas has no public API for this. The few internals used here (the
 // viewer object, select/zoom, highlight_net, theme colours, camera) are
 // pinned by the vendored bundle's checksum in vendor/lock.json.
+import { viewerLink, resolveNet } from './viewer-link.mjs';
 import { artifactUrl } from './revision.mjs';
 import { json } from './review-data.mjs';
 import { PALETTES, applyPalette, snapshotTheme } from './viewer-themes.mjs';
@@ -239,9 +240,23 @@ export async function mountDesignViewer(version) {
 
   setTheme(themeSelect.value);
   renderNetList();
-  requestAnimationFrame(fit);
+  requestAnimationFrame(() => { fit(); applyDeepLink(); });
   if (nets.conflicts.length || nets.limitations.length) {
     byId('dv-warnings').textContent = [...nets.limitations, ...nets.conflicts.map(c => `Schematic group joins several PCB nets (${c.nets.join(', ')}); not highlighted.`)].join(' ');
   }
   selectNet(null);
+
+  // ------------------------------------------------------------ deep links
+  function applyDeepLink() {
+    const link = viewerLink(location.search);
+    const net = resolveNet(link.net, name => Boolean(nets.nets[name] || padsByNet.has(name)));
+    if (net) {
+      selectNet(net, { zoom: true });
+      byId('dv-net-list').querySelector(`button[data-net="${CSS.escape(net)}"]`)?.scrollIntoView({ block: 'nearest' });
+    } else if (link.net) status.textContent = `The linked net “${link.net}” is not in this revision.`;
+    if (link.part) {
+      if (board.components.some(component => component.ref === link.part)) later(() => selectPart(link.part));
+      else status.textContent = `The linked part ${link.part} is not in this revision.`;
+    }
+  }
 }

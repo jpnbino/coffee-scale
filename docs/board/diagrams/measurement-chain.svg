@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<title id="t">Coffee Scale controller, Rev E: measurement chain</title>
+<desc id="d">The load cell bridge is excited from the 3.3 V rail and read by the HX711 at gain 128 and a fixed 10 samples per second. The Pico applies tare, calibration and filtering. About 1.6 µV per gram means 0.1 g is about 160 nV, so noise must stay near 50 nV rms.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#244f43"/></marker></defs>
+<rect width="960" height="400" fill="#f6f3eb"/>
+<text x="24" y="34" text-anchor="start" font-size="18" font-weight="600" fill="#242b28">Measurement chain</text>
+<text x="24" y="54" text-anchor="start" font-size="12" font-weight="400" fill="#64716a">Rev E · from grams to the displayed digit</text>
+<rect x="84" y="88" width="150" height="70" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="159.0" y="112.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Load cell bridge</text>
+<text x="159.0" y="128.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">E+ = 3V3, E− = GND</text>
+<text x="159.0" y="144.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">J6 pads</text>
+<rect x="274" y="88" width="120" height="70" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="334.0" y="120.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">C6 10 nF C0G</text>
+<text x="334.0" y="136.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">across A+ / A−</text>
+<rect x="434" y="88" width="170" height="70" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="519.0" y="112.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">HX711 (U5)</text>
+<text x="519.0" y="128.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">PGA ×128, 24-bit ΣΔ</text>
+<text x="519.0" y="144.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">RATE = GND → 10 SPS</text>
+<rect x="644" y="88" width="130" height="70" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="709.0" y="120.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Pico W</text>
+<text x="709.0" y="136.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP6 DOUT, GP7 SCK</text>
+<rect x="814" y="88" width="122" height="70" rx="8" fill="#fffef9" stroke="#98613c" stroke-width="2"/>
+<text x="875.0" y="112.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Firmware</text>
+<text x="875.0" y="128.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">tare, calibration,</text>
+<text x="875.0" y="144.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">adaptive filter</text>
+<path d="M234 123 L274 123" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M394 123 L434 123" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M604 123 L644 123" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M774 123 L814 123" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="24" y="200" text-anchor="start" font-size="12" font-weight="600" fill="#242b28">Signal</text>
+<text x="159" y="200" text-anchor="middle" font-size="12" font-weight="400" fill="#242b28">≈ 1.6 µV per gram*</text>
+<text x="334" y="200" text-anchor="middle" font-size="12" font-weight="400" fill="#242b28">differential filter</text>
+<text x="519" y="200" text-anchor="middle" font-size="12" font-weight="400" fill="#242b28">±12.9 mV full scale</text>
+<text x="709" y="200" text-anchor="middle" font-size="12" font-weight="400" fill="#242b28">24-bit raw counts</text>
+<text x="875" y="200" text-anchor="middle" font-size="12" font-weight="400" fill="#242b28">grams, 0.1 g shown</text>
+<text x="24" y="230" text-anchor="start" font-size="12" font-weight="600" fill="#242b28">Numbers</text>
+<text x="159" y="230" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">2 kg ≈ 3.2 mV*</text>
+<text x="519" y="230" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">2 kg uses ≈ 25 %*</text>
+<text x="709" y="230" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">≈ 1040 counts/g</text>
+<text x="875" y="230" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">steady if σ &lt; 0.03 g</text>
+<text x="24" y="260" text-anchor="start" font-size="12" font-weight="600" fill="#242b28">Noise</text>
+<text x="159" y="260" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">0.1 g ≈ 160 nV</text>
+<text x="519" y="260" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">50 nV rms ≈ 0.03 g</text>
+<text x="875" y="260" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">averaging, hysteresis</text>
+<rect x="24" y="300" width="912" height="74" rx="8" fill="#fffef9" stroke="#98613c" stroke-width="1"/>
+<text x="40" y="322" text-anchor="start" font-size="12" font-weight="600" fill="#98613c">Risk to check on Rev E</text>
+<text x="40" y="342" text-anchor="start" font-size="12" font-weight="400" fill="#242b28">The bridge excitation and the HX711 reference are both the shared 3.3 V rail (ratiometric, so slow changes cancel), but the</text>
+<text x="40" y="360" text-anchor="start" font-size="12" font-weight="400" fill="#242b28">buck-boost ripple and Pico W radio bursts reach the bridge directly. Measure noise with Wi-Fi active before ordering boards.</text>
+<text x="24" y="392" text-anchor="start" font-size="11" font-weight="400" fill="#64716a" font-style="italic">* From the prototype calibration (≈1040 counts/g), assuming a 2 kg cell: ≈0.97 mV/V at 3.3 V excitation. Confirm with the actual cell.</text>
+</svg>

@@ -8,6 +8,13 @@ weight, flow and brew time on an SSD1306 OLED; a single lithium cell, charged
 from USB-C, makes it portable. Wi-Fi is available for later experiments such as
 recording brewing sessions.
 
+![System overview: load cell, HX711, Pico W, OLED, buzzer and buttons, powered from USB-C or the cell through a latched 3.3 V supply](diagrams/system-overview.svg)
+
+The diagrams in these pages are drawn by hand to explain the design; the KiCad
+schematic is authoritative. Each part and net named in the text links to the
+[interactive design viewer](https://jpnbino.github.io/coffee-scale/explore.html), where you can follow it on the schematic and
+the PCB at the same time.
+
 ## Where it stands
 
 - **Hardware:** Revision E is a routed, electrically checked design. It has not

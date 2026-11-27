@@ -111,3 +111,9 @@ document.getElementById("open-design-viewer")?.addEventListener("click", async e
     document.getElementById("dv-status").textContent = `Interactive viewer unavailable: ${error.message}. The SVG views and schematic PDF above remain available.`;
   }
 });
+// Documentation links such as explore.html?net=HX_DOUT open the viewer straight
+// on that net or part (design-viewer.mjs applies the selection once loaded).
+if (/[?&](part|net)=/.test(location.search)) {
+  const details = document.getElementById("design-viewer");
+  if (details) { details.open = true; details.scrollIntoView({ block: "start" }); document.getElementById("open-design-viewer")?.click(); }
+}

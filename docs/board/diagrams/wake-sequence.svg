@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<title id="t">Coffee Scale controller, Rev E: wake, hold and shutdown sequence</title>
+<desc id="d">Pressing the centre of the navigation switch charges HOLD_EN through Q5 and D3, which turns on the load switch and the 3.3 V rail. The Pico must drive PWR_HOLD high before the about 1 s RC hold of C20 and R16 runs out. To shut down, firmware releases PWR_HOLD after the button is released; HOLD_EN then decays and power turns off.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#244f43"/></marker></defs>
+<rect width="900" height="420" fill="#f6f3eb"/>
+<text x="24" y="34" text-anchor="start" font-size="18" font-weight="600" fill="#242b28">Wake, hold and shutdown</text>
+<text x="24" y="54" text-anchor="start" font-size="12" font-weight="400" fill="#64716a">Rev E · not to scale · firmware contract for GP13 PWR_HOLD and GP14 NAV_PUSH</text>
+<text x="24" y="96" text-anchor="start" font-size="13" font-weight="600" fill="#242b28">Centre press</text>
+<text x="24" y="112" text-anchor="start" font-size="11" font-weight="400" fill="#64716a">SW1 → WAKE_N low</text>
+<line x1="170" y1="118" x2="880" y2="118" stroke="#c9d0c6" stroke-width="1"/>
+<text x="24" y="166" text-anchor="start" font-size="13" font-weight="600" fill="#242b28">HOLD_EN</text>
+<text x="24" y="182" text-anchor="start" font-size="11" font-weight="400" fill="#64716a">C20 10 µF · R16 100 kΩ</text>
+<line x1="170" y1="188" x2="880" y2="188" stroke="#c9d0c6" stroke-width="1"/>
+<text x="24" y="236" text-anchor="start" font-size="13" font-weight="600" fill="#242b28">3V3 rail</text>
+<text x="24" y="252" text-anchor="start" font-size="11" font-weight="400" fill="#64716a">U4 + U3 output</text>
+<line x1="170" y1="258" x2="880" y2="258" stroke="#c9d0c6" stroke-width="1"/>
+<text x="24" y="306" text-anchor="start" font-size="13" font-weight="600" fill="#242b28">PWR_HOLD</text>
+<text x="24" y="322" text-anchor="start" font-size="11" font-weight="400" fill="#64716a">GP13, firmware</text>
+<line x1="170" y1="328" x2="880" y2="328" stroke="#c9d0c6" stroke-width="1"/>
+<path d="M170 118 H230 V86 H330 V118 H880" fill="none" stroke="#244f43" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M170 188 H230 V156 H330 C 345 158 365 163 380 164 L384 156 H610 C 640 170 690 182 760 187 H880" fill="none" stroke="#244f43" stroke-width="2.2" stroke-linejoin="round"/>
+<line x1="610" y1="175" x2="880" y2="175" stroke="#98613c" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="876" y="171" text-anchor="end" font-size="10" font-weight="400" fill="#98613c">U4 turn-off threshold</text>
+<path d="M170 258 H244 V226 H682 V258 H880" fill="none" stroke="#244f43" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M170 328 H382 V296 H610 V328 H880" fill="none" stroke="#244f43" stroke-width="2.2" stroke-linejoin="round"/>
+<line x1="230" y1="70" x2="230" y2="345" stroke="#64716a" stroke-width="0.8" stroke-dasharray="2 4"/>
+<line x1="382" y1="70" x2="382" y2="345" stroke="#64716a" stroke-width="0.8" stroke-dasharray="2 4"/>
+<line x1="610" y1="70" x2="610" y2="345" stroke="#64716a" stroke-width="0.8" stroke-dasharray="2 4"/>
+<line x1="682" y1="70" x2="682" y2="345" stroke="#64716a" stroke-width="0.8" stroke-dasharray="2 4"/>
+<text x="230" y="70" text-anchor="middle" font-size="11" font-weight="400" fill="#242b28">1 press</text>
+<text x="382" y="70" text-anchor="middle" font-size="11" font-weight="400" fill="#242b28">2 firmware holds</text>
+<text x="610" y="70" text-anchor="middle" font-size="11" font-weight="400" fill="#242b28">3 firmware releases</text>
+<text x="682" y="62" text-anchor="middle" font-size="11" font-weight="400" fill="#242b28">4 power off</text>
+<path d="M232 364 H380" stroke="#98613c" stroke-width="1.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<text x="306" y="382" text-anchor="middle" font-size="11" font-weight="400" fill="#98613c">must be shorter than the ≈1 s hold (C20 × R16)</text>
+<text x="496" y="345" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a" font-style="italic">running: firmware keeps PWR_HOLD high</text>
+<text x="646" y="382" text-anchor="middle" font-size="11" font-weight="400" fill="#242b28">release only after the centre button is up:</text>
+<text x="646" y="398" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">a held button keeps HOLD_EN high through Q5</text>
+</svg>

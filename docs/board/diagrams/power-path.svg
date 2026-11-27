@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 370" width="1000" height="370" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<title id="t">Coffee Scale controller, Rev E: power path</title>
+<desc id="d">USB-C 5 V feeds the system through Schottky D1 and charges the cell through the MCP73831. Without USB, PMOS Q4 connects the cell to the system. The master switch SW6, the TPS22919 load switch enabled by HOLD_EN, and the TPS63031 buck-boost converter produce the 3.3 V rail.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#244f43"/></marker></defs>
+<rect width="1000" height="370" fill="#f6f3eb"/>
+<text x="24" y="34" text-anchor="start" font-size="18" font-weight="600" fill="#242b28">Power path</text>
+<text x="24" y="54" text-anchor="start" font-size="12" font-weight="400" fill="#64716a">Rev E · labels on the wires are schematic net names</text>
+<rect x="24" y="84" width="116" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="82.0" y="107.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">USB-C (J1)</text>
+<text x="82.0" y="123.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">CC 5.1 kΩ ×2</text>
+<rect x="220" y="84" width="110" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="275.0" y="107.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">D1</text>
+<text x="275.0" y="123.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">SS14 Schottky</text>
+<rect x="410" y="84" width="110" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="465.0" y="107.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">SW6</text>
+<text x="465.0" y="123.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">master switch</text>
+<rect x="600" y="84" width="120" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="660.0" y="107.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">U4 load switch</text>
+<text x="660.0" y="123.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">TPS22919</text>
+<rect x="800" y="84" width="140" height="52" rx="8" fill="#fffef9" stroke="#98613c" stroke-width="2"/>
+<text x="870.0" y="107.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">U3 buck-boost</text>
+<text x="870.0" y="123.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">TPS63031, L1 1.5 µH</text>
+<path d="M140 110 L220 110" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="180" y="102" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">USB5</text>
+<path d="M330 110 L410 110" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="370" y="102" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">SYS_PRE</text>
+<path d="M520 110 L600 110" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="560" y="102" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">RAW_SW</text>
+<path d="M720 110 L800 110" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="760" y="102" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">SYS_LATCH</text>
+<path d="M940 110 L990 110" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="962" y="102" text-anchor="middle" font-size="12" font-weight="600" fill="#244f43">3V3</text>
+<circle cx="370" cy="110" r="3.5" fill="#244f43"/>
+<circle cx="82" cy="136" r="3.5" fill="#244f43"/>
+<path d="M82 136 L82 190" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="24" y="190" width="116" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="82.0" y="213.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">U1 charger</text>
+<text x="82.0" y="229.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">MCP73831, 100 mA</text>
+<path d="M140 216 L220 216" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="180" y="208" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">BAT_P</text>
+<rect x="220" y="190" width="110" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="275.0" y="213.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Q4 PMOS</text>
+<text x="275.0" y="229.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">gate = USB5</text>
+<path d="M330 216 L370 216 L370 114" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<circle cx="180" cy="216" r="3.5" fill="#244f43"/>
+<path d="M180 216 L180 316 L208 316" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="208" y="290" width="132" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="274.0" y="313.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Cell (J4)</text>
+<text x="274.0" y="329.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">chemistry unverified</text>
+<path d="M340 316 L410 316" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="375" y="308" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">BATT_NEG</text>
+<rect x="410" y="290" width="150" height="52" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="485.0" y="313.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">DW01A + Q2/Q3</text>
+<text x="485.0" y="329.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">protection to GND</text>
+<path d="M660 190 L660 138" fill="none" stroke="#244f43" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="666" y="176" text-anchor="start" font-size="11" font-weight="600" fill="#244f43">HOLD_EN</text>
+<text x="666" y="192" text-anchor="start" font-size="11" font-weight="400" fill="#64716a">from wake / PWR_HOLD</text>
+<text x="600" y="270" text-anchor="start" font-size="12" font-weight="400" fill="#242b28">With USB: D1 feeds the system and 5 V on Q4’s gate keeps it off,</text>
+<text x="600" y="290" text-anchor="start" font-size="12" font-weight="400" fill="#64716a">so the charger alone feeds the cell.</text>
+<text x="600" y="310" text-anchor="start" font-size="12" font-weight="400" fill="#242b28">Without USB: R13 pulls Q4’s gate low and the cell feeds the system.</text>
+<text x="600" y="330" text-anchor="start" font-size="12" font-weight="400" fill="#242b28">SW6 off cuts the system load; charging and protection stay active.</text>
+<text x="600" y="350" text-anchor="start" font-size="12" font-weight="400" fill="#242b28">U4 conducts only while HOLD_EN is high: see the wake sequence.</text>
+</svg>
