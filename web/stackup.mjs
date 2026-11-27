@@ -2,7 +2,7 @@ import { selectedPromise,artifactUrl } from './revision.mjs';
 const root = document.getElementById('stackup-content');
 const text = (tag,value) => Object.assign(document.createElement(tag),{textContent:value});
 try {
-  const response = await fetch(artifactUrl(await selectedPromise,'stackup')); if (!response.ok) throw new Error('Stackup export missing');
+  const response = await fetch(artifactUrl(await selectedPromise,'stackup'),{cache:'no-cache'}); if (!response.ok) throw new Error('Stackup export missing');
   const stack = await response.json();
   root.replaceChildren();
   root.append(text('p',`${stack.boardThicknessMm} mm nominal board · ${stack.finish} finish · ${stack.status}`));

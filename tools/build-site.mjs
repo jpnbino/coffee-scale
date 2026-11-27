@@ -3,6 +3,7 @@ import { copyFileSync, cpSync, existsSync, readFileSync, readdirSync, writeFileS
 import { join, parse } from 'node:path';
 import { ensureDir, fileDigest, htmlEncode, htmlSafeJson, readJson, resolveChildPath, runNode, writeJson } from './lib/common.mjs';
 import { markdownToHtml, readCsv } from './lib/formats.mjs';
+import { versionSite } from './lib/cache-bust.mjs';
 
 /**
  * Docs link to each other as `02-circuit.md` so the links also work when read on
@@ -57,5 +58,7 @@ export function buildSite({ root, output, config, buildId, assembly }) {
     erc: readJson(`${output}/reports/erc.json`), drc: readJson(`${output}/reports/drc.json`), assemblyReady: assembly.ready, prototypeHardware: true,
   });
   cpSync(`${output}/mechanical`, `${site}/files/mechanical`, { recursive: true });
+  // Last, once every page and script exists: stamp references with the build ID.
+  versionSite(site, buildId);
   console.log('Documentation site generated with local viewer assets and SVG/PDF fallback.');
 }

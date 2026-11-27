@@ -1,5 +1,5 @@
 export async function json(url) {
-  const response = await fetch(url);
+  const response = await fetch(url, { cache: 'no-cache' });
   if (!response.ok) throw new Error(`Cannot load ${url} (${response.status})`);
   return response.json();
 }
