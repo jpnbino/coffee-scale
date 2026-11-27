@@ -16,7 +16,7 @@ section.viewer-expanded{position:fixed;inset:0;z-index:1000}.viewer-open{overflo
 section:fullscreen .view-panel,section.viewer-expanded .view-panel{height:70vh}
 section:fullscreen .review-canvas,section.viewer-expanded .review-canvas{height:65vh;max-height:none}
 .layer-control{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);padding:8px}
-.layer-control input[type=range]{width:90px}.layer-control output{display:inline-block;width:4.5ch;text-align:right;font-variant-numeric:tabular-nums}.gerber-layers .layer-control{display:grid;grid-template-columns:minmax(0,1fr) 90px 4.5ch;width:300px;box-sizing:border-box}.model-options:not([hidden]){display:flex;gap:20px;align-items:center;margin:12px 0;font-size:12px}
+.layer-control input[type=range]{width:90px}.layer-control output{display:inline-block;width:4.5ch;text-align:right;font-variant-numeric:tabular-nums}.model-options:not([hidden]){display:flex;gap:20px;align-items:center;margin:12px 0;font-size:12px}
 .model-options select{padding:8px;margin-left:10px}.stackup-diagram{display:grid;gap:4px;margin:25px 0}
 .stackup-layer{padding:12px 18px;border:1px solid var(--line);border-left:18px solid #ddd;background:var(--card);display:grid;grid-template-columns:120px 1fr;gap:10px}
 .stackup-layer[data-kind=copper]{border-left-color:#c88c43}.stackup-layer[data-kind=core]{border-left-color:#a4ae72;padding-block:32px}.stackup-layer[data-kind=mask]{border-left-color:#303030}.stackup-layer span{font-size:12px}
@@ -34,3 +34,12 @@ a[aria-disabled=true]{opacity:.6;cursor:not-allowed;text-decoration:none}.revisi
 .fab-findings{list-style:none;padding:0;margin:8px 0}.fab-finding{display:block;width:100%;text-align:left;background:none;border:1px solid var(--line);border-radius:5px;padding:8px 10px;margin:0 0 6px;font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}.fab-finding:hover{border-color:var(--accent)}.fab-finding strong{color:var(--accent);margin-right:4px}
 .fab-pins,.fab-pinmaps{font-size:12px;margin:8px 0}.fab-pins td,.fab-pins th,.fab-pinmaps td,.fab-pinmaps th{padding:4px 10px}.fab-pinmaps td:last-child{font-size:11px}.fab-pinmap{margin:12px 0}
 .link-button{background:none;border:0;padding:0;font:inherit;color:var(--green);text-decoration:underline;cursor:pointer}
+.gerber-workspace{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px;align-items:start;margin:10px 0}.gerber-workspace .gerber-canvas{margin:0;min-width:0}@media (max-width:900px){.gerber-workspace{grid-template-columns:1fr}}
+.layer-stack{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 0;font-size:12px;max-height:620px;overflow:auto}
+.stack-view{margin:0 12px 6px;font-size:11px;color:var(--muted)}.stack-heading{margin:10px 12px 4px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stack-core{margin:8px 12px;padding:5px 8px;font-size:11px;color:var(--muted);background:repeating-linear-gradient(135deg,#ece8dc 0 6px,#e3dfd1 6px 12px);border-radius:3px;text-align:center}
+.stack-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px;padding:3px 8px 3px 12px}.stack-row:hover,.stack-row:focus-within{background:#f0f3ec}
+.stack-row label{display:flex;align-items:center;gap:7px;min-width:0;cursor:pointer}.stack-row label span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stack-swatch{flex:none;width:12px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.25)}.stack-row.off .stack-swatch{opacity:.25}.stack-row.off label{color:var(--muted)}.stack-row.unavailable{opacity:.5}
+.stack-only,.stack-opacity{font:inherit;font-size:10px;padding:1px 5px;border:1px solid transparent;border-radius:3px;background:none;color:var(--muted);cursor:pointer}.stack-only{visibility:hidden}.stack-row:hover .stack-only,.stack-only:focus{visibility:visible}.stack-only:hover,.stack-opacity:hover{border-color:var(--line);color:var(--ink)}.stack-opacity{min-width:4.2ch;text-align:right}
+.stack-slider{grid-column:1/-1;width:100%;margin:2px 0 4px}

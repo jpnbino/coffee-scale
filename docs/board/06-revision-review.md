@@ -41,8 +41,13 @@ use manufacturing layers to inspect actual fabricated shapes.
 The Gerber viewer renders the actual exported Gerber and Excellon files. Every
 layer retains its source checksum. Layer offsets are normalized to a shared
 absolute coordinate frame rather than independently fitting each image.
-You can toggle layers, adjust each layer's opacity, mirror the board, use
-fullscreen, zoom/pan and measure with a visible two-point ruler. While measuring,
+Layers are listed as a stack, from top silkscreen down through the core to
+bottom silkscreen, then drills and outline, each with its drawing colour. They
+are drawn in that physical order, reversed when the board is mirrored to view it
+from the bottom, so the side facing you is always on top. You can toggle a layer,
+show only one (its *Only* button, or Option/Alt-click), adjust its opacity,
+mirror the board, use fullscreen, zoom/pan and measure with a visible two-point
+ruler. While measuring,
 pan is paused; the first point anchors a live preview and the second leaves the
 distance label on the image. Measurements use displayed view axes when mirrored.
 Mask layers display openings. Plated and non-plated drill files stay separate.
