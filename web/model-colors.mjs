@@ -4,7 +4,7 @@ export async function initializeColors(viewer) {
   if(select.dataset.initialized)return;
   try {
     const {selectedPromise,artifactUrl}=await import('./revision.mjs');
-    const response=await fetch(artifactUrl(await selectedPromise,'modelMaterials'));if(!response.ok)throw new Error('Material mapping missing');
+    const response=await fetch(artifactUrl(await selectedPromise,'modelMaterials'),{cache:'no-cache'});if(!response.ok)throw new Error('Material mapping missing');
     const map=await response.json();
     const mask=viewer.model.materials.filter(material=>map.soldermask.includes(material.name));
     const silk=viewer.model.materials.filter(material=>map.silkscreen.includes(material.name));

@@ -45,7 +45,7 @@ async function render(version){
     const url=`review/${version.gerbers}`,report=await json(url),base=url.slice(0,url.lastIndexOf("/")+1);
     const layers=await Promise.all(report.layers.map(async layer=>{
       if(!layer.available)return {...layer};
-      const response=await fetch(base+layer.svg);if(!response.ok)throw new Error(`Layer unavailable: ${layer.name}`);
+      const response=await fetch(base+layer.svg,{cache:'no-cache'});if(!response.ok)throw new Error(`Layer unavailable: ${layer.name}`);
       return {...layer,document:safeSvg(await response.text())};
     }));if(ticket!==sequence)return;
     svg.replaceChildren();byId("gerber-layers").replaceChildren();

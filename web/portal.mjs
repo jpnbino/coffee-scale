@@ -13,7 +13,7 @@ input.addEventListener('input', async () => {
   const query = input.value.trim().toLowerCase(); results.replaceChildren();
   if (!query) return;
   try {
-    indexPromise ??= fetch('search-index.json').then(response => { if (!response.ok) throw new Error('Search unavailable'); return response.json(); });
+    indexPromise ??= fetch('search-index.json', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Search unavailable'); return response.json(); });
     const index = await indexPromise,version=await selectedPromise;
     if (input.value.trim().toLowerCase() !== query) return;
     const matches = index.filter(page => (version.id==='current'||!page.url.startsWith('doc-')) && `${page.title} ${page.text}`.toLowerCase().includes(query));
