@@ -1,5 +1,5 @@
 // Documentation portal for a build (formerly Build-Site.ps1).
-import { copyFileSync, cpSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, parse } from 'node:path';
 import { ensureDir, fileDigest, htmlEncode, htmlSafeJson, readJson, resolveChildPath, runNode, writeJson } from './lib/common.mjs';
 import { markdownToHtml, readCsv } from './lib/formats.mjs';
@@ -8,7 +8,11 @@ import { markdownToHtml, readCsv } from './lib/formats.mjs';
  * Docs link to each other as `02-circuit.md` so the links also work when read on
  * GitHub. In the portal each document is the page `doc-02-circuit.html`.
  */
-export const portalDocLinks = html => html.replace(/href="(\d\d-[\w-]+)\.md(#[^"]*)?"/g, (_, name, anchor = '') => `href="doc-${name}.html${anchor}"`);
+export const portalDocLinks = html => html
+  .replace(/href="(\d\d-[\w-]+)\.md(#[^"]*)?"/g, (_, name, anchor = '') => `href="doc-${name}.html${anchor}"`)
+  // Links to the published portal (needed on GitHub) stay inside the current
+  // portal, so a local preview or a historical build links to itself.
+  .replace(/href="https:\/\/jpnbino\.github\.io\/coffee-scale\/([^"]*)"/g, (_, path) => `href="${path || 'index.html'}"`);
 
 export function buildSite({ root, output, config, buildId, assembly }) {
   const site = `${output}/site`; const web = resolveChildPath(root, config.siteDirectory);
@@ -23,6 +27,8 @@ export function buildSite({ root, output, config, buildId, assembly }) {
   for (const extension of ['kicad_sch', 'kicad_pcb']) copyFileSync(`${output}/source/${name}.${extension}`, `${site}/source/${name}.${extension}`);
 
   const docs = resolveChildPath(root, config.documentationDirectory);
+  // Diagrams are versioned beside the docs and referenced as diagrams/*.svg.
+  if (existsSync(join(docs, 'diagrams'))) cpSync(join(docs, 'diagrams'), `${site}/diagrams`, { recursive: true });
   const documentation = readdirSync(docs).filter(file => file.endsWith('.md')).sort().map(file => {
     const html = portalDocLinks(markdownToHtml(readFileSync(join(docs, file), 'utf8')));
     return `<article class="doc-article" id="doc-${htmlEncode(parse(file).name)}">${html}</article>`;

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<title id="t">Coffee Scale controller, Rev E: system overview</title>
+<desc id="d">Load cell into the HX711 ADC, read by the Pico W, which drives the OLED and buzzer and reads the buttons. USB-C charges the cell; a power latch and buck-boost converter make the 3.3 V rail for all blocks.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#244f43"/></marker></defs>
+<rect width="900" height="470" fill="#f6f3eb"/>
+<text x="24" y="34" text-anchor="start" font-size="18" font-weight="600" fill="#242b28">System overview</text>
+<text x="24" y="54" text-anchor="start" font-size="12" font-weight="400" fill="#64716a">Rev E · signal flow left to right, power along the bottom</text>
+<rect x="30" y="80" width="150" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="105.0" y="109.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Load cell</text>
+<text x="105.0" y="125.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">4-wire bridge (J6)</text>
+<rect x="230" y="80" width="170" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="315.0" y="109.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">HX711 (U5)</text>
+<text x="315.0" y="125.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">24-bit ADC, gain 128</text>
+<rect x="450" y="80" width="180" height="230" rx="8" fill="#fffef9" stroke="#98613c" stroke-width="2"/>
+<text x="540.0" y="176.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Raspberry Pi Pico W</text>
+<text x="540.0" y="192.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">(J2)</text>
+<text x="540.0" y="208.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">MicroPython</text>
+<text x="540.0" y="224.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">Wi-Fi unused for now</text>
+<rect x="690" y="80" width="180" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="780.0" y="109.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">OLED 128×64 (J3)</text>
+<text x="780.0" y="125.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">SSD1306, I²C</text>
+<rect x="690" y="163" width="180" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="780.0" y="192.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Piezo buzzer (BZ1)</text>
+<text x="780.0" y="208.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">PWM through Q1</text>
+<rect x="690" y="246" width="180" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="780.0" y="275.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Debug header (J5)</text>
+<text x="780.0" y="291.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">SWD + UART</text>
+<rect x="230" y="163" width="170" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="315.0" y="192.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">TARE, START/STOP</text>
+<text x="315.0" y="208.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">SW2, SW3</text>
+<rect x="230" y="246" width="170" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="315.0" y="275.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Navigation (SW1)</text>
+<text x="315.0" y="291.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">TS43: up, down, centre</text>
+<path d="M180 112 L230 112" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="205" y="104" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">µV</text>
+<path d="M400 112 L450 112" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="425" y="104" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP6/7</text>
+<path d="M630 112 L690 112" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="660" y="104" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP4/5</text>
+<path d="M630 195 L690 195" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="660" y="187" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP12</text>
+<path d="M630 278 L690 278" fill="none" stroke="#244f43" stroke-width="1.6"/>
+<text x="660" y="270" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP0/1</text>
+<path d="M400 195 L450 195" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="425" y="187" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP8/9</text>
+<path d="M400 278 L450 278" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="425" y="270" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">GP10/11/14</text>
+<rect x="30" y="380" width="150" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="105.0" y="409.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">USB-C (J1)</text>
+<text x="105.0" y="425.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">5 V, power only</text>
+<rect x="230" y="380" width="170" height="64" rx="8" fill="#fffef9" stroke="#244f43" stroke-width="1.5"/>
+<text x="315.0" y="409.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Charger + Li cell</text>
+<text x="315.0" y="425.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">MCP73831, DW01A</text>
+<rect x="450" y="380" width="180" height="64" rx="8" fill="#fffef9" stroke="#98613c" stroke-width="2"/>
+<text x="540.0" y="409.0" text-anchor="middle" font-size="14" font-weight="600" fill="#242b28">Power latch + 3.3 V</text>
+<text x="540.0" y="425.0" text-anchor="middle" font-size="12" font-weight="400" fill="#64716a">TPS22919, TPS63031</text>
+<path d="M180 412 L230 412" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M400 412 L450 412" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M630 412 L860 412" fill="none" stroke="#244f43" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="745" y="404" text-anchor="middle" font-size="12" font-weight="600" fill="#244f43">3.3 V rail to every block</text>
+<path d="M315 310 L315 346 L500 346 L500 380" fill="none" stroke="#244f43" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="408" y="340" text-anchor="middle" font-size="11" font-weight="400" fill="#64716a">wake: centre press</text>
+<path d="M580 310 L580 380" fill="none" stroke="#244f43" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="586" y="352" text-anchor="start" font-size="11" font-weight="400" fill="#64716a">PWR_HOLD (GP13)</text>
+</svg>

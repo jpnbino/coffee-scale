@@ -221,3 +221,35 @@ test('Every doc cross-link points to an existing document', () => {
     }
   }
 });
+
+test('Links to the published portal stay inside the current portal', async () => {
+  const { portalDocLinks } = await import('../tools/build-site.mjs');
+  assert.equal(portalDocLinks('<a href="https://jpnbino.github.io/coffee-scale/explore.html?net=HX_DOUT">n</a>'), '<a href="explore.html?net=HX_DOUT">n</a>');
+  assert.equal(portalDocLinks('<a href="https://jpnbino.github.io/coffee-scale/">home</a>'), '<a href="index.html">home</a>');
+});
+
+test('Every diagram a doc embeds exists, and every diagram is used', () => {
+  const dir = join(root, 'docs/board');
+  const diagrams = new Set(readdirSync(join(dir, 'diagrams')).filter(f => f.endsWith('.svg')));
+  const used = new Set();
+  for (const file of readdirSync(dir).filter(f => f.endsWith('.md'))) {
+    for (const [, alt, target] of readFileSync(join(dir, file), 'utf8').matchAll(/!\[([^\]]*)\]\(diagrams\/([^)\s]+)\)/g)) {
+      assert.ok(diagrams.has(target), `${file} embeds missing diagrams/${target}`);
+      assert.ok(alt.length > 20, `${file}: diagrams/${target} needs descriptive alt text`);
+      used.add(target);
+    }
+  }
+  assert.deepEqual([...diagrams].filter(d => !used.has(d)), []);
+});
+
+test('Viewer deep links in docs name nets and parts that exist in the schematic', () => {
+  const sch = readFileSync(join(root, 'src/pico_scale_controller.kicad_sch'), 'utf8');
+  const refs = new Set([...sch.matchAll(/\(property "Reference" "([A-Z]+\d+)"/g)].map(m => m[1]));
+  const labels = new Set([...sch.matchAll(/\((?:label|global_label|hierarchical_label) "([^"]+)"/g)].map(m => m[1]));
+  const dir = join(root, 'docs/board');
+  for (const file of readdirSync(dir).filter(f => f.endsWith('.md'))) {
+    for (const [, kind, name] of readFileSync(join(dir, file), 'utf8').matchAll(/explore\.html\?(part|net)=([^)\s#&]+)/g)) {
+      assert.ok((kind === 'part' ? refs : labels).has(name), `${file} links to unknown ${kind} ${name}`);
+    }
+  }
+});

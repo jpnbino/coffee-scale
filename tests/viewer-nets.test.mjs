@@ -76,3 +76,15 @@ test('viewer palettes parse, apply in place and restore', () => {
   assert.deepEqual(snapshotTheme(theme), original);
   for (const palette of Object.values(PALETTES)) for (const group of [palette.schematic, palette.board]) if (group) applyPalette(structuredClone(theme), group);
 });
+
+test('Viewer deep links accept parts and nets, with or without the leading slash', async () => {
+  const { viewerLink, resolveNet } = await import('../web/viewer-link.mjs');
+  assert.deepEqual(viewerLink('?part=u5&rev=current'), { part: 'U5', net: null });
+  assert.deepEqual(viewerLink('?net=HX_DOUT'), { part: null, net: 'HX_DOUT' });
+  assert.deepEqual(viewerLink('?part=<script>'), { part: null, net: null });
+  const known = new Set(['/HX_DOUT', 'GND']);
+  assert.equal(resolveNet('HX_DOUT', n => known.has(n)), '/HX_DOUT');
+  assert.equal(resolveNet('/HX_DOUT', n => known.has(n)), '/HX_DOUT');
+  assert.equal(resolveNet('GND', n => known.has(n)), 'GND');
+  assert.equal(resolveNet('NOPE', n => known.has(n)), null);
+});
