@@ -77,3 +77,13 @@ a[aria-disabled=true]{opacity:.6;cursor:not-allowed;text-decoration:none}.revisi
 .breadcrumbs{padding:26px 0 0}
 footer .build-id{display:block;margin-top:6px;color:var(--muted)}
 @media(max-width:760px){.rail{position:sticky;top:0;z-index:20;padding:12px 18px}.rail .mark{font-size:20px}.rail-menu{display:inline-block}.rail-body{display:none}.rail.open .rail-body{display:flex;max-height:calc(100vh - 60px);overflow:auto;padding-bottom:14px}.rail nav{display:grid;gap:2px}.rail nav a{font-size:14px;padding:8px 10px}.page-head{padding-top:26px}}
+/* Build & manufacture: order readiness and the grouped parts list. */
+.readiness-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 10px}.readiness-card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 18px;font-size:13px}.readiness-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.readiness-head h3{margin:0;font-size:17px}
+.readiness-chip{font-size:11px;padding:3px 9px;border-radius:10px;white-space:nowrap}.state-ok .readiness-chip{background:#e3efe6;color:#2c6e45}.state-todo .readiness-chip{background:#fbeee0;color:#8a4b1f}.state-pending .readiness-chip{background:#eceee9;color:var(--muted)}
+.readiness-list{list-style:none;padding:0;margin:10px 0 0}.readiness-list li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:5px 0;border-top:1px solid #eef0ea}.readiness-list a{font-size:12px;white-space:nowrap}
+.readiness-mark{font-weight:700;text-align:center}.readiness-list .state-ok .readiness-mark{color:#2c6e45}.readiness-list .state-todo .readiness-mark{color:#b0602a}.readiness-list .state-pending .readiness-mark{color:var(--muted)}
+.readiness-hand{margin:4px 0}.parts-heading{margin-top:40px}
+table.bom td:first-child{font-weight:400;color:inherit}table.bom td.qty{text-align:right;font-variant-numeric:tabular-nums}table.bom td.refs{font-weight:600;color:var(--green);max-width:220px}table.bom td.fp,table.bom td:nth-child(3){font-size:12px;max-width:none}table.bom td.fp{font-size:11px;color:var(--muted)}table.bom td.missing{color:#8a4b1f;font-size:11px}
+.blocker-groups{list-style:none;padding:0;margin:10px 0 0}.blocker-groups li{padding:8px 0;border-top:1px solid #eef0ea;font-size:12px}.blocker-groups strong{display:block;font-size:13px}.blocker-groups span{color:var(--muted)}
+@media(max-width:900px){.readiness-grid{grid-template-columns:1fr}}
+table.bom td:nth-child(3){min-width:90px}

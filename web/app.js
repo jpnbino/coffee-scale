@@ -4,24 +4,7 @@ const selectedVersion = await selectedPromise;
 const isCurrent = selectedVersion.id === 'current';
 const data = window.releaseData;
 const text = (tag, value) => Object.assign(document.createElement(tag), { textContent: value });
-const table = document.getElementById("parts-body");
-function renderParts(query = "") {
-  table.replaceChildren();
-  const shown = data.parts.filter(part => Object.values(part).join(" ").toLowerCase().includes(query.toLowerCase()));
-  for (const part of shown) {
-    const row = document.createElement("tr");
-    for (const value of [part.Reference, part.Value, part.Footprint, part.Side, part.Stage, part.Verified ? "Reviewed" : "Needs review"]) row.append(text("td", value));
-    table.append(row);
-  }
-  document.getElementById("parts-count").textContent = `${shown.length} of ${data.parts.length} board features shown. Mechanical holes and integral pads are not purchased components.`;
-}
-if (table && isCurrent) {
-renderParts();
-document.getElementById("parts-search").addEventListener("input", event => renderParts(event.target.value));
-document.getElementById("assembly-status").textContent = data.assembly.ready ? "Assembly profile reviewed for this board checksum." : `Assembly DRAFT — ${data.assembly.blockers.length} outstanding checks; these files are not approved for an assembly order.`;
-for (const blocker of data.assembly.blockers) document.getElementById("assembly-blockers").append(text("li", blocker));
-}
-if (table && !isCurrent) document.getElementById('parts').replaceChildren(text('h2','Historical assembly records unavailable'),text('p','No BOM/placement approval profile was archived for this snapshot. Use its source package; current assembly data is not substituted.'));
+// The parts list and order readiness live in manufacture.mjs.
 if (document.getElementById("mechanical-status")) {
 if (isCurrent) {
 for (const assumption of data.mechanical.assumptions) document.getElementById("mechanical-assumptions").append(text("li", assumption));

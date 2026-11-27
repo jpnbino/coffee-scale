@@ -114,10 +114,13 @@
       </details>
     </section>
     <section id="parts" class="searchable">
-      <p class="eyebrow">03 / ASSEMBLY</p><h2>Know every part.</h2><p id="assembly-status"></p>
-      <label for="parts-search">Filter reference, value, footprint or assembly stage</label><input id="parts-search" type="search" placeholder="e.g. U5, 100n, manual…">
-      <div class="table-scroll"><table><thead><tr><th>Reference</th><th>Value</th><th>Footprint</th><th>Side</th><th>Stage</th><th>Sourcing</th></tr></thead><tbody id="parts-body"></tbody></table></div>
-      <p class="muted" id="parts-count"></p><details><summary>Assembly readiness blockers</summary><ul id="assembly-blockers"></ul></details>
+      <p class="eyebrow">03 / ASSEMBLY</p><h2>Know every part.</h2>
+      <div id="order-readiness" class="readiness" aria-live="polite"><p class="muted">Checking what is ready to order…</p></div>
+      <h2 class="parts-heading">Parts list</h2><p id="assembly-status" class="muted"></p>
+      <label for="parts-search">Filter by reference, value, footprint, stage or part number</label><input id="parts-search" type="search" placeholder="U5, 100n, manual…">
+      <div class="table-scroll"><table class="bom"><thead><tr><th>Qty</th><th>References</th><th>Value</th><th>Footprint</th><th>Side</th><th>Stage</th><th>Part number</th><th>Status</th></tr></thead><tbody id="parts-body"></tbody></table></div>
+      <p class="muted" id="parts-count"></p>
+      <details><summary id="blockers-summary">Assembly blockers</summary><ul id="assembly-blockers" class="blocker-groups"></ul></details>
     </section>
     <section id="mechanical" class="searchable">
       <p class="eyebrow">04 / COLLABORATE</p><h2>Give the case designer a head start.</h2>
