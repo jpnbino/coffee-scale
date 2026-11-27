@@ -1,4 +1,5 @@
 // Final package checks: Gerber set, READMEs, archives and site links (formerly Complete-Release.ps1).
+import { orderChecks } from '../web/stackup-model.mjs';
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { fileDigest, readJson, resolveChildPath } from './lib/common.mjs';
@@ -71,5 +72,9 @@ the final-instrument BOM. No firmware/calibration or functional acceptance is im
     const nets = readJson(at('schematicNets'));
     if (nets.sourceSha256 !== version.schematicSha256 || nets.boardSha256 !== version.boardSha256) throw new Error(`Selected-revision schematic net map mismatch: ${version.id}`);
   }
+  // The order settings in release.json must describe the board KiCad defines.
+  const current = catalog.versions.find(version => version.id === 'current');
+  const order = orderChecks(readJson(resolveChildPath(site, current.artifacts.stackup)), config.manufacturing, readJson(resolveChildPath(site, `review/${current.metadata}`)).bounds);
+  if (!order.agrees) throw new Error(`release.json manufacturing settings disagree with the KiCad stackup: ${[...order.rows.filter(row => !row.agrees).map(row => `${row.label} ${row.value} vs ${row.kicad}`), ...(order.sum.agrees ? [] : [`layers sum to ${order.sum.totalMm} mm`])].join('; ')}`);
   console.log('Selected-revision artifact existence and provenance verified.');
 }

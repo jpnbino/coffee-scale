@@ -12,8 +12,23 @@ thickness values. Finish is ENIG. The dielectric entries are epsilon_r 4.5 and
 loss_tangent 0.02; these are design values, not measured material certificates.
 
 The portal extracts those entries directly from the saved PCB and includes its
-SHA-256. Its cross-section is schematic, not to scale. Missing values remain
-explicitly unspecified. Supplier stackup approval has not been recorded.
+SHA-256. Missing values remain explicitly unspecified. Supplier stackup approval
+has not been recorded.
+
+The [Layer stackup page](https://jpnbino.github.io/coffee-scale/stackup.html) turns this into:
+
+- **Order parameters**, the values a factory's order form asks for, taken from
+  `release.json`. Each one is compared with the KiCad stackup and board outline,
+  and the release build fails if they disagree, so the order settings cannot
+  drift away from the design.
+- **A cross-section** with an SMD pad and a plated through-hole, in the stackup's
+  own colours, exaggerated or drawn to scale. Each layer links to its Gerber
+  file on the Gerber page.
+- **Track current estimates**: IPC-2221 outer-layer figures for each track width
+  on the board with this copper, including nets that narrow. These are
+  estimates for straight tracks; copper pours and arcs are not included.
+- **Impedance**: impedance control is off in the stackup, and no net needs it,
+  so the dielectric entries do not affect this design.
 
 This pipeline uses KiCad's Gerber/job, Excellon, IPC-2581, BOM, placement,
 STEP, GLB, SVG and PDF exports. Gerbers describe manufactured artwork; they

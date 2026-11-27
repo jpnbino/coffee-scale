@@ -74,7 +74,7 @@ Every release build includes a browser-based review portal (`site/`):
 | --- | --- |
 | Overview | Board summary, status and key facts |
 | Explore board | Top/bottom copper, schematic and 3D model with part search |
-| Board statistics, Layer stackup | Counts, drill table and the PCB stackup |
+| Board statistics, Layer stackup | Counts and drill table; order parameters checked against KiCad, cross-section, track current estimates |
 | Gerber inspection | The exact manufacturing files, with layer presets, measurement and checks before ordering (placement, paste, pin maps) |
 | Build & manufacture, Enclosure & mechanics | Fabrication, assembly-draft and mechanical downloads |
 | Versions & changes | Rev D, archived Rev E and the current build compared |
