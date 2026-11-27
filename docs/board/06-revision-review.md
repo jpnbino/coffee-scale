@@ -50,5 +50,36 @@ Mask layers display openings. Plated and non-plated drill files stay separate.
 The pinned converter is gerber-to-svg 4.2.8. Basic metric dimensions, clear-polarity
 masking and routed Excellon slots have regression tests. Parser notices are
 retained: ignored X2 metadata is distinguished from review-required warnings.
-The converter does not expose X2 nets in this view. This is a review aid, not
-manufacturing approval; final supplier inspection and prototype tests remain.
+This is a review aid, not manufacturing approval; final supplier inspection and
+prototype tests remain.
+
+## Checks before ordering
+
+A board spin usually comes from something the electrical checks cannot see: a
+part placed off its pads, a pad with no solder paste, or a footprint whose pad
+numbers do not match the real part. The Gerber page puts the data for those
+checks on top of the manufacturing layers.
+
+- **Layer presets.** *Top assembly* and *Bottom assembly* show one side as the
+  assembler sees it: copper, mask openings, paste, silkscreen, outline and
+  drills. The bottom view is mirrored. Paste layers come from the current build's
+  stencil files.
+- **Placement points.** A crosshair marks where the placement file tells the
+  assembler to put each part, and a dot marks pin 1. Assemblers centre the part
+  body on that point. Parts whose point is more than 0.5 mm from the centre of
+  their courtyard are listed under *Before you order*. This usually happens with
+  connectors whose footprint origin is pin 1.
+- **Missing paste.** A pad of a factory-placed part with copper but no paste
+  opening is listed, because reflow will not solder it.
+- **Click to identify.** Clicking a pad, track or part names it, highlights its
+  whole net, and links to the [interactive design viewer](https://jpnbino.github.io/coffee-scale/explore.html).
+  Links such as `gerbers.html?part=J4` or `?net=BAT_P` open with that selection.
+- **Pin maps.** Every part whose symbol names its pins is listed with each pad,
+  pin name and net, smallest parts first. Compare each row with the
+  manufacturer's datasheet, especially transistors, diodes and regulators.
+
+These checks compare the design, the placement file and the paste layer. They
+do not replace DRC, the assembler's own preview, or a datasheet check, and the
+rotation each assembler expects can only be confirmed in their preview. The
+identification uses the KiCad board data, not net attributes in the Gerber files.
+

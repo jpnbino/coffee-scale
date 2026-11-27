@@ -63,7 +63,12 @@ export function buildReview({ root, output, config, buildId, kicad }) {
     if (statistics !== `${folder}/statistics.json`) copyFileSync(statistics, `${folder}/statistics.json`);
     copyInto(filesIn(gerbers), `${folder}/gerbers`);
     runNode(join(tools, 'board-data.mjs'), [nativePcb, `${folder}/board.json`], `Board metadata failed: ${id}`);
-    runNode(join(tools, 'render-gerbers.mjs'), [gerbers, `${folder}/rendered`, id], `Gerber conversion failed: ${id}`);
+    // The stencil (paste) layers are an assembly output, so they are drawn for the
+    // current build only; they are not part of the fabrication package.
+    const stencil = id === 'current' ? [`${output}/assembly/stencil`] : [];
+    runNode(join(tools, 'render-gerbers.mjs'), [gerbers, `${folder}/rendered`, id, ...stencil], `Gerber conversion failed: ${id}`);
+    const placement = id === 'current' ? [`${output}/assembly/jlcpcb-cpl-CANDIDATE.csv`] : [];
+    runNode(join(tools, 'fab-check.mjs'), [nativePcb, nativeSch, `${folder}/board.json`, `${folder}/fab-check.json`, ...placement], `Fab check failed: ${id}`);
     zipDirectory(`${folder}/gerbers`, `${folder}/fabrication.zip`);
     if (id !== 'current') {
       zipDirectory(project, `${folder}/source.zip`);
@@ -85,7 +90,7 @@ export function buildReview({ root, output, config, buildId, kicad }) {
     versions.push({
       id, label: definition.label, artifacts, buildId: id === 'current' ? buildId : null,
       boardSha256: fileDigest(nativePcb), schematicSha256: fileDigest(nativeSch),
-      metadata: `${id}/board.json`, statistics: `${id}/statistics.json`, gerbers: `${id}/rendered/layers.json`,
+      metadata: `${id}/board.json`, statistics: `${id}/statistics.json`, gerbers: `${id}/rendered/layers.json`, fabCheck: `${id}/fab-check.json`,
       pcbTop: `${id}/pcb-top.svg`, pcbBottom: `${id}/pcb-bottom.svg`, schematicPdf: `${id}/schematic.pdf`,
       fabricationZip: `${id}/fabrication.zip`, sourcePcb: `${id}/source/${name}.kicad_pcb`, validation,
     });
