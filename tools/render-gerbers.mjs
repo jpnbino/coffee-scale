@@ -28,12 +28,14 @@ export function renderGerber(source,id="layer",options={}){
     converter.on("error",reject);
   });
 }
-const names={".gtl":"Top copper",".gbl":"Bottom copper",".gts":"Top mask openings",".gbs":"Bottom mask openings",".gto":"Top silkscreen",".gbo":"Bottom silkscreen",".gm1":"Board outline"};
-export async function renderDirectory(input,output,prefix="gerber"){
+const names={".gtp":"Top paste (stencil)",".gbp":"Bottom paste (stencil)",".gtl":"Top copper",".gbl":"Bottom copper",".gts":"Top mask openings",".gbs":"Bottom mask openings",".gto":"Top silkscreen",".gbo":"Bottom silkscreen",".gm1":"Board outline"};
+/** Renders the fabrication layers in `input`, plus paste layers from each of `extra`. */
+export async function renderDirectory(input,output,prefix="gerber",extra=[]){
   mkdirSync(output,{recursive:true});const layers=[];
-  for(const filename of readdirSync(input).sort()){
+  const files=[...readdirSync(input).sort().map(name=>[input,name]),...extra.flatMap(dir=>readdirSync(dir).sort().filter(name=>/\.g[tb]p$/i.test(name)).map(name=>[dir,name]))];
+  for(const [directory,filename] of files){
     const extension=path.extname(filename).toLowerCase();if(!names[extension]&&extension!==".drl")continue;
-    const source=readFileSync(path.join(input,filename),"utf8"),id=`${prefix}-${layers.length}`;
+    const source=readFileSync(path.join(directory,filename),"utf8"),id=`${prefix}-${layers.length}`;
     const record={name:filename,label:names[extension]??(filename.includes("NPTH")?"Non-plated drills":"Plated drills and slots"),sourceSha256:createHash("sha256").update(source).digest("hex"),kind:extension};
     try{
       const decimalDrill=extension===".drl"&&source.includes("/ decimal}")&&/^METRIC/m.test(source);
@@ -55,6 +57,6 @@ export async function renderDirectory(input,output,prefix="gerber"){
   return report;
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
-  const report=await renderDirectory(process.argv[2],process.argv[3],process.argv[4]??"gerber");
+  const report=await renderDirectory(process.argv[2],process.argv[3],process.argv[4]??"gerber",process.argv.slice(5));
   console.log(JSON.stringify({layers:report.layers.length,failed:report.layers.filter(l=>!l.available).map(l=>({name:l.name,error:l.error})),metadataWarnings:report.layers.flatMap(l=>l.warnings??[]).filter(w=>w.category==="metadata").length,reviewWarnings:report.layers.flatMap(l=>l.warnings??[]).filter(w=>w.category!=="metadata")}));
 }

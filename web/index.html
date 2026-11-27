@@ -61,9 +61,16 @@
     <section id="gerbers" class="searchable">
       <p class="eyebrow">MANUFACTURING / INSPECT</p><h2>The files the factory receives.</h2>
       <div class="review-controls"><label>Gerber version<select id="gerber-version" aria-label="Gerber version"></select></label><label class="inline-check"><input type="checkbox" id="gerber-mirror">Mirror board view</label><button id="gerber-reset" type="button">Reset Gerber view</button><button id="gerber-measure" type="button" aria-pressed="false">Measure two points</button></div>
+      <div class="fab-presets" role="group" aria-label="Layer presets"><span>Show</span><button type="button" data-preset="top" aria-pressed="false">Top assembly</button><button type="button" data-preset="bottom" aria-pressed="false">Bottom assembly</button><button type="button" data-preset="copper" aria-pressed="false">Copper and drills</button><button type="button" data-preset="all" aria-pressed="false">All layers</button><label class="inline-check"><input type="checkbox" id="fab-placement" checked>Placement points and pin 1</label><label class="inline-check"><input type="checkbox" id="fab-labels">Reference labels</label></div>
       <div id="gerber-layers" class="gerber-layers"></div><p id="gerber-status" aria-live="polite">Loading manufacturing layers…</p>
       <svg id="gerber-canvas" class="review-canvas gerber-canvas" role="img" aria-label="Released Gerber and drill layers"></svg><p id="gerber-measure-status" aria-live="polite"></p>
-      <p class="muted">Rendered from the actual Gerber/Excellon files. Mask layers show openings. Layer extents share absolute coordinates; each layer is not independently fitted. This inspection view is not fabrication sign-off.</p>
+      <div id="fab-panels" class="fab-panels" hidden>
+        <div class="fab-card" id="fab-selection" aria-live="polite"></div>
+        <div class="fab-card"><h3>Before you order</h3><p id="fab-summary" class="muted"></p><ul id="fab-findings" class="fab-findings"></ul>
+          <p class="muted">Crosshairs are the placement file's points; dots mark pin 1. An orange part is placed away from its body centre or has another finding. These checks compare the design, the placement file and the paste layer; they do not replace DRC, the assembler's preview or a datasheet check.</p></div>
+      </div>
+      <details class="fab-pinmap"><summary>Pin maps to compare with datasheets · <span id="fab-pinmap-count"></span></summary><p class="muted">Every part whose symbol names its pins. A footprint whose pad numbering does not match the real part (SOT-23 transistors, diodes, regulators) is a classic cause of a board spin: check each row against the manufacturer's datasheet.</p><div id="fab-pinmap-list" class="table-scroll"></div></details>
+      <p class="muted">Rendered from the actual Gerber/Excellon files; paste layers come from the current build's stencil files. Mask layers show openings. Layer extents share absolute coordinates; each layer is not independently fitted. This inspection view is not fabrication sign-off.</p>
       <details><summary>Renderer notices and source-file checksums</summary><div id="gerber-warning-detail"></div></details>
     </section>
     <section id="inspect" class="searchable">
