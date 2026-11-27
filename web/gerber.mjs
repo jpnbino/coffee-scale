@@ -1,7 +1,7 @@
-import { catalogPromise,json } from "./review-data.mjs";
+import { json } from "./review-data.mjs";
 import { svgNode,attachViewport } from "./review-draw.mjs";
 import { dimensions,drawRuler } from "./ruler.mjs";
-import { selectedPromise,changeRevision,artifactUrl } from './revision.mjs';
+import { selectedPromise,artifactUrl } from './revision.mjs';
 import { stackRows,drawOrder,coreLabel } from "./layer-stack.mjs";
 import { createFabOverlay } from "./fab-overlay.mjs";
 const byId=id=>document.getElementById(id),svg=byId("gerber-canvas");
@@ -24,7 +24,7 @@ function updateSide(){
 for(const button of presetButtons){button.disabled=true;button.addEventListener("click",()=>{
   const preset=PRESETS[button.dataset.preset];applyingPreset=true;
   try{for(const {kind,input}of layerControls){if(input.disabled)continue;const on=!preset.kinds||preset.kinds.includes(kind);if(input.checked!==on){input.checked=on;input.dispatchEvent(new Event("change"));}}
-    byId("gerber-mirror").checked=preset.mirror;mirrorView();}finally{applyingPreset=false;}
+    byId("gerber-mirror").checked=preset.mirror;mirrorView();showSide();}finally{applyingPreset=false;}
   pressPreset(button.dataset.preset);updateSide();
 });}
 // Collapsing the stack gives its width to the board (the SVG keeps its view and
@@ -37,7 +37,8 @@ for(const button of presetButtons){button.disabled=true;button.addEventListener(
   toggle?.addEventListener("click",()=>{const collapsed=!workspace.classList.contains("stack-collapsed");apply(collapsed);try{localStorage.setItem(key,collapsed?"1":"0");}catch{}requestAnimationFrame(()=>redrawRuler());});
 }
 function redrawRuler(){drawRuler(svg,previewPoint&&measurement.length===1?[measurement[0],previewPoint]:measurement,viewport.get()[2]);}
-function clearRuler(){measurement=[];previewPoint=null;redrawRuler();byId("gerber-measure-status").textContent=measuring?"Click a start point, then an end point. Move the pointer to preview the ruler. Panning is paused while measuring.":"";}
+const HINT="Scroll to zoom · drag to pan · click to identify";
+function clearRuler(){measurement=[];previewPoint=null;redrawRuler();const chip=byId("gerber-measure-status");chip.hidden=true;chip.textContent="";byId("gerber-hint").textContent=measuring?"Click a start point, then an end point · Esc to stop measuring":HINT;}
 function eventPoint(event){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
 function safeSvg(source){
   const parsed=new DOMParser().parseFromString(source,"image/svg+xml");
@@ -50,7 +51,7 @@ function safeSvg(source){
 }
 const colorFor=kind=>({".gtp":"#c3c9cf",".gbp":"#9fb0c4",".gtl":"#d8aa61",".gbl":"#708fc4",".gts":"#42917a",".gbs":"#718477",".gto":"#f4efe2",".gbo":"#ddbbcd",".gm1":"#faf8ef",".drl":"#e77372"}[kind]);
 async function render(version){
-  const ticket=++sequence;byId("gerber-status").textContent="Reading exact released Gerber/drill layers…";
+  const ticket=++sequence;byId("gerber-hint").textContent="Loading the released Gerber files…";byId("gerber-alert").hidden=true;
   try{
     const url=`review/${version.gerbers}`,report=await json(url),base=url.slice(0,url.lastIndexOf("/")+1);
     const layers=await Promise.all(report.layers.map(async layer=>{
@@ -64,7 +65,7 @@ async function render(version){
     const x=Math.min(...boxes.map(b=>b[0]))-1000,y=Math.min(...boxes.map(b=>b[1]))-1000;
     bounds=[x,y,Math.max(...boxes.map(b=>b[0]+b[2]))-x+1000,Math.max(...boxes.map(b=>b[1]+b[3]))-y+1000];viewport.set(bounds);
     const mirror=()=>{group.setAttribute("transform",byId("gerber-mirror").checked?`translate(${2*bounds[0]+bounds[2]},0) scale(-1,1)`:"");orderLayers();clearRuler();fab.redraw();};
-    mirrorView=mirror;byId("gerber-mirror").onchange=()=>{mirror();pressPreset(null);updateSide();};layerControls=[];
+    mirrorView=mirror;byId("gerber-mirror").onchange=()=>{mirror();showSide();pressPreset(null);updateSide();};layerControls=[];
     for(const button of presetButtons)button.disabled=true;pressPreset(null);
     const stack=byId("gerber-layers"),drawings=new Map();
     const stackup=await fetch(artifactUrl(version,"stackup"),{cache:"no-cache"}).then(r=>r.ok?r.json():null).catch(()=>null);if(ticket!==sequence)return;
@@ -96,29 +97,43 @@ async function render(version){
       input.addEventListener("change",()=>{sync();if(!applyingPreset){pressPreset(null);updateSide();}});
       opacity.addEventListener("input",()=>{drawing.setAttribute("opacity",Number(opacity.value)/100);toggle.textContent=`${opacity.value}%`;toggle.setAttribute("aria-label",`${layer.label} opacity ${opacity.value}%`);});
     }
-    const warnings=layers.flatMap(l=>l.warnings??[]),review=warnings.filter(w=>w.category!=="metadata");
-    byId("gerber-status").textContent=`${version.label}: ${layers.filter(l=>l.available).length}/${layers.length} layers rendered · ${review.length} review-required warnings · ${warnings.length-review.length} ignored metadata attributes. Click a pad, track or part to identify it.`;
+    // Provenance sits below the board; only a failure or a real warning is raised above it.
+    const warnings=layers.flatMap(l=>l.warnings??[]),review=warnings.filter(w=>w.category!=="metadata"),failed=layers.filter(l=>!l.available);
+    byId("gerber-provenance").textContent=`Read from the released files: ${layers.length-failed.length} of ${layers.length} layers${review.length?`, ${review.length} warning${review.length>1?"s":""} to review`:", no warnings"} · checksums and parser notes`;
+    const alert=byId("gerber-alert");alert.hidden=!(failed.length||review.length);
+    alert.textContent=failed.length?`${failed.length} layer${failed.length>1?"s":""} could not be drawn: ${failed.map(l=>l.name).join(", ")}. See the notes below the board.`:review.length?`The Gerber reader reported ${review.length} warning${review.length>1?"s":""} that need review. See the notes below the board.`:"";
+    byId("gerber-hint").textContent=HINT;
     byId("gerber-warning-detail").replaceChildren();
-    for(const layer of layers){const p=document.createElement("p");p.textContent=`${layer.name}: ${layer.available?`${layer.warnings.length} parser notices`:`UNAVAILABLE: ${layer.error}`}; source SHA-256 ${layer.sourceSha256}`;byId("gerber-warning-detail").append(p);}
+    for(const layer of layers){const p=document.createElement("p");p.textContent=`${layer.name}: ${layer.available?`${layer.warnings.length} parser notices (${layer.warnings.filter(w=>w.category==="metadata").length} ignored metadata attributes)`:`UNAVAILABLE: ${layer.error}`}; source SHA-256 ${layer.sourceSha256}`;byId("gerber-warning-detail").append(p);}
     const audit=document.createElement("a");audit.href=url;audit.textContent="Complete parser report and assumptions";byId("gerber-warning-detail").append(audit);
     mirror();updateSide();
     await fab.render(version,{group,bounds,ticket:()=>ticket===sequence});if(ticket!==sequence)return;
     mirror();for(const button of presetButtons)button.disabled=false;
     clearRuler();
-  }catch(error){if(ticket===sequence)byId("gerber-status").textContent=`Gerber view unavailable: ${error.message}`;}
+  }catch(error){if(ticket===sequence){const alert=byId("gerber-alert");alert.hidden=false;alert.textContent=`The Gerber view could not load: ${error.message}`;byId("gerber-hint").textContent="";}}
 }
-byId("gerber-reset").addEventListener("click",()=>bounds&&viewport.set(bounds));
-byId("gerber-measure").addEventListener("click",()=>{measuring=!measuring;byId("gerber-measure").setAttribute("aria-pressed",String(measuring));svg.style.cursor=measuring?"crosshair":"grab";clearRuler();});
+// View tools: fit, zoom about the centre, measure. Keys work while the page has focus.
+const fit=()=>bounds&&viewport.set(bounds);
+const zoom=factor=>{const [x,y,w,h]=viewport.get();viewport.set([x+w*(1-factor)/2,y+h*(1-factor)/2,w*factor,h*factor]);};
+function setMeasuring(on){measuring=on;byId("gerber-measure").setAttribute("aria-pressed",String(on));svg.style.cursor=on?"crosshair":"grab";clearRuler();}
+byId("gerber-reset").addEventListener("click",fit);
+byId("gerber-zoom-in").addEventListener("click",()=>zoom(1/1.4));
+byId("gerber-zoom-out").addEventListener("click",()=>zoom(1.4));
+byId("gerber-measure").addEventListener("click",()=>setMeasuring(!measuring));
+document.addEventListener("keydown",event=>{
+  if(event.metaKey||event.ctrlKey||event.altKey||/^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName))return;
+  const key=event.key.toLowerCase();
+  if(key==="f")fit();else if(key==="m")setMeasuring(!measuring);else if(key==="escape"&&measuring)setMeasuring(false);
+  else if(key==="+"||key==="=")zoom(1/1.4);else if(key==="-"||key==="_")zoom(1.4);else return;
+});
+// "View from" is the mirror state shown as words.
+const sideButtons=[...document.querySelectorAll("[data-side]")];
+function showSide(){const bottom=byId("gerber-mirror").checked;for(const button of sideButtons)button.setAttribute("aria-pressed",String((button.dataset.side==="bottom")===bottom));}
+for(const button of sideButtons)button.addEventListener("click",()=>{const mirror=byId("gerber-mirror"),bottom=button.dataset.side==="bottom";if(mirror.checked===bottom)return;mirror.checked=bottom;mirror.dispatchEvent(new Event("change"));});
 svg.addEventListener("pointermove",event=>{if(measuring&&measurement.length===1){previewPoint=eventPoint(event);redrawRuler();}});
 svg.addEventListener("click",event=>{
-  if(!measuring)return;if(measurement.length===2)measurement=[];
+  if(!measuring)return;if(measurement.length===2)clearRuler();
   measurement.push(eventPoint(event));previewPoint=null;redrawRuler();
-  if(measurement.length===2){const {distance,dx,dy}=dimensions(...measurement);byId("gerber-measure-status").textContent=`Distance: ${distance.toFixed(3)} mm · ΔX ${dx.toFixed(3)} mm · ΔY ${dy.toFixed(3)} mm (view axes). Click to begin another ruler.`;}
+  if(measurement.length===2){const {distance,dx,dy}=dimensions(...measurement),chip=byId("gerber-measure-status");chip.textContent=`${distance.toFixed(3)} mm · ΔX ${dx.toFixed(3)} · ΔY ${dy.toFixed(3)}`;chip.hidden=false;byId("gerber-hint").textContent="Click to start another measurement · Esc to stop";}
 });
-try{
-  const catalog=await catalogPromise;
-  for(const version of catalog.versions){const option=document.createElement("option");option.value=version.id;option.textContent=version.label;byId("gerber-version").append(option);}
-  const selected=await selectedPromise;
-  byId("gerber-version").value=selected.id;byId("gerber-version").addEventListener("change",()=>changeRevision(byId("gerber-version").value));
-  await render(selected);
-}catch(error){byId("gerber-status").textContent=error.message;}
+try{await render(await selectedPromise);}catch(error){const alert=byId("gerber-alert");alert.hidden=false;alert.textContent=error.message;}
