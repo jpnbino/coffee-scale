@@ -10,13 +10,15 @@ test('Landing page contains resource links without interactive viewer payloads',
   assert.match(home, /href="versions.html"/);
   assert.doesNotMatch(home, /id="comparison-overlay"|<model-viewer|src="gerber.mjs"|src="review.mjs"/);
   assert.doesNotMatch(home, /class="metrics"|board footprints|ERC \/ DRC \/ unrouted/);
-  assert.match(home, /hardware revision/);
+  assert.match(home, /id="global-revision"/);
 });
-test('Every resource has distinct navigation, title and breadcrumb', () => {
+test('Every resource has distinct navigation and one heading; only guides carry a breadcrumb', () => {
   for (const [name, html] of pages) {
     if (!name.endsWith('.html')) continue;
-    assert.match(html, /aria-label="Breadcrumb"/);
+    assert.equal(/aria-label="Breadcrumb"/.test(html), name.startsWith('doc-'), `${name}: breadcrumb only on guides`);
     assert.match(html, /aria-current="page"/);
+    assert.equal((html.match(/id="global-revision"/g) ?? []).length, 1, `${name}: one revision selector`);
+    if (!name.startsWith('doc-') && name !== 'index.html') assert.equal((html.match(/<h1[\s>]/g) ?? []).length, 1, `${name}: one h1`);
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
     assert.equal(new Set(ids).size, ids.length, `Duplicate IDs: ${name}`);
     for (const [, link] of html.matchAll(/href="([^"#]+\.html)"/g)) assert.ok(pages.has(link), `${name}: ${link}`);

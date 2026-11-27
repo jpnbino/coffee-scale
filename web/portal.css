@@ -67,3 +67,13 @@ a[aria-disabled=true]{opacity:.6;cursor:not-allowed;text-decoration:none}.revisi
 .stackup-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}.stackup-cards .stackup-card{margin:0}.current-list{padding-left:18px;margin:6px 0}
 .stackup-provenance{margin:22px 0}.stackup-provenance summary{font-size:12px;color:var(--muted);cursor:pointer}
 @media (max-width:900px){.order-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stackup-figure,.stackup-cards{grid-template-columns:1fr}}
+/* Shell: revision chosen once in the sidebar, grouped navigation, one standard page heading. */
+.rail{padding:30px 22px 24px}.rail-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.rail-menu{display:none;font:inherit;font-size:12px;padding:6px 12px;border:1px solid #52645a;border-radius:5px;background:#2e4238;color:#edf1eb;cursor:pointer}
+.rail-body{display:flex;flex-direction:column;min-height:0}
+.rail .revision-bar{padding:0;border:0;margin-top:26px}.rail .revision-bar label{font-size:11px;color:#c5d1c8;letter-spacing:.04em}.rail .revision-bar select{width:100%;margin-top:6px;padding:8px 10px;border:1px solid #52645a;border-radius:5px;background:#2e4238;color:#fff;font-size:13px}.rail .revision-bar p{margin:6px 0 0;font-size:11px;line-height:1.5;color:#aabcaf}
+.rail .search-label{margin-top:22px}.rail nav{gap:2px;margin-top:18px}.rail .nav-group{margin:14px 0 4px;padding:0 10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8fa497}
+.page-head{padding:44px 0 6px}.page-head h1{margin-bottom:12px}.page-head .lead{margin:0}.page-head+section,.revision-content>.page-head+section{padding-top:22px}
+.revision-banner{margin:18px 0 0;padding:10px 14px;border:1px solid #d9a26f;background:#fbeee0;color:#6b3a12;border-radius:5px;font-size:13px}.revision-banner[hidden]{display:none}
+.breadcrumbs{padding:26px 0 0}
+footer .build-id{display:block;margin-top:6px;color:var(--muted)}
+@media(max-width:760px){.rail{position:sticky;top:0;z-index:20;padding:12px 18px}.rail .mark{font-size:20px}.rail-menu{display:inline-block}.rail-body{display:none}.rail.open .rail-body{display:flex;max-height:calc(100vh - 60px);overflow:auto;padding-bottom:14px}.rail nav{display:grid;gap:2px}.rail nav a{font-size:14px;padding:8px 10px}.page-head{padding-top:26px}}
