@@ -54,10 +54,10 @@ exact manufacturer part numbers and supplier selection, and the generated
 readiness report lists every blocker. A correct electrical value alone does not
 approve a footprint, package height, voltage rating or placement rotation.
 
-The candidate placement file uses KiCad's native origins. The Gerber page flags
-every part whose origin is far from the centre of its body, and lists the pin map
-of every named part to compare with datasheets (see
-[Checks before ordering](06-revision-review.md#checks-before-ordering)). The
-assembler's own zero-angle conventions are not checked. Strict
+The candidate placement file uses KiCad's native origins. These are not checked
+against the assembler's pick-up centroids or zero-angle conventions. The Gerber
+page flags parts whose origin is far from the centre of their courtyard, and
+lists the pin map of every named part to compare with datasheets (see
+[Checks before ordering](06-revision-review.md#checks-before-ordering)). Strict
 assembly release stays blocked until placement has been reviewed for this exact
 board checksum.

@@ -7,6 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { parseSexpr, child, children, atom, point, angle } from './kicad-sexpr.mjs';
 import { parseCsv } from './lib/formats.mjs';
+import { insidePad } from '../web/fab-geometry.mjs';
 
 /** A placement point further than this from the part's body is reported. */
 export const CENTROID_TOLERANCE_MM = 0.5;
@@ -49,7 +50,8 @@ export function pinNames(schSource) {
     const names = {};
     for (const unit of [symbol, ...children(symbol, 'symbol')]) for (const pin of children(unit, 'pin')) {
       const numberOf = child(pin, 'number')?.[1], name = child(pin, 'name')?.[1];
-      if (numberOf !== undefined && name && name !== '~') names[numberOf] = name;
+      // KiCad text markup: V_{SS} → VSS, ~{RESET} → RESET (overbar).
+      if (numberOf !== undefined && name && name !== '~') names[numberOf] = name.replace(/[_^~]\{([^}]*)\}/g, '$1');
     }
     library.set(symbol[1], names);
   }
@@ -61,12 +63,26 @@ export function pinNames(schSource) {
   return result;
 }
 
-/** The assembler's placement file (JLCPCB CPL columns); Y is flipped back to board axes. */
+const PLACEMENT_COLUMNS = ['Designator', 'Mid X', 'Mid Y', 'Layer', 'Rotation'];
+
+/**
+ * The assembler's placement file (JLCPCB CPL columns); Y is flipped back to board
+ * axes. Anything malformed stops the build rather than producing "no findings".
+ */
 export function readPlacement(csv) {
-  return new Map(parseCsv(csv).map(row => [row.Designator, {
-    x: round(Number(row['Mid X'])), y: round(-Number(row['Mid Y'])), rotation: Number(row.Rotation),
-    side: String(row.Layer).toLowerCase() === 'bottom' ? 'bottom' : 'top',
-  }]));
+  const rows = parseCsv(csv), result = new Map();
+  const missing = PLACEMENT_COLUMNS.filter(column => rows.length && !(column in rows[0]));
+  if (!rows.length || missing.length) throw new Error(`Placement file needs the columns ${PLACEMENT_COLUMNS.join(', ')}${missing.length ? `; missing ${missing.join(', ')}` : '; it has no rows'}.`);
+  rows.forEach((row, index) => {
+    const ref = String(row.Designator ?? '').trim(), line = index + 2;
+    const values = ['Mid X', 'Mid Y', 'Rotation'].map(column => String(row[column] ?? '').trim());
+    if (!ref) throw new Error(`Placement file line ${line}: empty designator.`);
+    if (result.has(ref)) throw new Error(`Placement file line ${line}: ${ref} appears twice.`);
+    if (values.some(value => value === '' || !Number.isFinite(Number(value)))) throw new Error(`Placement file line ${line}: ${ref} has a missing or non-numeric position or rotation.`);
+    if (!/^(top|bottom)$/i.test(String(row.Layer).trim())) throw new Error(`Placement file line ${line}: ${ref} has layer "${row.Layer}", expected Top or Bottom.`);
+    result.set(ref, { x: round(Number(values[0])), y: round(-Number(values[1])), rotation: Number(values[2]), side: String(row.Layer).trim().toLowerCase() });
+  });
+  return result;
 }
 
 const pin1Of = pads => pads.find(p => p.number === '1') ?? pads.find(p => /^A1$/i.test(p.number)) ?? null;
@@ -92,7 +108,7 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
       ref: component.ref, value: component.value, footprint: component.footprint.replace(/^.*:/, ''), side,
       origin: [component.x, component.y], rotation: component.rotation,
       body: body && { ...Object.fromEntries(Object.entries(body).map(([k, v]) => [k, round(v)])), source: yards.has(component.ref) ? 'courtyard' : 'pads' },
-      pads, pin1: pin1 ? [pin1.x, pin1.y] : null, placement: null,
+      pads, pin1: pin1 ? [pin1.x, pin1.y] : null, placement: null, padCentre: padBox ? centre(padBox) : null,
     };
 
     // Reflow solders only pads that get paste. A pad without its own opening may
@@ -100,7 +116,7 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
     // pads). Only parts the assembler places are checked: hand-fitted parts are
     // soldered without paste.
     const pasteOnly = component.pads.filter(p => !p.layers.some(l => /Cu$/.test(l)) && p.layers.some(l => /Paste$/.test(l)));
-    part.unpasted = pads.filter(p => p.type === 'smd' && !p.paste && !pasteOnly.some(a => Math.abs(a.x - p.x) <= p.width / 2 + 0.01 && Math.abs(a.y - p.y) <= p.height / 2 + 0.01)).map(p => p.number);
+    part.unpasted = pads.filter(p => p.type === 'smd' && !p.paste && !pasteOnly.some(a => insidePad(p, [a.x, a.y], 0.01))).map(p => p.number);
     return part;
   });
 
@@ -113,15 +129,19 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
       if (place.side !== part.side) add('error', ref, [place.x, place.y], `${placementName} puts ${ref} on the ${place.side}; the board has it on the ${part.side}.`);
       if (part.body) {
         const [cx, cy] = centre(part.body), offset = Math.hypot(place.x - cx, place.y - cy);
-        part.placement.offsetMm = round(offset);
-        if (offset > CENTROID_TOLERANCE_MM) add('review', ref, [place.x, place.y], `Placement point is ${offset.toFixed(2)} mm from the centre of the part's ${part.body.source === 'courtyard' ? 'courtyard' : 'pads'}. Assemblers place the body centre there: check the assembler's preview or correct the position.`);
+        const padCentre = part.padCentre, padOffset = padCentre ? Math.hypot(place.x - padCentre[0], place.y - padCentre[1]) : null;
+        Object.assign(part.placement, { offsetMm: round(offset), padOffsetMm: padOffset === null ? null : round(padOffset) });
+        if (offset > CENTROID_TOLERANCE_MM) {
+          const b = board.bounds, overhang = part.body.minX < b.minX || part.body.minY < b.minY || part.body.maxX > b.maxX || part.body.maxY > b.maxY;
+          add('review', ref, [place.x, place.y], `Placement point is ${offset.toFixed(2)} mm from the ${part.body.source === 'courtyard' ? 'courtyard' : 'pad'} centre${padOffset === null ? '' : ` and ${padOffset.toFixed(2)} mm from the pad centre`}.${overhang ? ' The courtyard extends past the board edge, so it may include an overhanging body.' : ''} The assembler's centroid for this part is not known here: confirm the position in their placement preview.`);
+        }
       }
       if (part.unpasted.length) {
         const first = part.pads.find(p => p.number === part.unpasted[0]);
         add('review', ref, [first.x, first.y], `${part.unpasted.length === 1 ? `Pad ${part.unpasted[0]} has` : `Pads ${part.unpasted.join(', ')} have`} copper but no solder paste, so reflow will not solder ${part.unpasted.length === 1 ? 'it' : 'them'}. Confirm that is intended.`);
       }
       const native = ((place.rotation - part.rotation) % 360 + 360) % 360;
-      if (native) part.placement.rotationCorrection = native;
+      if (native) part.placement.rotationDifference = native;
     }
   }
   const order = { error: 0, review: 1 };
@@ -134,17 +154,18 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
     parts: parts.sort((a, b) => a.ref.localeCompare(b.ref, undefined, { numeric: true })),
     findings,
     limitations: [
-      'Checks compare the design, the placement file and paste apertures. They do not replace DRC, the assembler\'s own review or a datasheet check of each pin map.',
+      'Checks compare the design, the placement file and the paste openings defined on each footprint pad. They do not replace DRC, the assembler\'s own review or a datasheet check of each pin map.',
       'Missing paste is checked only for parts in the placement file; hand-fitted parts are soldered without paste.',
-      'The body centre is taken from the footprint courtyard, or from the pads when there is no courtyard.',
-      placement ? 'Rotation is shown as the placement file gives it; whether it matches the assembler\'s part orientation can only be confirmed in their preview.' : 'No placement file is recorded for this revision.',
+      'The body centre is estimated from the footprint courtyard (or the pads when there is none). A courtyard can include overhangs, so a reported offset is a prompt to check, not a confirmed error.',
+      placement ? 'Rotation is shown as the placement file gives it; whether it matches the assembler\'s part orientation, including their convention for bottom-side parts, can only be confirmed in their preview.' : 'No placement file is recorded for this revision.',
     ],
   };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [pcb, sch, boardJson, out, placementPath] = process.argv.slice(2);
-  const hasPlacement = placementPath && existsSync(placementPath);
+  if (placementPath && !existsSync(placementPath)) throw new Error(`Placement file not found: ${placementPath}`);
+  const hasPlacement = Boolean(placementPath);
   const result = fabCheck({
     pcbSource: readFileSync(pcb, 'utf8'), schSource: readFileSync(sch, 'utf8'), board: JSON.parse(readFileSync(boardJson, 'utf8')),
     placementCsv: hasPlacement ? readFileSync(placementPath, 'utf8') : null, placementName: hasPlacement ? placementPath.replace(/^.*[\\/]/, '') : null,

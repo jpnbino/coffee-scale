@@ -19,6 +19,7 @@ const meaningfulName = name => name && !/^(Pin_)?\d+$/i.test(name);
 
 export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
   let check = null, board = null, group = null, bounds = null, layer = null, version = null, side = null;
+  const onlySide = () => side?.only ?? null;
   let selection = null; // { part?, net? }
 
   const view = ([x, y]) => [mirrored() ? 2 * bounds[0] + bounds[2] - x * U : x * U, y * U];
@@ -49,7 +50,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
 
     // Selection first, so markers stay on top of it.
     if (selection?.net) {
-      for (const segment of board?.segments ?? []) if (strip(segment.net) === selection.net && (!side || segment.layer === (side === "bottom" ? "B.Cu" : "F.Cu")))
+      for (const segment of board?.segments ?? []) if (strip(segment.net) === selection.net && (!onlySide() || segment.layer === (onlySide() === "bottom" ? "B.Cu" : "F.Cu")))
         layer.append(svgNode("line", { x1: segment.start[0] * U, y1: segment.start[1] * U, x2: segment.end[0] * U, y2: segment.end[1] * U, stroke: highlight, "stroke-width": Math.max(segment.width, 0.2) * U, "stroke-linecap": "round", opacity: 0.55 }));
       for (const part of check.parts) for (const pad of part.pads) if (pad.net === selection.net)
         layer.append(padShape(pad, { fill: highlight, "fill-opacity": 0.35, stroke: highlight, "stroke-width": 0.12 * U }));
@@ -61,7 +62,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     }
 
     for (const part of check.parts) {
-      if (side && part.side !== side) continue;
+      if (onlySide() && part.side !== onlySide()) continue;
       const bad = flagged.has(part.ref), colour = bad ? warn : marker;
       if (showPlacement && part.pin1) layer.append(svgNode("circle", { cx: part.pin1[0] * U, cy: part.pin1[1] * U, r: 0.28 * U, fill: colour, opacity: 0.9 }));
       if (showPlacement && part.placement) {
@@ -106,8 +107,8 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     const facts = el("ul", undefined, { className: "fab-facts" });
     if (part.placement) {
       const p = part.placement;
-      facts.append(el("li", `Placement file: ${p.x.toFixed(2)}, ${(-p.y).toFixed(2)} mm, ${p.rotation}°${p.rotationCorrection ? ` (KiCad ${part.rotation}° + ${p.rotationCorrection}° for the assembler)` : ""}`));
-      facts.append(el("li", `Placement point to body centre: ${p.offsetMm?.toFixed(2) ?? "?"} mm (${part.body?.source ?? "no outline"})`));
+      facts.append(el("li", `Placement file: X ${p.x.toFixed(2)}, Y ${(-p.y).toFixed(2)} mm, ${p.rotation}°${p.rotationDifference ? ` (differs from KiCad's ${part.rotation}° by ${p.rotationDifference}°)` : ""}`));
+      if (Number.isFinite(p.offsetMm)) facts.append(el("li", `Placement point to ${part.body?.source ?? "body"} centre: ${p.offsetMm.toFixed(2)} mm${Number.isFinite(p.padOffsetMm) ? ` · to pad centre: ${p.padOffsetMm.toFixed(2)} mm` : ""}`));
     } else facts.append(el("li", check.placementFile ? "Not in the placement file: fitted by hand or not fitted." : "No placement file recorded for this revision."));
     for (const finding of check.findings.filter(f => f.ref === part.ref)) facts.append(el("li", finding.message, { className: `fab-${finding.severity}` }));
     container.append(facts, pinTable(part), designLink(`part=${encodeURIComponent(part.ref)}`));
@@ -117,7 +118,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     if (!panel) return;
     panel.replaceChildren();
     if (!selection) { panel.append(el("h3", "Click a pad, track or part"), el("p", "It is identified here and its net is highlighted. Drag to pan; scroll to zoom.", { className: "muted" })); return; }
-    if (hit?.kind === "pad") panel.append(el("p", `Pad ${hit.pad.number}${hit.pad.name ? ` (${hit.pad.name})` : ""} of ${hit.part.ref}`, { className: "fab-hit" }));
+    if (hit?.kind === "pad") panel.append(el("p", hit.pad.number ? `Pad ${hit.pad.number}${hit.pad.name ? ` (${hit.pad.name})` : ""} of ${hit.part.ref}` : `Unnumbered pad or hole of ${hit.part.ref}`, { className: "fab-hit" }));
     if (selection.net) {
       const pads = [...new Set(check.parts.flatMap(part => part.pads.filter(pad => pad.net === selection.net).map(pad => `${part.ref}.${pad.number}`)))];
       panel.append(el("h3", `Net ${shownNet(selection.net)}`), el("p", `${pads.length} pads: ${pads.join(", ")}`, { className: "muted" }), designLink(`net=${encodeURIComponent(selection.net)}`));
@@ -148,7 +149,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
       const button = el("button", undefined, { type: "button", className: `fab-finding fab-${finding.severity}` });
       button.append(el("strong", finding.ref), document.createTextNode(` ${finding.message}`));
       const part = check.parts.find(p => p.ref === finding.ref);
-      button.addEventListener("click", () => select(part ? { part } : null, { zoom: true }));
+      button.addEventListener("click", () => { if (part) select({ part }, { zoom: true }); else { select(null); zoomTo([finding.at]); } });
       const item = el("li"); item.append(button); list.append(item);
     }
     const maps = byId("fab-pinmap-list");
@@ -191,12 +192,20 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     setSide(value) { side = value; redraw(); },
     async render(nextVersion, context) {
       group = context.group; bounds = context.bounds; version = nextVersion; selection = null; check = null; layer = null;
-      const panel = byId("fab-panels");
-      if (!version.fabCheck) { if (panel) panel.hidden = true; return; }
-      const [loadedCheck, loadedBoard] = await Promise.all([json(`review/${version.fabCheck}`), json(`review/${version.metadata}`).catch(() => null)]);
-      if (!context.ticket()) return;
-      check = loadedCheck; board = loadedBoard;
-      if (panel) panel.hidden = false;
+      const panel = byId("fab-panels"), pinmap = document.querySelector(".fab-pinmap");
+      const show = on => { if (panel) panel.hidden = !on; if (pinmap) pinmap.hidden = !on; };
+      show(false);
+      if (!version.fabCheck) return;
+      try {
+        const [loadedCheck, loadedBoard] = await Promise.all([json(`review/${version.fabCheck}`), json(`review/${version.metadata}`).catch(() => null)]);
+        if (!context.ticket()) return;
+        check = loadedCheck; board = loadedBoard;
+      } catch (error) {
+        // The layers are still worth inspecting without the checks.
+        byId("gerber-status").textContent += ` Pre-order checks unavailable: ${error.message}.`;
+        return;
+      }
+      show(true);
       layer = svgNode("g", { "data-layer": "fab-check", "pointer-events": "none" });
       group.append(layer);
       renderFindings(); renderSelection();

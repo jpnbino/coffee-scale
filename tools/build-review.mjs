@@ -68,6 +68,7 @@ export function buildReview({ root, output, config, buildId, kicad }) {
     const stencil = id === 'current' ? [`${output}/assembly/stencil`] : [];
     runNode(join(tools, 'render-gerbers.mjs'), [gerbers, `${folder}/rendered`, id, ...stencil], `Gerber conversion failed: ${id}`);
     const placement = id === 'current' ? [`${output}/assembly/jlcpcb-cpl-CANDIDATE.csv`] : [];
+    if (placement.length && !existsSync(placement[0])) throw new Error('The current build has no placement file for the fab check.');
     runNode(join(tools, 'fab-check.mjs'), [nativePcb, nativeSch, `${folder}/board.json`, `${folder}/fab-check.json`, ...placement], `Fab check failed: ${id}`);
     zipDirectory(`${folder}/gerbers`, `${folder}/fabrication.zip`);
     if (id !== 'current') {

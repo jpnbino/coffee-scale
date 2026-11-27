@@ -65,10 +65,12 @@ checks on top of the manufacturing layers.
   drills. The bottom view is mirrored. Paste layers come from the current build's
   stencil files.
 - **Placement points.** A crosshair marks where the placement file tells the
-  assembler to put each part, and a dot marks pin 1. Assemblers centre the part
-  body on that point. Parts whose point is more than 0.5 mm from the centre of
-  their courtyard are listed under *Before you order*. This usually happens with
-  connectors whose footprint origin is pin 1.
+  assembler to put each part, and a dot marks pin 1. A part whose point is more
+  than 0.5 mm from the centre of its courtyard is listed under *Before you
+  order*, with its distance from the pad centre too. That usually means a
+  footprint whose origin is pin 1, as on pin headers. A courtyard can include an
+  overhang, so an entry is a prompt to check the assembler's placement preview,
+  not a confirmed error.
 - **Missing paste.** A pad of a factory-placed part with copper but no paste
   opening is listed, because reflow will not solder it.
 - **Click to identify.** Clicking a pad, track or part names it, highlights its
@@ -78,7 +80,8 @@ checks on top of the manufacturing layers.
   pin name and net, smallest parts first. Compare each row with the
   manufacturer's datasheet, especially transistors, diodes and regulators.
 
-These checks compare the design, the placement file and the paste layer. They
+These checks compare the design, the placement file and the paste openings
+defined on each footprint pad. They
 do not replace DRC, the assembler's own preview, or a datasheet check, and the
 rotation each assembler expects can only be confirmed in their preview. The
 identification uses the KiCad board data, not net attributes in the Gerber files.

@@ -18,16 +18,25 @@ export function segmentDistance([px, py], [ax, ay], [bx, by]) {
   return Math.hypot(px - ax - t * dx, py - ay - t * dy);
 }
 
-/** What lies under a board point: the smallest pad, else a track, else a part body. */
+/**
+ * What lies under a board point: the smallest pad, else a track or via, else a
+ * part body. `side` is { only: 'top'|'bottom' } when one copper side is shown,
+ * or { prefer: 'top'|'bottom' } to try the facing side first.
+ */
 export function hitTest(check, board, point, side = null) {
-  const onSide = part => !side || part.side === side;
+  if (side?.prefer) {
+    const other = side.prefer === "top" ? "bottom" : "top";
+    return hitTest(check, board, point, { only: side.prefer }) ?? hitTest(check, board, point, { only: other });
+  }
+  const only = side?.only ?? null;
+  const onSide = part => !only || part.side === only;
   let best = null;
   for (const part of check.parts) for (const pad of part.pads) {
     const visible = onSide(part) || pad.type === "thru_hole";
     if (visible && insidePad(pad, point) && (!best || pad.width * pad.height < best.pad.width * best.pad.height)) best = { part, pad };
   }
   if (best) return { kind: "pad", ...best, net: best.pad.net };
-  const layer = side === "bottom" ? "B.Cu" : side === "top" ? "F.Cu" : null;
+  const layer = only === "bottom" ? "B.Cu" : only === "top" ? "F.Cu" : null;
   for (const segment of board?.segments ?? []) {
     if (layer && segment.layer !== layer) continue;
     if (segmentDistance(point, segment.start, segment.end) <= segment.width / 2 + 0.05 && segment.net) return { kind: "track", net: strip(segment.net), layer: segment.layer };
@@ -37,4 +46,3 @@ export function hitTest(check, board, point, side = null) {
   bodies.sort((a, b) => (a.body.maxX - a.body.minX) * (a.body.maxY - a.body.minY) - (b.body.maxX - b.body.minX) * (b.body.maxY - b.body.minY));
   return bodies.length ? { kind: "part", part: bodies[0] } : null;
 }
-
