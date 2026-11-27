@@ -109,6 +109,15 @@ async function render(version){
     mirror();updateSide();
     await fab.render(version,{group,bounds,ticket:()=>ticket===sequence});if(ticket!==sequence)return;
     mirror();for(const button of presetButtons)button.disabled=false;
+    // gerbers.html?layer=gtl or ?layer=gbl,gbs (from the stackup page): show just
+    // those layers with the outline; bottom-only links are viewed from the bottom.
+    const linked=(new URLSearchParams(location.search).get("layer")??"").split(",").map(k=>`.${k.trim().replace(/^\./,"").toLowerCase()}`).filter(k=>/^\.[a-z0-9]{2,4}$/.test(k));
+    if(linked.length&&layerControls.some(control=>linked.includes(control.kind))){
+      applyingPreset=true;
+      try{for(const control of layerControls){if(control.input.disabled)continue;const on=linked.includes(control.kind)||control.kind===".gm1";if(control.input.checked!==on){control.input.checked=on;control.input.dispatchEvent(new Event("change"));}}
+        const bottom=linked.every(kind=>/^\.gb/.test(kind));if(byId("gerber-mirror").checked!==bottom){byId("gerber-mirror").checked=bottom;mirror();showSide();}}finally{applyingPreset=false;}
+      pressPreset(null);updateSide();
+    }
     clearRuler();
   }catch(error){if(ticket===sequence){const alert=byId("gerber-alert");alert.hidden=false;alert.textContent=`The Gerber view could not load: ${error.message}`;byId("gerber-hint").textContent="";}}
 }

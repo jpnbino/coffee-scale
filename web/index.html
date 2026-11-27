@@ -35,9 +35,10 @@
     </section>
     <section id="stackup" class="searchable">
       <p class="eyebrow">FABRICATION / TRACEABILITY</p><h1>Layer stackup.</h1>
+      <p class="lead">What the board is made of, the values to order it with, and what that means for the design.</p>
       <div id="stackup-content" aria-live="polite">Loading the stackup recorded in KiCad…</div>
-      <p><a href="stackup.json">Download source-linked stackup JSON</a> · <a href="doc-07-manufacturing-control.html">Manufacturing control roadmap</a></p>
-      <p class="notice">Supplier stackup, material substitutions, thickness tolerances and impedance approval are not recorded for this prototype. The drawing represents design intent, not a supplier-qualified process.</p>
+      <p id="stackup-impedance-context" hidden>USB-C carries power only, and I²C and the HX711 interface are slow signals, so no net needs controlled impedance.</p>
+      <p class="notice">Design intent: the factory's stackup, material substitutions, thickness tolerances and impedance approval are not recorded for this prototype.</p>
     </section>
     <section id="statistics" class="searchable">
       <p class="eyebrow">MEASURE / UNDERSTAND</p><h2>The board in numbers.</h2><p>Selected comparison target: <strong id="statistics-version">Current build</strong>.</p>
