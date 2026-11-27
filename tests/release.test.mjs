@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -133,7 +133,7 @@ test('Markdown renders the documentation constructs in use', () => {
 });
 
 test('Every maintained document renders with an h1 title', () => {
-  for (const name of ['01-overview', '02-circuit', '03-interfaces', '04-assembly-testing', '05-mechanics-notes', '06-viewer-compatibility', '07-revision-review', '08-manufacturing-control']) {
+  for (const name of ['01-overview', '02-circuit', '03-interfaces', '04-assembly-testing', '05-mechanics-notes', '06-revision-review', '07-manufacturing-control']) {
     const html = markdownToHtml(readFileSync(join(root, `docs/board/${name}.md`), 'utf8'));
     assert.match(html, /^<h1[^>]*>.+<\/h1>/, name); assert.doesNotMatch(html, /\*\*|```/, name);
   }
@@ -204,5 +204,20 @@ else { console.error('unexpected ' + args.join(' ')); process.exit(2); }
   } finally {
     rmSync(dir, { recursive: true, force: true }); rmSync(config, { force: true });
     rmSync(join(root, outputDirectory), { recursive: true, force: true });
+  }
+});
+
+test('Doc cross-links become portal page links; other links are untouched', async () => {
+  const { portalDocLinks } = await import('../tools/build-site.mjs');
+  assert.equal(portalDocLinks('<a href="02-circuit.md">x</a> <a href="03-interfaces.md#pins">y</a>'), '<a href="doc-02-circuit.html">x</a> <a href="doc-03-interfaces.html#pins">y</a>');
+  assert.equal(portalDocLinks('<a href="https://example.com/a.md">z</a>'), '<a href="https://example.com/a.md">z</a>');
+});
+
+test('Every doc cross-link points to an existing document', () => {
+  const names = new Set(readdirSync(join(root, 'docs/board')).filter(f => f.endsWith('.md')));
+  for (const file of names) {
+    for (const [, target] of readFileSync(join(root, 'docs/board', file), 'utf8').matchAll(/\]\(((?!https?:)[^)#\s]+\.md)(#[^)]*)?\)/g)) {
+      assert.ok(names.has(target), `${file} links to missing ${target}`);
+    }
   }
 });

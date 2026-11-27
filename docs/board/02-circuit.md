@@ -28,9 +28,11 @@ remain to be verified. There is no battery thermistor circuit.
 
 Two top buttons provide TARE and START/STOP. The Same Sky TS43 switch provides
 momentary up/down and centre press; it is not a quadrature encoder.
-Centre press starts the hardware wake circuit. Firmware must assert PWR_HOLD
-immediately, before Wi-Fi initialization, and wait for centre release before
-shutdown. The intended inactivity timer is one hour; firmware is not included.
+Centre press starts the hardware wake circuit (Q5, D3). Q6 passes the press
+to GP14 as an isolated, active-high signal, kept away from the raw switch and
+battery voltage. C20 holds the supply on for a nominal ~1 s; check the usable
+start-up time on the bench. Firmware must assert PWR_HOLD within that time,
+before Wi-Fi initialization, and wait for centre release before shutdown. The intended inactivity timer is one hour; firmware is not included.
 
 The master switch disconnects the system load. Charging and battery protection
 remain active. The piezo buzzer is bottom-mounted and requires external PWM
