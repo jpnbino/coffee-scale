@@ -15,8 +15,8 @@ Choose a base and comparison target on Versions & changes. The separate Board
 statistics page follows the global revision selector; comparison shows base/target deltas.
 
 The shared selector is encoded in the URL as `rev`. It controls schematic,
-PCB, 3D, stackup, statistics and downloads across pages. The comparison target
-and Gerber selector change this same selection. Unknown revisions are rejected
+PCB, 3D, stackup, statistics, Gerbers and downloads across pages. The
+comparison target changes this same selection. Unknown revisions are rejected
 without displaying current artifacts. Historical assembly records and guides
 are unavailable because they were not archived; no current records are silently
 substituted. Historical 3D/STEP views are re-exported from verified archived
@@ -41,10 +41,17 @@ use manufacturing layers to inspect actual fabricated shapes.
 The Gerber viewer renders the actual exported Gerber and Excellon files. Every
 layer retains its source checksum. Layer offsets are normalized to a shared
 absolute coordinate frame rather than independently fitting each image.
-You can toggle layers, adjust each layer's opacity, mirror the board, use
-fullscreen, zoom/pan and measure with a visible two-point ruler. While measuring,
-pan is paused; the first point anchors a live preview and the second leaves the
-distance label on the image. Measurements use displayed view axes when mirrored.
+Layers are listed as a stack, from top silkscreen down through the core to
+bottom silkscreen, then drills and outline, each with its drawing colour. They
+are drawn in that physical order, reversed when you view the board from the
+bottom, so the side facing you is always on top. You can toggle a layer, show
+only one (its *Only* button, or Option/Alt-click), adjust its opacity, and fold
+the stack away to give the board more room. The toolbar on the board fits the
+whole board (F), zooms (+ and −), measures between two points (M; Esc stops) and
+opens fullscreen. Measurements use the displayed view axes when the board is
+viewed from the bottom. The line under the board says how many layers were read
+and opens each file's checksum and parser notes; a warning appears above the
+board only if a layer could not be drawn or the reader reported a real warning.
 Mask layers display openings. Plated and non-plated drill files stay separate.
 
 The pinned converter is gerber-to-svg 4.2.8. Basic metric dimensions, clear-polarity

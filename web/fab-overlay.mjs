@@ -45,7 +45,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     if (!layer) return;
     layer.replaceChildren();
     const flagged = new Set(check.findings.map(f => f.ref));
-    const showPlacement = byId("fab-placement")?.checked ?? true, showLabels = byId("fab-labels")?.checked ?? false;
+    const showPlacement = byId("fab-placement")?.checked ?? true, showPin1 = byId("fab-pin1")?.checked ?? true, showLabels = byId("fab-labels")?.checked ?? false;
     const highlight = "#ffd84d", marker = "#5fd4ff", warn = "#ff7a59";
 
     // Selection first, so markers stay on top of it.
@@ -64,7 +64,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     for (const part of check.parts) {
       if (onlySide() && part.side !== onlySide()) continue;
       const bad = flagged.has(part.ref), colour = bad ? warn : marker;
-      if (showPlacement && part.pin1) layer.append(svgNode("circle", { cx: part.pin1[0] * U, cy: part.pin1[1] * U, r: 0.28 * U, fill: colour, opacity: 0.9 }));
+      if (showPin1 && part.pin1) layer.append(svgNode("circle", { cx: part.pin1[0] * U, cy: part.pin1[1] * U, r: 0.28 * U, fill: colour, opacity: 0.9 }));
       if (showPlacement && part.placement) {
         const { x, y } = part.placement, r = 0.7 * U;
         const cross = svgNode("g", { stroke: colour, "stroke-width": 0.12 * U, fill: "none" });
@@ -117,7 +117,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     const panel = byId("fab-selection");
     if (!panel) return;
     panel.replaceChildren();
-    if (!selection) { panel.append(el("h3", "Click a pad, track or part"), el("p", "It is identified here and its net is highlighted. Drag to pan; scroll to zoom.", { className: "muted" })); return; }
+    if (!selection) { panel.append(el("h3", "Nothing selected"), el("p", "Click a pad, track or part on the board to see what it is and highlight its net.", { className: "muted" })); return; }
     if (hit?.kind === "pad") panel.append(el("p", hit.pad.number ? `Pad ${hit.pad.number}${hit.pad.name ? ` (${hit.pad.name})` : ""} of ${hit.part.ref}` : `Unnumbered pad or hole of ${hit.part.ref}`, { className: "fab-hit" }));
     if (selection.net) {
       const pads = [...new Set(check.parts.flatMap(part => part.pads.filter(pad => pad.net === selection.net).map(pad => `${part.ref}.${pad.number}`)))];
@@ -185,7 +185,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     else if (hit.kind === "part") select({ part: hit.part }, { hit });
     else select({ net: hit.net }, { hit });
   });
-  for (const id of ["fab-placement", "fab-labels"]) byId(id)?.addEventListener("change", redraw);
+  for (const id of ["fab-placement", "fab-pin1", "fab-labels"]) byId(id)?.addEventListener("change", redraw);
 
   return {
     redraw,
@@ -202,7 +202,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
         check = loadedCheck; board = loadedBoard;
       } catch (error) {
         // The layers are still worth inspecting without the checks.
-        byId("gerber-status").textContent += ` Pre-order checks unavailable: ${error.message}.`;
+        const alert = byId("gerber-alert"); if (alert) { alert.hidden = false; alert.textContent = `The pre-order checks could not load for this revision: ${error.message}. The layers are still shown.`; }
         return;
       }
       show(true);
