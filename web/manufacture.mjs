@@ -38,7 +38,8 @@ if (version.id !== 'current') {
   ]);
   const order = stackup && data.manufacturing ? orderChecks(stackup, data.manufacturing, board?.bounds ?? null) : null;
   const statistics = version.statistics ? await json(`review/${version.statistics}`).catch(() => null) : null;
-  const manufacturability = board && data.fabCapabilities ? compare(measure(board, statistics), data.fabCapabilities) : null;
+  const measures = version.boardMeasures ? await json(`review/${version.boardMeasures}`).catch(() => null) : null;
+  const manufacturability = board && data.fabCapabilities ? compare(measure(board, statistics, measures), data.fabCapabilities) : null;
   const result = readiness({ validation: version.validation, order, parts: data.parts, assembly: data.assembly, check, manufacturability });
   const cards = el('div', undefined, { className: 'readiness-grid' });
   cards.append(

@@ -28,6 +28,7 @@
     { "id": "pthToTrack", "label": "Plated pad hole to other copper", "jlcpcb": { "min": 0.28, "note": "0.35 mm recommended." }, "pcbway": { "min": null, "note": "Not published for plated pads." } },
     { "id": "copperToEdge", "label": "Copper to board edge", "jlcpcb": { "min": 0.20 }, "pcbway": { "min": 0.25, "note": "Tolerances page: profile to copper." } },
     { "id": "maskWeb", "label": "Solder-mask strip between pads (black mask)", "jlcpcb": { "min": 0.13, "note": "Black and white mask; 0.10 mm for green." }, "pcbway": { "min": 0.114, "note": "Advanced table: 4.5 mil for black." } },
-    { "id": "silkscreen", "label": "Silkscreen line and text height", "jlcpcb": { "min": 0.15, "note": "Line 0.15 mm, text height 1.0 mm." }, "pcbway": { "min": 0.15, "note": "Line 0.15 mm, text height 0.8 mm." } }
+    { "id": "silkscreen", "label": "Silkscreen line width", "jlcpcb": { "min": 0.15, "note": "Line 0.15 mm." }, "pcbway": { "min": 0.15, "note": "Line 0.15 mm." } },
+    { "id": "silkText", "label": "Silkscreen text height", "jlcpcb": { "min": 1.0, "note": "Text height 1.0 mm." }, "pcbway": { "min": 0.8, "note": "Text height 0.8 mm." } }
   ]
 }
