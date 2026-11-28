@@ -64,11 +64,34 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+  smoke:
+    name: Portal browser smoke test
+    needs: kicad
+    # GitHub's Ubuntu image ships Google Chrome; no browser download is needed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      # download-artifact v8 is the release documented with upload-artifact v7.
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-build
+          path: build/releases/
+      - name: Smoke-test the newest portal in headless Chrome
+        run: |
+          site=$(ls -d build/releases/*/site | tail -n 1)
+          test -f "$site/index.html"
+          google-chrome --version
+          node tools/smoke-portal.mjs "$site" --chrome "$(command -v google-chrome)"
+
   pages:
     name: Publish portal to GitHub Pages
     # Only builds of main are published; pull requests are checked, not deployed.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [tooling, kicad]
+    # A portal that fails the browser smoke test is never published.
+    needs: [tooling, kicad, smoke]
     runs-on: ubuntu-latest
     permissions:
       pages: write
