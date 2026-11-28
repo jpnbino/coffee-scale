@@ -200,7 +200,8 @@ async function stackupOrder(page) {
   return 'order parameters agree';
 }
 async function viewerNet(page) {
-  await page.waitFor(`document.getElementById("design-viewer")?.hasAttribute("open")`, 5000, '#design-viewer to open');
+  // The viewer was once a folded <details>; it is now the default tab. Accept either.
+  await page.waitFor(`document.getElementById("design-viewer")?.hasAttribute("open") || document.getElementById("design-viewer-app")?.hidden === false`, 20000, 'the interactive viewer to open');
   // design-viewer.mjs marks the selected net in the list and reports it in
   // #dv-status. Schematic nets carry a leading "/" (/HX_DOUT); the link may omit it.
   try {
