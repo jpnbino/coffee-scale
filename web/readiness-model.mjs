@@ -38,7 +38,7 @@ export function groupBlockers(blockers) {
  * { state: 'ok' | 'todo' | 'pending', text, link? }. "ok" never means
  * approved by a supplier: only that the release's own records agree.
  */
-export function readiness({ validation, order, parts, assembly, check }) {
+export function readiness({ validation, order, parts, assembly, check, manufacturability = null }) {
   const factory = parts.filter(part => part.Stage === 'factory');
   const withMpn = factory.filter(part => part.MPN).length, reviewed = factory.filter(part => part.Verified).length;
   const kindOf = f => f.kind ?? (/paste/i.test(f.message) ? 'paste' : 'placement');
@@ -50,7 +50,7 @@ export function readiness({ validation, order, parts, assembly, check }) {
     { state: 'ok', text: 'Fabrication package complete: seven Gerber layers, job file, plated and non-plated drills', link: ['Gerber inspection', 'gerbers.html'] },
     order ? { state: order.agrees ? 'ok' : 'todo', text: order.agrees ? 'Order parameters agree with the KiCad stackup and outline' : 'Order parameters disagree with the KiCad stackup or outline', link: ['Layer stackup', 'stackup.html'] }
       : { state: 'pending', text: 'Order parameters could not be checked for this revision' },
-    { state: 'pending', text: 'Manufacturability against JLCPCB and PCBWay limits: not checked here yet' },
+    manufacturability ? manufacturabilityItem(manufacturability) : { state: 'pending', text: 'Manufacturability against JLCPCB and PCBWay limits: not checked for this revision' },
   ];
   const assembled = [
     { state: withMpn === factory.length ? 'ok' : 'todo', text: `${withMpn} of ${factory.length} factory-placed parts have a manufacturer part number` },
@@ -63,4 +63,13 @@ export function readiness({ validation, order, parts, assembly, check }) {
   const hand = parts.filter(part => part.Stage === 'manual' || part.Stage === 'wire-pad').map(part => ({ ref: part.Reference, value: part.Value, note: part.Notes }));
   const verdict = list => list.some(item => item.state === 'todo') ? 'todo' : list.some(item => item.state === 'pending') ? 'pending' : 'ok';
   return { bare, assembled, hand, bareState: verdict(bare), assembledState: assembly?.ready ? verdict(assembled) : 'todo' };
+}
+
+/** One checklist line from the manufacturability comparison: "todo" if any maker's published minimum is not met. */
+function manufacturabilityItem(rows) {
+  const fabs = [...new Set(rows.flatMap(row => row.fabs.map(f => f.fab)))];
+  const below = fabs.map(fab => ({ fab, rows: rows.filter(row => row.fabs.find(f => f.fab === fab)?.verdict === 'below') }));
+  const name = fab => ({ jlcpcb: 'JLCPCB', pcbway: 'PCBWay' })[fab] ?? fab;
+  const text = below.map(({ fab, rows: r }) => r.length ? `${name(fab)}: ${r.length} below (${r.map(x => x.label.toLowerCase()).join(', ')})` : `${name(fab)}: all clear`).join(' · ');
+  return { state: below.some(b => b.rows.length) ? 'todo' : 'ok', text: `Published limits: ${text}`, link: ['Board statistics', 'statistics.html'] };
 }

@@ -51,7 +51,7 @@ export function buildSite({ root, output, config, buildId, assembly }) {
 
   // CSV stores booleans as text; expose real booleans to the browser.
   const parts = readCsv(`${output}/assembly/bom-with-stages.csv`).map(part => ({ ...part, Verified: part.Verified === 'True' }));
-  const data = { basename: name, parts, assembly, mechanical: readJson(`${output}/mechanical/interface.json`), statistics, manufacturing: config.manufacturing };
+  const data = { basename: name, parts, assembly, mechanical: readJson(`${output}/mechanical/interface.json`), statistics, manufacturing: config.manufacturing, fabCapabilities: readJson(join(root, 'fab-capabilities.json')) };
   writeFileSync(`${site}/data.js`, `window.releaseData = ${htmlSafeJson(data)};\n`, 'utf8');
   writeJson(`${site}/files/validation.json`, {
     buildId, hardwareRevision: config.project.revision, boardSha256: fileDigest(`${output}/source/${name}.kicad_pcb`),

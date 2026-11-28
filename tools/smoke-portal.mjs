@@ -199,6 +199,14 @@ async function stackupOrder(page) {
   await page.waitFor(`Boolean(document.querySelector(".order-ok"))`, 15000, '.order-ok (order parameters agree)');
   return 'order parameters agree';
 }
+async function statisticsManufacturability(page) {
+  await page.waitFor(`document.querySelectorAll("#mfg-body tr td.mfg-ok, #mfg-body tr td.mfg-tight, #mfg-body tr td.mfg-below").length >= 10 && document.getElementById("mfg-summary")?.textContent.includes("JLCPCB")`, 15000, 'the manufacturability table and summary');
+  return 'manufacturability table filled';
+}
+async function versionsSummary(page) {
+  await page.waitFor(`document.querySelectorAll("#comparison-summary .change-tile").length >= 5 && document.querySelectorAll("#change-list button").length > 0`, 20000, 'the change summary and change list');
+  return 'summary tiles and change list';
+}
 async function viewerNet(page) {
   // The viewer was once a folded <details>; it is now the default tab. Accept either.
   await page.waitFor(`document.getElementById("design-viewer")?.hasAttribute("open") || document.getElementById("design-viewer-app")?.hidden === false`, 20000, 'the interactive viewer to open');
@@ -217,6 +225,8 @@ export const FUNCTIONAL_CHECKS = [
   ['gerbers: bottom preset mirrors the view', 'gerbers.html', gerberBottomPreset],
   ['gerbers: ?part=J4 selects J4', 'gerbers.html?part=J4', gerberPart],
   ['stackup: order parameters agree', 'stackup.html', stackupOrder],
+  ['statistics: manufacturability against JLCPCB and PCBWay', 'statistics.html', statisticsManufacturability],
+  ['versions: change summary and list', 'versions.html', versionsSummary],
   ['explore: ?net=HX_DOUT opens the viewer on HX_DOUT', 'explore.html?net=HX_DOUT', viewerNet],
 ];
 
