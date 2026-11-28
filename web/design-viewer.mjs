@@ -160,7 +160,7 @@ export async function mountDesignViewer(version) {
     renderNetDetail();
     for (const item of byId('dv-net-list').querySelectorAll('button')) item.setAttribute('aria-current', String(item.dataset.net === currentNet));
     status.textContent = currentNet
-      ? `Net ${currentNet}: ${padsByNet.get(currentNet)?.length ?? 0} pads highlighted on the PCB${nets.nets[currentNet] ? ' and its wires, labels and pins in the schematic' : '; no schematic geometry was traced for it'}.`
+      ? `Net ${shown(currentNet)}: ${padsByNet.get(currentNet)?.length ?? 0} pads highlighted on the PCB${nets.nets[currentNet] ? ' and its wires, labels and pins in the schematic' : '; no schematic geometry was traced for it'}.`
       : 'Click a part to find it in both views; click a track, pad, wire or label to highlight its net.';
   }
 
@@ -196,25 +196,27 @@ export async function mountDesignViewer(version) {
   });
 
   // ------------------------------------------------------------ net list
+  // Schematic nets carry KiCad's leading '/' (sheet path); readers know them without it.
+  const shown = name => String(name).replace(/^\//, '');
   const search = byId('dv-net-search'), showUnconnected = byId('dv-show-unconnected');
   const allNets = [...padsByNet.keys()].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   function renderNetList() {
     const query = search.value.trim().toLowerCase();
     const list = byId('dv-net-list'); list.replaceChildren();
-    const shown = allNets.filter(name => (showUnconnected.checked || !name.startsWith('unconnected-')) && name.toLowerCase().includes(query));
-    for (const name of shown) {
-      const button = Object.assign(document.createElement('button'), { type: 'button', textContent: name });
+    const visible = allNets.filter(name => (showUnconnected.checked || !name.startsWith('unconnected-')) && name.toLowerCase().includes(query));
+    for (const name of visible) {
+      const button = Object.assign(document.createElement('button'), { type: 'button', textContent: shown(name) });
       button.dataset.net = name; button.setAttribute('aria-current', String(name === currentNet));
       button.append(Object.assign(document.createElement('span'), { textContent: `${padsByNet.get(name).length} pads` }));
       button.addEventListener('click', () => selectNet(name === currentNet ? null : name, { zoom: true }));
       const item = document.createElement('li'); item.append(button); list.append(item);
     }
-    byId('dv-net-count').textContent = `${shown.length} of ${allNets.length} nets`;
+    byId('dv-net-count').textContent = `${visible.length} of ${allNets.length} nets`;
   }
   function renderNetDetail() {
     const detail = byId('dv-net-detail'); detail.replaceChildren();
     if (!currentNet) return;
-    detail.append(Object.assign(document.createElement('h3'), { textContent: currentNet }));
+    detail.append(Object.assign(document.createElement('h3'), { textContent: shown(currentNet) }));
     const pads = byId('dv-net-pads') ?? document.createElement('ul');
     pads.id = 'dv-net-pads'; pads.replaceChildren();
     for (const pad of padsByNet.get(currentNet) ?? []) {
@@ -230,13 +232,21 @@ export async function mountDesignViewer(version) {
   byId('dv-clear').addEventListener('click', () => { search.value = ''; renderNetList(); selectNet(null); });
 
   // ------------------------------------------------------------ layout
-  const fit = () => { sch.zoom_to_page?.(); pcb.zoom_to_board(); sch.draw(); pcb.draw(); };
+  // The PCB is framed on its outline, not on the drawing sheet around it.
+  const outline = board.bounds ? [[board.bounds.minX, board.bounds.minY], [board.bounds.maxX, board.bounds.maxY]] : null;
+  const fit = () => { sch.zoom_to_page?.(); if (outline) zoomTo(pcb, outline, 3); else pcb.zoom_to_board(); sch.draw(); pcb.draw(); };
   for (const button of document.querySelectorAll('[data-dv-layout]')) button.addEventListener('click', () => {
     app.dataset.layout = button.dataset.dvLayout;
     for (const other of document.querySelectorAll('[data-dv-layout]')) other.setAttribute('aria-pressed', String(other === button));
     requestAnimationFrame(() => requestAnimationFrame(fit));
   });
   byId('dv-fit').addEventListener('click', fit);
+  // The net list folds away to give both views more width; narrow windows start folded.
+  const netsToggle = byId('dv-nets-toggle'), netsKey = 'coffee-scale.viewer-nets';
+  const showNets = open => { app.dataset.nets = open ? 'shown' : 'hidden'; netsToggle.setAttribute('aria-expanded', String(open)); netsToggle.setAttribute('aria-pressed', String(open)); requestAnimationFrame(() => requestAnimationFrame(fit)); };
+  const storedNets = storage.get(netsKey);
+  showNets(storedNets === null || storedNets === undefined ? !matchMedia('(max-width: 1400px)').matches : storedNets === 'shown');
+  netsToggle.addEventListener('click', () => { const open = app.dataset.nets !== 'shown'; showNets(open); storage.set(netsKey, open ? 'shown' : 'hidden'); });
 
   setTheme(themeSelect.value);
   renderNetList();

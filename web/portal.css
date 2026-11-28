@@ -87,3 +87,17 @@ table.bom td:first-child{font-weight:400;color:inherit}table.bom td.qty{text-ali
 .blocker-groups{list-style:none;padding:0;margin:10px 0 0}.blocker-groups li{padding:8px 0;border-top:1px solid #eef0ea;font-size:12px}.blocker-groups strong{display:block;font-size:13px}.blocker-groups span{color:var(--muted)}
 @media(max-width:900px){.readiness-grid{grid-template-columns:1fr}}
 table.bom td:nth-child(3){min-width:90px}
+/* Explore: tabs with one fullscreen icon; interactive viewer first; 3D and drawings share the board stage. */
+.explore-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 12px}.explore-bar .tabs{margin:0}
+.icon-button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);cursor:pointer}.icon-button:hover{border-color:var(--green)}.icon-button[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+.dv-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.dv-spacer{flex:1}
+.canvas-note{font-size:12px;color:var(--muted);margin:8px 0 0}
+.model-panel,.drawings-panel{height:auto;border:0;background:none;overflow:visible}
+.model-panel model-viewer,.drawings-panel .drawing{display:block;width:100%;height:540px;border:1px solid var(--line);border-radius:7px;background:#e7e9e2;overflow:hidden}.drawings-panel .drawing[hidden]{display:none}.drawings-panel .drawing object{display:block;width:100%;height:100%;border:0}.drawings-panel .schematic-panel{background:#fff}
+.model-panel .canvas-hint,.drawings-panel .canvas-hint{color:#e6ece7}
+.drawing-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.drawing-bar .view-side button{padding:5px 12px}.drawing-bar a{font-size:12px}
+.model-options{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:10px}.model-options label{display:flex;align-items:center;gap:8px}
+.provenance{margin-top:18px}.provenance summary{font-size:12px;color:var(--muted);font-weight:400}
+@media(max-width:1050px){.model-panel model-viewer,.drawings-panel .drawing{height:450px}}@media(max-width:760px){.model-panel model-viewer,.drawings-panel .drawing{height:360px}}
+.dv-toolbar .icon-button{padding:0;width:34px;height:34px}.dv-toolbar button[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+#design-viewer-app[data-nets=hidden] .dv-nets{display:none}#design-viewer-app[data-nets=hidden] .dv-body{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#design-viewer-app[data-nets=hidden][data-layout=sch] .dv-body,#design-viewer-app[data-nets=hidden][data-layout=pcb] .dv-body{grid-template-columns:minmax(0,1fr)}
