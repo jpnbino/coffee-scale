@@ -5,17 +5,18 @@ import { pathToFileURL } from 'node:url';
 export function portalPages(template) {
   const sections = new Map([...template.matchAll(/<section id="([^"]+)"[^>]*>[\s\S]*?<\/section>/g)].map(match => [match[1], match[0]]));
   const take = id => { if (!sections.has(id)) throw new Error(`Missing portal section: ${id}`); return sections.get(id); };
+  // Each page: id, title, sidebar group, one-sentence lead (also the card summary), template sections.
   const pages = [
-    ['index', 'Overview', 'Purpose, specifications and prototype status.', ['overview']],
-    ['explore', 'Explore board', 'PCB, schematic and interactive 3D model.', ['inspect']],
-    ['statistics', 'Board statistics', 'Dimensions, components, routing and drills.', ['statistics']],
-    ['stackup', 'Layer stackup', 'Materials, layer order and manufacturing traceability.', ['stackup']],
-    ['gerbers', 'Gerber inspection', 'Inspect the actual manufacturing layers.', ['gerbers']],
-    ['manufacture', 'Build & manufacture', 'Parts, assembly readiness and release downloads.', ['parts', 'downloads']],
-    ['mechanical', 'Enclosure & mechanics', 'Models, mounting geometry and fit assumptions.', ['mechanical']],
-    ['versions', 'Versions & changes', 'Compare snapshots and inspect their artifacts.', ['compare']],
-    ['documentation', 'Documentation', 'Circuit explanations, interfaces and project notes.', []],
-  ].map(([id, title, summary, ids]) => ({ id, title, summary, content: ids.map(take).join('\n') }));
+    ['index', 'Overview', null, 'Purpose, specifications and prototype status.', ['overview']],
+    ['explore', 'Explore board', 'Board', 'The PCB, schematic and 3D model of the selected revision, with net highlighting and cross-probing.', ['inspect']],
+    ['statistics', 'Board statistics', 'Board', 'Sizes, counts, routing and drills of the selected revision.', ['statistics']],
+    ['stackup', 'Layer stackup', 'Board', 'What the board is made of, the values to order it with, and what that means for the design.', ['stackup']],
+    ['gerbers', 'Gerber inspection', 'Manufacturing', 'The exact files the factory receives, with the checks to run before you order.', ['gerbers']],
+    ['manufacture', 'Build & manufacture', 'Manufacturing', 'Parts, assembly readiness and the release downloads.', ['parts', 'downloads']],
+    ['mechanical', 'Enclosure & mechanics', 'Manufacturing', 'What a case designer needs: models, mounting geometry and the assumptions still to check.', ['mechanical']],
+    ['versions', 'Versions & changes', 'Project', 'Compare two revisions and open each one\'s files.', ['compare']],
+    ['documentation', 'Documentation', 'Project', 'Guides to the circuit, interfaces, assembly, revisions and manufacturing.', []],
+].map(([id, title, group, summary, ids]) => ({ id, title, group, summary, content: ids.map(take).join('\n') }));
   const articles = [...take('documentation').matchAll(/<article[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)].map(([, id, content]) => {
     const title = content.match(/<h1[^>]*>(.*?)<\/h1>/)?.[1];
     if (!title || !/^[\w-]+$/.test(id)) throw new Error('Documentation requires a safe ID and a title');
@@ -27,8 +28,7 @@ export function portalPages(template) {
   const cards = list => `<div class="resource-grid">${list.map(page => `<a href="${page.id}.html"><strong>${page.title}</strong><span>${page.summary}</span></a>`).join('')}</div>`;
   pages[0].content = pages[0].content.replace('<figure class="hero">', `${cards(pages.slice(1))}<figure class="hero">`);
   pages.find(page => page.id === 'explore').content = take('inspect').replace(/<object data=/g, '<object data-src=').replace('<model-viewer src=', '<model-viewer data-src=');
-  pages.find(page => page.id === 'statistics').content = take('statistics').replace('Selected comparison target:', 'Selected hardware snapshot:');
-  pages.at(-1).content = `<section id="documentation-index"><h1>Project documentation</h1><p>Read a focused guide or inspect the corresponding design resources.</p>${cards(articles)}</section>`;
+  pages.at(-1).content = `<section id="documentation-index">${cards(articles)}</section>`;
   pages.push(...articles);
   const navigation = pages.filter(page => !page.document);
   const shell = template.slice(0, template.indexOf('<main>')).replace(/<script[\s\S]*?<\/script>/g, '')
@@ -36,22 +36,27 @@ export function portalPages(template) {
     .replace('</head>', '<link rel="stylesheet" href="portal.css"><script src="data.js" defer></script><script type="module" src="app.js"></script><script type="module" src="revision.mjs"></script><script type="module" src="portal.mjs"></script><script type="module" src="viewer-controls.mjs"></script>{{SCRIPTS}}</head>')
     .replace('<html lang="en">','<html lang="en" class="revision-loading">')
     .replace('<body>', '<body><a class="skip-link" href="#main">Skip to content</a>');
-  const top = template.match(/<header class="topline">[\s\S]*?<\/header>/)[0];
   const build = template.match(/<p>Build <code>([^<]+)<\/code><\/p>/)[1];
-  const footer = template.match(/<footer>[\s\S]*?<\/footer>/)[0].replace('</footer>', `<p>Resolving selected revision…</p><small>Portal build ${build}</small></footer>`);
-  const revision = template.match(/OPEN HARDWARE \/ REV ([^<]+)/)[1];
+  const footer = template.match(/<footer>[\s\S]*?<\/footer>/)[0].replace('</footer>', `<small class="build-id">Portal build ${build}</small></footer>`);
   const index = pages.map(page => ({url: `${page.id}.html`, title: page.title.replace(/<[^>]*>/g, ''), text: page.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')}));
   const files = new Map();
   const schematicSvg=template.match(/<object data="([^"]+)"[^>]*aria-label="Full schematic"/)[1];
   const artifactPaths={'pcb-top.svg':'pcbTop','pcb-bottom.svg':'pcbBottom',[schematicSvg]:'schematicSvg','schematic.pdf':'schematicPdf','board.glb':'model','top.png':'hero','stackup.json':'stackup','native/provenance.json':'nativeProvenance','native/board.kicad_pcb':'nativeBoard','native/schematic-nets.json':'schematicNets','files/fabrication.zip':'fabrication','files/assembly-DRAFT.zip':'assembly','files/source.zip':'source','files/validation.json':'validation','files/mechanical.zip':'mechanical','files/mechanical/README.md':'mechanicalGuide'};
   for (const page of pages) {
-    const rail = `<aside class="rail"><a class="brand" href="index.html"><span class="mark">≈</span> COFFEE SCALE<span class="edition">OPEN HARDWARE / REV ${revision}</span></a><label class="search-label" for="portal-search">Find a page or topic</label><input id="portal-search" type="search" placeholder="Pinout, battery, HX711…" aria-controls="search-results"><div id="search-results" role="status"></div><nav aria-label="Project resources">${navigation.map(item => `<a href="${item.id}.html"${item.id === (page.document ? 'documentation' : page.id) ? ' aria-current="page"' : ''}>${item.title}</a>`).join('')}</nav><p class="rail-note">Current-build documentation. Historical hardware and artifacts are available under Versions & changes.</p></aside>`;
+    const current = page.document ? 'documentation' : page.id;
+    const groups = [...new Set(navigation.map(item => item.group))];
+    const links = group => navigation.filter(item => item.group === group).map(item => `<a href="${item.id}.html"${item.id === current ? ' aria-current="page"' : ''}>${item.title}</a>`).join('');
+    // The revision is chosen once, in the sidebar; every view and download follows it.
+    const rail = `<aside class="rail"><div class="rail-top"><a class="brand" href="index.html"><span class="mark">≈</span> COFFEE SCALE</a><button type="button" class="rail-menu" aria-expanded="false" aria-controls="rail-body">Menu</button></div><div class="rail-body" id="rail-body"><div class="revision-bar"><label for="global-revision">Revision</label><select id="global-revision" disabled title="Every view and download follows this revision"><option value="">Loading revisions…</option></select><p id="revision-status" role="status">Resolving revision…</p><noscript>JavaScript is required to select and verify a revision before viewing its artifacts.</noscript></div><label class="search-label" for="portal-search">Find a page or topic</label><input id="portal-search" type="search" placeholder="Pinout, battery, HX711…" aria-controls="search-results"><div id="search-results" role="status"></div><nav aria-label="Project resources">${groups.map(group => group ? `<p class="nav-group">${group}</p>${links(group)}` : links(group)).join('')}</nav></div></aside>`;
     const scripts = page.id === 'versions' ? '<script type="module" src="review.mjs"></script>' : page.id === 'gerbers' ? '<script type="module" src="gerber.mjs"></script>' : page.id === 'statistics' ? '<script type="module" src="statistics-page.mjs"></script>' : page.id === 'stackup' ? '<script type="module" src="stackup.mjs"></script>' : '';
-    const exploreNav = ['explore', 'gerbers', 'statistics', 'stackup'].includes(page.id) ? `<nav class="resource-tabs" aria-label="Board resources">${navigation.filter(item => ['explore', 'gerbers', 'statistics', 'stackup'].includes(item.id)).map(item => `<a href="${item.id}.html"${item.id === page.id ? ' aria-current="page"' : ''}>${item.title}</a>`).join('')}</nav>` : '';
-    const crumb = `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Overview</a>${page.document ? ' / <a href="documentation.html">Documentation</a>' : ''}${page.id !== 'index' ? ` / <span aria-current="page">${page.title}</span>` : ''}</nav>`;
-    const content=page.content.replace(/\b(?:href|src|data-src)="([^"]+)"/g,(attribute,path)=>artifactPaths[path]?`data-artifact="${artifactPaths[path]}"`:attribute).replace(/ poster="top.png"/g,'');
-    const selector='<div class="revision-bar"><label for="global-revision">Hardware revision</label><select id="global-revision" disabled><option value="">Loading revisions…</option></select><p id="revision-status" role="status">Resolving revision and matching artifacts…</p><noscript>JavaScript is required to select and verify a revision before viewing its artifacts.</noscript></div>';
-    files.set(`${page.id}.html`, shell.replace(/<title>[\s\S]*?<\/title>/, `<title>${page.title} · Coffee scale hardware</title>`).replace('{{RAIL}}', rail).replace('{{SCRIPTS}}', scripts) + `<main id="main" tabindex="-1">${top}${selector}${crumb}${exploreNav}<div class="revision-content">${content}</div>${footer}</main></body></html>`);
+    // Pages get one standard heading; the section's own eyebrow and title give way to it.
+    const strip = html => html.replace(/^(\s*<section[^>]*>)\s*<p class="eyebrow">[^<]*<\/p>\s*<h[12]>[\s\S]*?<\/h[12]>(\s*<p class="lead">[\s\S]*?<\/p>)?/, '$1');
+    const body = page.id === 'index' || page.document ? page.content : strip(page.content).replace(/<p class="eyebrow">\d\d \/ [^<]*<\/p>/g, '');
+    const head = page.id === 'index' || page.document ? '' : `<header class="page-head"><p class="eyebrow">${page.group.toUpperCase()}</p><h1>${page.title}</h1><p class="lead">${page.summary}</p></header>`;
+    const crumb = page.document ? `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="documentation.html">Documentation</a> / <span aria-current="page">${page.title}</span></nav>` : '';
+    const content=(head+body).replace(/\b(?:href|src|data-src)="([^"]+)"/g,(attribute,path)=>artifactPaths[path]?`data-artifact="${artifactPaths[path]}"`:attribute).replace(/ poster="top.png"/g,'');
+    const banner='<p id="revision-banner" class="revision-banner" role="status" hidden></p>';
+    files.set(`${page.id}.html`, shell.replace(/<title>[\s\S]*?<\/title>/, `<title>${page.title} · Coffee scale hardware</title>`).replace('{{RAIL}}', rail).replace('{{SCRIPTS}}', scripts) + `<main id="main" tabindex="-1">${banner}${crumb}<div class="revision-content">${content}</div>${footer}</main></body></html>`);
   }
   files.set('search-index.json', JSON.stringify(index));
   return files;

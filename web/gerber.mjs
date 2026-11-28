@@ -32,7 +32,8 @@ for(const button of presetButtons){button.disabled=true;button.addEventListener(
 {
   const workspace=byId("gerber-workspace"),toggle=byId("stack-toggle"),key="coffee-scale.gerber-stack-collapsed";
   const apply=collapsed=>{workspace?.classList.toggle("stack-collapsed",collapsed);toggle?.setAttribute("aria-expanded",String(!collapsed));if(toggle)toggle.title=collapsed?"Show the layer stack":"Hide the layer stack to give the board more room";};
-  let stored=false;try{stored=localStorage.getItem(key)==="1";}catch{}
+  // Without a stored choice, narrow screens start with the stack folded so the board comes first.
+  let stored=matchMedia("(max-width: 900px)").matches;try{const saved=localStorage.getItem(key);if(saved!==null)stored=saved==="1";}catch{}
   apply(stored);
   toggle?.addEventListener("click",()=>{const collapsed=!workspace.classList.contains("stack-collapsed");apply(collapsed);try{localStorage.setItem(key,collapsed?"1":"0");}catch{}requestAnimationFrame(()=>redrawRuler());});
 }

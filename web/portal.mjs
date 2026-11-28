@@ -23,3 +23,7 @@ input.addEventListener('input', async () => {
     }
   } catch { results.textContent = 'Search unavailable. Use the resource links below.'; indexPromise = undefined; }
 });
+
+// Phone layout: the sidebar folds into a menu button.
+const rail = document.querySelector('.rail'), menu = document.querySelector('.rail-menu');
+menu?.addEventListener('click', () => { const open = !rail.classList.contains('open'); rail.classList.toggle('open', open); menu.setAttribute('aria-expanded', String(open)); menu.textContent = open ? 'Close' : 'Menu'; });
