@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { parseSexpr, child, children, atom, point, angle } from './kicad-sexpr.mjs';
 import { parseCsv } from './lib/formats.mjs';
 import { insidePad } from '../web/fab-geometry.mjs';
+import { readFlashes } from './gerber-flashes.mjs';
 
 /** A placement point further than this from the part's body is reported. */
 export const CENTROID_TOLERANCE_MM = 0.5;
@@ -39,6 +40,29 @@ export function courtyards(pcbSource) {
       points.push(...local.map(p => toBoard(x, y, rotation, p)));
     }
     if (ref && points.length) result.set(ref, box(points));
+  }
+  return result;
+}
+
+/**
+ * Filled copper pours, for click-to-identify: each filled polygon of each zone
+ * with its net and layer, as a flat [x0, y0, x1, y1, …] list rounded to 0.01 mm
+ * and thinned where points are closer than 0.1 mm (the fill KiCad saved).
+ */
+export function pours(pcbSource) {
+  const board = parseSexpr(pcbSource), result = [];
+  for (const zone of children(board, 'zone')) {
+    if (child(zone, 'keepout')) continue;
+    const net = String(child(zone, 'net')?.[1] ?? '').replace(/^\//, '');
+    for (const fill of children(zone, 'filled_polygon')) {
+      const layer = atom(fill, 'layer') ?? atom(zone, 'layer');
+      const points = [];
+      for (const [x, y] of children(child(fill, 'pts') ?? [], 'xy').map(point)) {
+        const n = points.length;
+        if (!n || Math.hypot(x - points[n - 2], y - points[n - 1]) >= 0.1) points.push(Math.round(x * 100) / 100, Math.round(y * 100) / 100);
+      }
+      if (points.length >= 6) result.push({ net, layer, points });
+    }
   }
   return result;
 }
@@ -87,7 +111,33 @@ export function readPlacement(csv) {
 
 const pin1Of = pads => pads.find(p => p.number === '1') ?? pads.find(p => /^A1$/i.test(p.number)) ?? null;
 
-export function fabCheck({ pcbSource, schSource, board, placementCsv = null, placementName = null }) {
+/** Paste coverage below or above these fractions of a pad's copper is reported. */
+export const PASTE_COVERAGE = { min: 0.5, max: 1.1 };
+
+/**
+ * Paste coverage per pad from the released Gerbers: the stencil openings whose
+ * centre lies on the pad, as a fraction of the pad's copper flash area.
+ */
+export function pasteCoverage(parts, pasteSources, copperSources) {
+  // Stacked pads (USB-C A1/B12 share one land) give identical openings; count each once.
+  const paste = [...new Map(pasteSources.flatMap(source => readFlashes(source).flashes).filter(f => f.ref).map(f => [[f.ref, f.x, f.y, f.width, f.height].join(), f])).values()];
+  const copper = new Map();
+  for (const [side, source] of copperSources) for (const f of readFlashes(source).flashes) if (f.ref && f.pad) {
+    const key = `${f.ref}\u0000${f.pad}\u0000${side}`; copper.set(key, [...(copper.get(key) ?? []), f]);
+  }
+  for (const part of parts) for (const pad of part.pads) {
+    if (pad.type !== 'smd') continue;
+    const flashes = copper.get(`${part.ref}\u0000${pad.number}\u0000${part.side}`) ?? [];
+    const own = flashes.find(f => Math.abs(f.x - pad.x) < 0.01 && Math.abs(f.y - pad.y) < 0.01) ?? (flashes.length === 1 ? flashes[0] : null);
+    if (!own) continue;
+    const openings = paste.filter(f => f.ref === part.ref && insidePad(pad, [f.x, f.y], 0.01));
+    pad.copperAreaMm2 = Math.round(own.area * 1000) / 1000;
+    pad.pasteOpenings = openings.length;
+    pad.pasteCoverage = Math.round(openings.reduce((sum, f) => sum + f.area, 0) / own.area * 1000) / 1000;
+  }
+}
+
+export function fabCheck({ pcbSource, schSource, board, placementCsv = null, placementName = null, pasteSources = [], copperSources = [] }) {
   const yards = courtyards(pcbSource), names = pinNames(schSource);
   const placement = placementCsv ? readPlacement(placementCsv) : null;
   const findings = [];
@@ -121,6 +171,8 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
     return part;
   });
 
+  const measured = pasteSources.length && copperSources.length;
+  if (measured) pasteCoverage(parts, pasteSources, copperSources);
   if (placement) {
     const byRef = new Map(parts.map(part => [part.ref, part]));
     for (const [ref, place] of placement) {
@@ -141,6 +193,12 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
         const first = part.pads.find(p => p.number === part.unpasted[0]);
         add('review', ref, [first.x, first.y], `${part.unpasted.length === 1 ? `Pad ${part.unpasted[0]} has` : `Pads ${part.unpasted.join(', ')} have`} copper but no solder paste, so reflow will not solder ${part.unpasted.length === 1 ? 'it' : 'them'}. Confirm that is intended.`, 'paste');
       }
+      // Paste volume: too little leaves dry joints, more than the pad invites bridges.
+      for (const pad of measured ? part.pads.filter(p => p.pasteCoverage !== undefined && p.pasteOpenings) : []) {
+        const exposed = pad.pasteOpenings > 1 || (pad.copperAreaMm2 ?? 0) > 2;
+        if (pad.pasteCoverage < PASTE_COVERAGE.min) add('review', ref, [pad.x, pad.y], `Pad ${pad.number}${pad.name ? ` (${pad.name})` : ''} gets paste over ${Math.round(pad.pasteCoverage * 100)} % of its copper${exposed ? ' (an exposed pad, usually 50–80 %)' : ''}. Check the stencil opening.`, 'paste-coverage');
+        else if (pad.pasteCoverage > PASTE_COVERAGE.max) add('review', ref, [pad.x, pad.y], `Pad ${pad.number}${pad.name ? ` (${pad.name})` : ''} has a stencil opening ${Math.round(pad.pasteCoverage * 100)} % of its copper; paste beyond the pad can bridge. Check the stencil opening.`, 'paste-coverage');
+      }
       const native = ((place.rotation - part.rotation) % 360 + 360) % 360;
       if (native) part.placement.rotationDifference = native;
     }
@@ -153,10 +211,12 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
     placementFile: placementName,
     centroidToleranceMm: CENTROID_TOLERANCE_MM,
     parts: parts.sort((a, b) => a.ref.localeCompare(b.ref, undefined, { numeric: true })),
+    pours: pours(pcbSource),
     findings,
     limitations: [
       'Checks compare the design, the placement file and the paste openings defined on each footprint pad. They do not replace DRC, the assembler\'s own review or a datasheet check of each pin map.',
       'Missing paste is checked only for parts in the placement file; hand-fitted parts are soldered without paste.',
+      measured ? `Paste coverage is the stencil openings centred on a pad as a share of the pad's copper, from the released Gerbers; under ${PASTE_COVERAGE.min * 100} % or over ${PASTE_COVERAGE.max * 100} % is reported. Stencil thickness and the assembler's own aperture changes are not known here.` : 'Paste coverage was not measured: the stencil files are recorded for the current build only.',
       'The body centre is estimated from the footprint courtyard (or the pads when there is none). A courtyard can include overhangs, so a reported offset is a prompt to check, not a confirmed error.',
       placement ? 'Rotation is shown as the placement file gives it; whether it matches the assembler\'s part orientation, including their convention for bottom-side parts, can only be confirmed in their preview.' : 'No placement file is recorded for this revision.',
     ],
@@ -164,12 +224,17 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const [pcb, sch, boardJson, out, placementPath] = process.argv.slice(2);
+  const args = process.argv.slice(2), options = Object.fromEntries(args.filter(a => a.startsWith('--')).map(a => a.slice(2).split('=')));
+  const [pcb, sch, boardJson, out, placementPath] = args.filter(a => !a.startsWith('--'));
+  const files = list => (list ? list.split(',') : []).filter(Boolean);
+  const pasteSources = files(options.paste).map(path => readFileSync(path, 'utf8'));
+  const copperSources = files(options.copper).map(path => [/\.gbl$|B_Cu/i.test(path) ? 'bottom' : 'top', readFileSync(path, 'utf8')]);
   if (placementPath && !existsSync(placementPath)) throw new Error(`Placement file not found: ${placementPath}`);
   const hasPlacement = Boolean(placementPath);
   const result = fabCheck({
     pcbSource: readFileSync(pcb, 'utf8'), schSource: readFileSync(sch, 'utf8'), board: JSON.parse(readFileSync(boardJson, 'utf8')),
     placementCsv: hasPlacement ? readFileSync(placementPath, 'utf8') : null, placementName: hasPlacement ? placementPath.replace(/^.*[\\/]/, '') : null,
+    pasteSources, copperSources,
   });
   writeFileSync(out, JSON.stringify(result));
   console.log(`Fab check: ${result.parts.length} parts, ${result.findings.length} findings.`);

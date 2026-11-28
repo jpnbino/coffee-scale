@@ -4,10 +4,12 @@ import { dimensions,drawRuler } from "./ruler.mjs";
 import { selectedPromise,artifactUrl } from './revision.mjs';
 import { stackRows,drawOrder,coreLabel } from "./layer-stack.mjs";
 import { createFabOverlay } from "./fab-overlay.mjs";
+import { createReviewGuide } from "./review-guide.mjs";
 const byId=id=>document.getElementById(id),svg=byId("gerber-canvas");
 let sequence=0,bounds,measurement=[],measuring=false,previewPoint=null,layerControls=[],mirrorView=()=>{},orderLayers=()=>{};
-const viewport=attachViewport([svg],()=>redrawRuler(),{minWidth:100,maxWidth:1000000,canPan:()=>!measuring});
+const viewport=attachViewport([svg],()=>{redrawRuler();scheduleSync();},{minWidth:100,maxWidth:1000000,canPan:()=>!measuring});
 const fab=createFabOverlay({svg,viewport,isMeasuring:()=>measuring,mirrored:()=>byId("gerber-mirror").checked});
+const guide=createReviewGuide({focus:(ref,at)=>fab.focus(ref,at)});
 // Layer presets for the checks made before ordering: each side as the assembler
 // sees it (copper, mask openings, paste, silkscreen, outline, drills).
 const PRESETS={top:{kinds:[".gtl",".gts",".gtp",".gto",".gm1",".drl"],mirror:false},bottom:{kinds:[".gbl",".gbs",".gbp",".gbo",".gm1",".drl"],mirror:true},copper:{kinds:[".gtl",".gbl",".gm1",".drl"],mirror:false},all:{kinds:null,mirror:false}};
@@ -65,7 +67,7 @@ async function render(version){
     if(!boxes.length)throw new Error("No renderable Gerber layers");
     const x=Math.min(...boxes.map(b=>b[0]))-1000,y=Math.min(...boxes.map(b=>b[1]))-1000;
     bounds=[x,y,Math.max(...boxes.map(b=>b[0]+b[2]))-x+1000,Math.max(...boxes.map(b=>b[1]+b[3]))-y+1000];viewport.set(bounds);
-    const mirror=()=>{group.setAttribute("transform",byId("gerber-mirror").checked?`translate(${2*bounds[0]+bounds[2]},0) scale(-1,1)`:"");orderLayers();clearRuler();fab.redraw();};
+    const mirror=()=>{group.setAttribute("transform",byId("gerber-mirror").checked?`translate(${2*bounds[0]+bounds[2]},0) scale(-1,1)`:"");orderLayers();clearRuler();fab.redraw();scheduleSync();};
     mirrorView=mirror;byId("gerber-mirror").onchange=()=>{mirror();showSide();pressPreset(null);updateSide();};layerControls=[];
     for(const button of presetButtons)button.disabled=true;pressPreset(null);
     const stack=byId("gerber-layers"),drawings=new Map();
@@ -95,7 +97,7 @@ async function render(version){
       for(const child of layer.document.children)drawing.append(document.importNode(child,true));
       drawing.style.display=input.checked?"":"none";group.append(drawing);
       const sync=()=>{drawing.style.display=input.checked?"":"none";item.classList.toggle("off",!input.checked);};sync();
-      input.addEventListener("change",()=>{sync();if(!applyingPreset){pressPreset(null);updateSide();}});
+      input.addEventListener("change",()=>{sync();if(!applyingPreset){pressPreset(null);updateSide();}scheduleSync();});
       opacity.addEventListener("input",()=>{drawing.setAttribute("opacity",Number(opacity.value)/100);toggle.textContent=`${opacity.value}%`;toggle.setAttribute("aria-label",`${layer.label} opacity ${opacity.value}%`);});
     }
     // Provenance sits below the board; only a failure or a real warning is raised above it.
@@ -108,7 +110,9 @@ async function render(version){
     for(const layer of layers){const p=document.createElement("p");p.textContent=`${layer.name}: ${layer.available?`${layer.warnings.length} parser notices (${layer.warnings.filter(w=>w.category==="metadata").length} ignored metadata attributes)`:`UNAVAILABLE: ${layer.error}`}; source SHA-256 ${layer.sourceSha256}`;byId("gerber-warning-detail").append(p);}
     const audit=document.createElement("a");audit.href=url;audit.textContent="Complete parser report and assumptions";byId("gerber-warning-detail").append(audit);
     mirror();updateSide();
+    guide.hide();
     await fab.render(version,{group,bounds,ticket:()=>ticket===sequence});if(ticket!==sequence)return;
+    if(fab.check)guide.load(version,fab.check);
     mirror();for(const button of presetButtons)button.disabled=false;
     // gerbers.html?layer=gtl or ?layer=gbl,gbs (from the stackup page): show just
     // those layers with the outline; bottom-only links are viewed from the bottom.
@@ -119,9 +123,32 @@ async function render(version){
         const bottom=linked.every(kind=>/^\.gb/.test(kind));if(byId("gerber-mirror").checked!==bottom){byId("gerber-mirror").checked=bottom;mirror();showSide();}}finally{applyingPreset=false;}
       pressPreset(null);updateSide();
     }
+    // Shared links restore the view side and the zoomed area too.
+    const params=new URLSearchParams(location.search);
+    if(params.get("side")==="bottom"&&!byId("gerber-mirror").checked){byId("gerber-mirror").checked=true;mirror();showSide();updateSide();}
+    const shared=(params.get("view")??"").split(",").map(Number);
+    if(shared.length===4&&shared.every(Number.isFinite)&&shared[2]>0&&shared[3]>0)requestAnimationFrame(()=>requestAnimationFrame(()=>viewport.set(shared.map(v=>v*1000))));
     clearRuler();
+    stateReady=true;
   }catch(error){if(ticket===sequence){const alert=byId("gerber-alert");alert.hidden=false;alert.textContent=`The Gerber view could not load: ${error.message}`;byId("gerber-hint").textContent="";}}
 }
+// The page address follows the view (layers, side, zoomed area), so a link in an
+// issue opens exactly what was being discussed. Updated quietly, a moment after changes.
+let stateReady=false,syncTimer;
+function scheduleSync(){
+  if(!stateReady)return;clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>{
+    const url=new URL(location.href),on=[...new Set(layerControls.filter(c=>c.input.checked&&!c.input.disabled).map(c=>c.kind.slice(1)))];
+    url.searchParams.set("layer",on.join(","));
+    if(byId("gerber-mirror").checked)url.searchParams.set("side","bottom");else url.searchParams.delete("side");
+    url.searchParams.set("view",viewport.get().map(v=>(v/1000).toFixed(2)).join(","));
+    history.replaceState(history.state,"",url);
+  },250);
+}
+byId("gerber-link")?.addEventListener("click",async()=>{
+  clearTimeout(syncTimer);stateReady&&scheduleSync();
+  setTimeout(async()=>{const chip=byId("gerber-measure-status");try{await navigator.clipboard.writeText(location.href);chip.textContent="Link to this view copied";}catch{chip.textContent="Copy the page address to share this view";}chip.hidden=false;setTimeout(()=>{chip.hidden=true;},2000);},300);
+});
 // View tools: fit, zoom about the centre, measure. Keys work while the page has focus.
 const fit=()=>bounds&&viewport.set(bounds);
 const zoom=factor=>{const [x,y,w,h]=viewport.get();viewport.set([x+w*(1-factor)/2,y+h*(1-factor)/2,w*factor,h*factor]);};
