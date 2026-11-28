@@ -10,7 +10,7 @@ if (isCurrent) {
 for (const assumption of data.mechanical.assumptions) document.getElementById("mechanical-assumptions").append(text("li", assumption));
 document.getElementById("mechanical-status").textContent = data.mechanical.referenceReviewedForCurrentBoard ? "Reference assumptions match this board checksum; physical dimensions remain provisional." : "The board changed since the mechanical reference was reviewed. Recheck the origin, display stack and case interface.";
 } else {
-  document.querySelector('#mechanical>p:not(.eyebrow)').textContent='Historical package: populated and bare-board STEP models re-exported from this selected snapshot. Coordinates use the KiCad default origin; read the included guide.';
+  document.getElementById('mechanical-intro').textContent='Historical package: populated and bare-board STEP models re-exported from this selected snapshot. Coordinates use the KiCad default origin; read the included guide.';
   document.getElementById('mechanical-status').textContent='No historical fit approval or component-origin report is available. Do not use current-build enclosure assumptions for this snapshot.';
   document.querySelector('[data-artifact="mechanical"] span').textContent='Populated and bare-board STEP · origin guide';
 }

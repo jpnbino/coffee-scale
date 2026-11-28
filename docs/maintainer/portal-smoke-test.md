@@ -46,6 +46,8 @@ sure a hung browser cannot hang CI.
   ten checked cells and the summary names JLCPCB.
 - **Versions** (`versions.html`): the five summary tiles and the change list are
   filled.
+- **Mechanics** (`mechanical.html`): the drawing has the four mounting holes and
+  the feature table has at least five rows.
 - **Interactive viewer** (`explore.html?net=HX_DOUT`): the viewer opens (`#design-viewer[open]`, or `#design-viewer-app` shown now that it is the default tab).
   Within 30 s, HX_DOUT (`/HX_DOUT` in the schematic) becomes the selected net:
   its `#dv-net-list` button gets `aria-current="true"` and `#dv-status`

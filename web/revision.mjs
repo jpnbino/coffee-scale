@@ -32,7 +32,7 @@ export const selectedPromise=(async()=>{
     const hero=document.querySelector('.hero img');if(hero)hero.alt=`Top view of ${version.label}`;
     const statisticsLabel=document.getElementById('statistics-version');if(statisticsLabel)statisticsLabel.textContent=version.label;
     const caption=document.querySelector('.hero figcaption');if(caption)caption.textContent=`${version.label}. Re-rendered from verified source; physical fit remains provisional.`;
-    const notice=document.querySelector('#overview .notice');if(notice)notice.textContent=`Prototype, not bench-validated hardware. ${version.validation}. Assembly sourcing, battery approval, firmware and physical fit still need review.`;
+    const validation=document.getElementById('status-validation');if(validation)validation.textContent=`Design checks: ${version.validation}`;
     if(historical){
       for(const section of document.querySelectorAll('.doc-article,#documentation-index'))section.replaceChildren(Object.assign(document.createElement('p'),{textContent:'Revision-specific documentation was not archived for this snapshot. Select the current build to read its guides. No current-build guide is substituted here.'}));
       const build=document.querySelector('#downloads>p:not(.eyebrow)');if(build)build.textContent='Historical snapshot artifacts; review models re-exported with the current toolchain.';

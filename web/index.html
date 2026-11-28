@@ -29,8 +29,29 @@
       <p class="eyebrow">THE HARDWARE REFERENCE</p><h1>A little precision.<br>A better daily ritual.</h1>
       <p class="lead">{{TITLE}}: an open-hardware brewing scale controller. It weighs your coffee, shows flow and brew time on an OLED, and runs from a rechargeable cell, built around a Raspberry Pi Pico W and an HX711 24-bit bridge ADC.</p>
       <ul class="key-specs"><li><strong>{{WIDTH}} × {{HEIGHT}} mm</strong>two-layer PCB</li><li><strong>4-wire load cell</strong>HX711, 2 kg cell intended</li><li><strong>USB-C + 1 Li cell</strong>charging, protection, load sharing</li><li><strong>OLED + 3 controls</strong>TARE, START/STOP, navigation</li></ul>
-      <figure class="hero"><img src="top.png" alt="Top view of the current PCB with OLED, Pico W and navigation controls"><figcaption>Current saved layout. Display stack height and socket geometry remain provisional.</figcaption></figure>
-      <div class="notice"><strong>Prototype, not bench-validated hardware.</strong> Electrical rule checks pass. Assembly sourcing, battery approval, firmware and physical fit still need review.</div>
+      <div class="overview-grid">
+        <div class="status-card"><h2>Where it stands</h2><p class="muted">Revision E is a routed, electrically checked prototype. It has not been built or bench-tested.</p>
+          <ul class="readiness-list status-list">
+            <li class="state-ok"><span class="readiness-mark">✓</span><span id="status-validation">Schematic and PCB pass ERC, DRC and parity checks</span></li>
+            <li class="state-ok"><span class="readiness-mark">✓</span><span>Manufacturing files and order settings agree with the design</span><a href="manufacture.html">Can I order?</a></li>
+            <li class="state-todo"><span class="readiness-mark">!</span><span>Not yet built or bench-tested</span><a href="doc-04-assembly-testing.html">Bring-up plan</a></li>
+            <li class="state-todo"><span class="readiness-mark">!</span><span>Firmware runs on the breadboard prototype; not yet ported to Rev E</span><a href="https://github.com/jpnbino/coffee-scale-firmware">Firmware</a></li>
+            <li class="state-todo"><span class="readiness-mark">!</span><span>Assembly parts not chosen or reviewed</span><a href="manufacture.html">Parts list</a></li>
+            <li class="state-todo"><span class="readiness-mark">!</span><span>Battery chemistry, ratings, polarity and thermal limits unverified</span></li>
+            <li class="state-todo"><span class="readiness-mark">!</span><span>Enclosure, display and load-cell fit provisional</span><a href="mechanical.html">Mechanics</a></li>
+          </ul></div>
+        <figure class="hero"><img src="top.png" alt="Top view of the current PCB with OLED, Pico W and navigation controls"><figcaption>Current saved layout, rendered by KiCad.</figcaption></figure>
+      </div>
+      <h2 class="section-title">Start here</h2>
+      <div class="goal-grid">
+        <a href="manufacture.html"><strong>Order boards</strong><span>What's ready to order, bare or assembled, and the files.</span></a>
+        <a href="doc-04-assembly-testing.html"><strong>Build and bring one up</strong><span>Tools, assembly order and a safe first power-on.</span></a>
+        <a href="explore.html"><strong>Understand the circuit</strong><span>Schematic and PCB side by side, with whole-net highlighting.</span></a>
+        <a href="doc-03-interfaces.html"><strong>Write firmware</strong><span>Every Pico pin and the power-hold contract.</span></a>
+        <a href="mechanical.html"><strong>Design a case</strong><span>Outline, mounting holes, edge parts and the 3D models.</span></a>
+        <a href="versions.html"><strong>Review a change</strong><span>What moved between revisions, and each one's files.</span></a>
+      </div>
+      <figure class="system-figure"><img src="diagrams/system-overview.svg" alt="System overview: load cell into the HX711, read by the Pico W, which drives the OLED and buzzer and reads the buttons; USB-C and the cell feed a latched 3.3 V supply"><figcaption>How the parts fit together. The KiCad schematic is authoritative; <a href="doc-02-circuit.html">Circuit and power</a> explains each block.</figcaption></figure>
     </section>
     <section id="stackup" class="searchable">
       <p class="eyebrow">FABRICATION / TRACEABILITY</p><h1>Layer stackup.</h1>
@@ -142,7 +163,14 @@
     </section>
     <section id="mechanical" class="searchable">
       <p class="eyebrow">04 / COLLABORATE</p><h2>Give the case designer a head start.</h2>
-      <p>Share the STEP models, outline, mounting-hole drawing and component origins together. Each coordinate convention is documented in the package.</p>
+      <p id="mechanical-intro">Dimensions, mounting holes and the parts that meet the board edge, in the same coordinates as the mechanical package. Heights come from the STEP model.</p>
+      <div class="gerber-stage"><svg id="mech-drawing" class="review-canvas mech-canvas" role="img" aria-label="Dimensioned board outline with mounting holes and edge parts"></svg>
+        <div class="canvas-tools" role="toolbar" aria-label="Drawing tools"><button type="button" id="mech-fit" title="Fit the drawing (F)" aria-label="Fit the drawing"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><rect x="8" y="9" width="8" height="6" rx="1"/></svg></button><button type="button" id="mech-zoom-in" title="Zoom in (+)" aria-label="Zoom in"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" id="mech-zoom-out" title="Zoom out (−)" aria-label="Zoom out"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><button type="button" data-fullscreen title="Fullscreen" aria-label="Fullscreen" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></button></div>
+        <p class="canvas-hint">Top view · origin at the outline's top-left · X right, Y down · dashed: bottom side</p></div>
+      <h2 class="section-title">Features a case must respect</h2>
+      <div class="table-scroll"><table class="mech-table"><thead><tr><th>Feature</th><th>What</th><th>Side</th><th>From origin (mm)</th><th>Size (mm)</th><th>At the edge</th></tr></thead><tbody id="mech-features"><tr><td colspan="6">Reading the board…</td></tr></tbody></table></div>
+      <p class="muted" id="mech-note">Part sizes are footprint courtyards, which include clearance around the body. Measure exact bodies and heights in the STEP model.</p>
+      <h2 class="section-title">Assumptions to check</h2>
       <ul id="mechanical-assumptions"></ul><p id="mechanical-status" class="notice"></p>
       <div class="download-grid"><a href="files/mechanical.zip">Mechanical package <span>STEP · DXF · coordinates ↗</span></a><a href="files/mechanical/README.md">Coordinate guide <span>Origins, axes and assumptions ↗</span></a></div>
     </section>
