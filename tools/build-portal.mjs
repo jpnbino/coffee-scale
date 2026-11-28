@@ -9,7 +9,7 @@ export function portalPages(template) {
   const pages = [
     ['index', 'Overview', null, 'Purpose, specifications and prototype status.', ['overview']],
     ['explore', 'Explore board', 'Board', 'The PCB, schematic and 3D model of the selected revision, with net highlighting and cross-probing.', ['inspect']],
-    ['statistics', 'Board statistics', 'Board', 'Sizes, counts, routing and drills of the selected revision.', ['statistics']],
+    ['statistics', 'Board statistics', 'Board', 'How the board\'s smallest features compare with JLCPCB\'s and PCBWay\'s published limits, and its size, counts and drills.', ['statistics']],
     ['stackup', 'Layer stackup', 'Board', 'What the board is made of, the values to order it with, and what that means for the design.', ['stackup']],
     ['gerbers', 'Gerber inspection', 'Manufacturing', 'The exact files the factory receives, with the checks to run before you order.', ['gerbers']],
     ['manufacture', 'Build & manufacture', 'Manufacturing', 'Parts, assembly readiness and the release downloads.', ['parts', 'downloads']],

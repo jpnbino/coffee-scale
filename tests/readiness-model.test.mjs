@@ -26,7 +26,7 @@ test('Blockers are grouped by reason, largest group first', () => {
 test('Readiness separates bare and assembled orders and never claims more than the records show', () => {
   const check = { findings: [{ kind: 'placement', ref: 'J4', message: 'Placement point is 2.65 mm…' }], parts: [{ pads: [{ name: 'G' }, { name: 'S' }] }, { pads: [{ name: 'Pin_1' }] }] };
   const result = readiness({ validation: 'checks passed', order: { agrees: true }, parts, assembly: { ready: false }, check });
-  assert.equal(result.bareState, 'pending');          // manufacturability is not checked yet
+  assert.equal(result.bareState, 'pending');          // no manufacturability rows were given
   assert.equal(result.assembledState, 'todo');
   assert.ok(result.assembled.some(i => i.text.includes('0 of 3 factory-placed parts have a manufacturer part number')));
   assert.ok(result.assembled.some(i => i.text.includes('1 placement item to review (J4)')));

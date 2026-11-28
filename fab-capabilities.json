@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Published standard capabilities of the board makers this design is compared with. Values are copied from each maker's own pages; where a maker publishes two different values, the stricter one is used and the conflict is noted. These are published CAD limits, not a DFM review, a quote or an approval.",
+  "accessed": "2026-11-28",
+  "fabs": {
+    "jlcpcb": {
+      "name": "JLCPCB",
+      "process": "2-layer, 1 oz outer copper, standard",
+      "sources": ["https://jlcpcb.com/capabilities/PCB-capabilities"]
+    },
+    "pcbway": {
+      "name": "PCBWay",
+      "process": "Standard PCB (advanced-table values marked)",
+      "sources": ["https://www.pcbway.com/capabilities.html", "https://www.pcbway.com/advanced-pcb-capabilities.html", "https://www.pcbway.com/pcb_prototype/PCB_Manufacturing_tolerances.html"]
+    }
+  },
+  "rules": [
+    { "id": "trackWidth", "label": "Track width", "jlcpcb": { "min": 0.10 }, "pcbway": { "min": 0.10 } },
+    { "id": "clearance", "label": "Copper clearance", "jlcpcb": { "min": 0.10 }, "pcbway": { "min": 0.10 } },
+    { "id": "drill", "label": "Smallest plated hole", "jlcpcb": { "min": 0.15, "note": "Extra cost for 0.1–0.15 mm holes, and for 0.2–0.25 mm holes in vias under 0.45 mm." }, "pcbway": { "min": 0.20, "note": "0.15 mm on the capabilities page, 0.2 mm on the tolerances page; the stricter is used. Under 0.2 mm costs extra." } },
+    { "id": "viaRing", "label": "Via annular ring", "jlcpcb": { "min": 0.05, "note": "Via diameter at least 0.1 mm over the hole (0.15 mm preferred)." }, "pcbway": { "min": 0.15, "note": "Published as 0.15 mm (6 mil)." } },
+    { "id": "pthRing", "label": "Plated pad annular ring", "jlcpcb": { "min": 0.20, "note": "The 2-layer row says 0.18 mm absolute and 0.25 mm recommended; the headline says ≥0.20 mm. The stricter is used." }, "pcbway": { "min": 0.15 } },
+    { "id": "npthDrill", "label": "Smallest non-plated hole", "jlcpcb": { "min": 0.50 }, "pcbway": { "min": null, "note": "Not published separately; finished holes 0.15–6.0 mm." } },
+    { "id": "platedSlot", "label": "Plated slot width", "jlcpcb": { "min": 0.50 }, "pcbway": { "min": 0.50, "note": "Advanced table only." } },
+    { "id": "viaHoleSpacing", "label": "Via hole to via hole", "jlcpcb": { "min": 0.20 }, "pcbway": { "min": 0.279, "note": "Advanced table: 11 mil for vias up to 0.45 mm." } },
+    { "id": "padHoleSpacing", "label": "Pad hole to pad hole", "jlcpcb": { "min": 0.45 }, "pcbway": { "min": 0.406, "note": "Advanced table: 16 mil for component holes." } },
+    { "id": "viaToTrack", "label": "Via hole to other copper", "jlcpcb": { "min": 0.20 }, "pcbway": { "min": 0.18, "note": "Tolerances page: via to copper." } },
+    { "id": "pthToTrack", "label": "Plated pad hole to other copper", "jlcpcb": { "min": 0.28, "note": "0.35 mm recommended." }, "pcbway": { "min": null, "note": "Not published for plated pads." } },
+    { "id": "copperToEdge", "label": "Copper to board edge", "jlcpcb": { "min": 0.20 }, "pcbway": { "min": 0.25, "note": "Tolerances page: profile to copper." } },
+    { "id": "maskWeb", "label": "Solder-mask strip between pads (black mask)", "jlcpcb": { "min": 0.13, "note": "Black and white mask; 0.10 mm for green." }, "pcbway": { "min": 0.114, "note": "Advanced table: 4.5 mil for black." } },
+    { "id": "silkscreen", "label": "Silkscreen line and text height", "jlcpcb": { "min": 0.15, "note": "Line 0.15 mm, text height 1.0 mm." }, "pcbway": { "min": 0.15, "note": "Line 0.15 mm, text height 0.8 mm." } }
+  ]
+}

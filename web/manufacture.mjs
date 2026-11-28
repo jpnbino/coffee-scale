@@ -4,6 +4,7 @@ import { selectedPromise, artifactUrl } from './revision.mjs';
 import { json } from './review-data.mjs';
 import { orderChecks } from './stackup-model.mjs';
 import { groupBom, groupBlockers, readiness } from './readiness-model.mjs';
+import { measure, compare } from './manufacturability.mjs';
 
 const el = (tag, text, props = {}) => Object.assign(document.createElement(tag), props, text === undefined ? {} : { textContent: text });
 const STATE = { ok: ['✓', 'Agrees'], todo: ['!', 'To do'], pending: ['–', 'Not checked'] };
@@ -36,7 +37,9 @@ if (version.id !== 'current') {
     version.fabCheck ? json(`review/${version.fabCheck}`).catch(() => null) : null,
   ]);
   const order = stackup && data.manufacturing ? orderChecks(stackup, data.manufacturing, board?.bounds ?? null) : null;
-  const result = readiness({ validation: version.validation, order, parts: data.parts, assembly: data.assembly, check });
+  const statistics = version.statistics ? await json(`review/${version.statistics}`).catch(() => null) : null;
+  const manufacturability = board && data.fabCapabilities ? compare(measure(board, statistics), data.fabCapabilities) : null;
+  const result = readiness({ validation: version.validation, order, parts: data.parts, assembly: data.assembly, check, manufacturability });
   const cards = el('div', undefined, { className: 'readiness-grid' });
   cards.append(
     checklist('Bare boards', 'Ordering the PCB alone and fitting the parts yourself.', result.bare, result.bareState),

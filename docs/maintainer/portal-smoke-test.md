@@ -42,6 +42,10 @@ sure a hung browser cannot hang CI.
   `gerbers.html?part=J4` puts J4 in `#fab-selection`.
 - **Stackup** (`stackup.html`): `.order-ok` is shown, so the KiCad stackup
   and the release's manufacturing settings agree.
+- **Statistics** (`statistics.html`): the manufacturability table has at least
+  ten checked cells and the summary names JLCPCB.
+- **Versions** (`versions.html`): the five summary tiles and the change list are
+  filled.
 - **Interactive viewer** (`explore.html?net=HX_DOUT`): the viewer opens (`#design-viewer[open]`, or `#design-viewer-app` shown now that it is the default tab).
   Within 30 s, HX_DOUT (`/HX_DOUT` in the schematic) becomes the selected net:
   its `#dv-net-list` button gets `aria-current="true"` and `#dv-status`
