@@ -91,7 +91,8 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
   const yards = courtyards(pcbSource), names = pinNames(schSource);
   const placement = placementCsv ? readPlacement(placementCsv) : null;
   const findings = [];
-  const add = (severity, ref, at, message) => findings.push({ severity, ref, at, message });
+  // kind: placement (off-centre), side, unknown (not on the board) or paste.
+  const add = (severity, ref, at, message, kind) => findings.push({ severity, kind, ref, at, message });
   const parts = board.components.filter(c => c.ref && !c.ref.startsWith('#')).map(component => {
     const side = component.layer === 'B.Cu' ? 'bottom' : 'top';
     const copperPads = component.pads.filter(p => p.layers.some(l => /\.Cu$|^\*\.Cu$/.test(l)));
@@ -124,21 +125,21 @@ export function fabCheck({ pcbSource, schSource, board, placementCsv = null, pla
     const byRef = new Map(parts.map(part => [part.ref, part]));
     for (const [ref, place] of placement) {
       const part = byRef.get(ref);
-      if (!part) { add('error', ref, [place.x, place.y], `${placementName} places ${ref}, which is not on the board.`); continue; }
+      if (!part) { add('error', ref, [place.x, place.y], `${placementName} places ${ref}, which is not on the board.`, 'unknown'); continue; }
       part.placement = place;
-      if (place.side !== part.side) add('error', ref, [place.x, place.y], `${placementName} puts ${ref} on the ${place.side}; the board has it on the ${part.side}.`);
+      if (place.side !== part.side) add('error', ref, [place.x, place.y], `${placementName} puts ${ref} on the ${place.side}; the board has it on the ${part.side}.`, 'side');
       if (part.body) {
         const [cx, cy] = centre(part.body), offset = Math.hypot(place.x - cx, place.y - cy);
         const padCentre = part.padCentre, padOffset = padCentre ? Math.hypot(place.x - padCentre[0], place.y - padCentre[1]) : null;
         Object.assign(part.placement, { offsetMm: round(offset), padOffsetMm: padOffset === null ? null : round(padOffset) });
         if (offset > CENTROID_TOLERANCE_MM) {
           const b = board.bounds, overhang = part.body.minX < b.minX || part.body.minY < b.minY || part.body.maxX > b.maxX || part.body.maxY > b.maxY;
-          add('review', ref, [place.x, place.y], `Placement point is ${offset.toFixed(2)} mm from the ${part.body.source === 'courtyard' ? 'courtyard' : 'pad'} centre${padOffset === null ? '' : ` and ${padOffset.toFixed(2)} mm from the pad centre`}.${overhang ? ' The courtyard extends past the board edge, so it may include an overhanging body.' : ''} The assembler's centroid for this part is not known here: confirm the position in their placement preview.`);
+          add('review', ref, [place.x, place.y], `Placement point is ${offset.toFixed(2)} mm from the ${part.body.source === 'courtyard' ? 'courtyard' : 'pad'} centre${padOffset === null ? '' : ` and ${padOffset.toFixed(2)} mm from the pad centre`}.${overhang ? ' The courtyard extends past the board edge, so it may include an overhanging body.' : ''} The assembler's centroid for this part is not known here: confirm the position in their placement preview.`, 'placement');
         }
       }
       if (part.unpasted.length) {
         const first = part.pads.find(p => p.number === part.unpasted[0]);
-        add('review', ref, [first.x, first.y], `${part.unpasted.length === 1 ? `Pad ${part.unpasted[0]} has` : `Pads ${part.unpasted.join(', ')} have`} copper but no solder paste, so reflow will not solder ${part.unpasted.length === 1 ? 'it' : 'them'}. Confirm that is intended.`);
+        add('review', ref, [first.x, first.y], `${part.unpasted.length === 1 ? `Pad ${part.unpasted[0]} has` : `Pads ${part.unpasted.join(', ')} have`} copper but no solder paste, so reflow will not solder ${part.unpasted.length === 1 ? 'it' : 'them'}. Confirm that is intended.`, 'paste');
       }
       const native = ((place.rotation - part.rotation) % 360 + 360) % 360;
       if (native) part.placement.rotationDifference = native;
