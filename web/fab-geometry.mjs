@@ -41,8 +41,29 @@ export function hitTest(check, board, point, side = null) {
     if (layer && segment.layer !== layer) continue;
     if (segmentDistance(point, segment.start, segment.end) <= segment.width / 2 + 0.05 && segment.net) return { kind: "track", net: strip(segment.net), layer: segment.layer };
   }
+  // Arcs as two chords through their midpoint: close enough for a click.
+  for (const arc of board?.arcs ?? []) {
+    if (layer && arc.layer !== layer) continue;
+    const mid = arc.mid ?? arc.start;
+    if ((segmentDistance(point, arc.start, mid) <= arc.width / 2 + 0.05 || segmentDistance(point, mid, arc.end) <= arc.width / 2 + 0.05) && arc.net) return { kind: "track", net: strip(arc.net), layer: arc.layer };
+  }
   for (const via of board?.vias ?? []) if (Math.hypot(point[0] - via.at[0], point[1] - via.at[1]) <= via.diameter / 2 && via.net) return { kind: "via", net: strip(via.net) };
   const bodies = check.parts.filter(part => onSide(part) && part.body && point[0] >= part.body.minX && point[0] <= part.body.maxX && point[1] >= part.body.minY && point[1] <= part.body.maxY);
   bodies.sort((a, b) => (a.body.maxX - a.body.minX) * (a.body.maxY - a.body.minY) - (b.body.maxX - b.body.minX) * (b.body.maxY - b.body.minY));
-  return bodies.length ? { kind: "part", part: bodies[0] } : null;
+  if (bodies.length) return { kind: "part", part: bodies[0] };
+  for (const pour of check.pours ?? []) {
+    if (layer && pour.layer !== layer) continue;
+    if (insidePolygon(point, pour.points)) return { kind: "pour", net: strip(pour.net), layer: pour.layer };
+  }
+  return null;
+}
+
+/** Even-odd point-in-polygon test for a flat [x0, y0, x1, y1, …] outline. */
+export function insidePolygon([x, y], flat) {
+  let inside = false;
+  for (let i = 0, j = flat.length - 2; i < flat.length; j = i, i += 2) {
+    const [xi, yi, xj, yj] = [flat[i], flat[i + 1], flat[j], flat[j + 1]];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
 }

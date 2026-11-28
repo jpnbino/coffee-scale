@@ -78,11 +78,26 @@ checks on top of the manufacturing layers.
   footprint whose origin is pin 1, as on pin headers. A courtyard can include an
   overhang, so an entry is a prompt to check the assembler's placement preview,
   not a confirmed error.
-- **Missing paste.** A pad of a factory-placed part with copper but no paste
-  opening is listed, because reflow will not solder it.
-- **Click to identify.** Clicking a pad, track or part names it, highlights its
-  whole net, and links to the [interactive design viewer](https://jpnbino.github.io/coffee-scale/explore.html).
-  Links such as `gerbers.html?part=J4` or `?net=BAT_P` open with that selection.
+- **Missing paste and paste coverage.** A pad of a factory-placed part with
+  copper but no paste opening is listed, because reflow will not solder it. The
+  stencil openings in the paste Gerbers are also measured against each pad's
+  copper: coverage below 50 % or above 110 % is listed. The pad table shows the
+  percentage and how many openings a pad has (an exposed pad is often split into
+  several windows; U3's is about 63 %).
+- **Click to identify.** Clicking a pad, track, arc, copper pour or part names
+  it, highlights its whole net, and links to the
+  [interactive design viewer](https://jpnbino.github.io/coffee-scale/explore.html).
+- **Shareable view.** The page address follows the view: the layers shown, the
+  side, the zoomed area and the selected part or net, as in
+  `gerbers.html?layer=gbl,gbs,gm1&side=bottom&view=150,100,20,12&part=J4`. The
+  link button in the view tools copies it, so an issue can point at exactly
+  what was being discussed.
+- **Guided review.** *Start review* steps through every finding and every pin
+  map, smallest parts first, zooming to each part. Mark each step *Looks right*
+  or *Needs a change* with a note. Answers stay in your browser for this board
+  (keyed by the board file's SHA-256), and *Download record* saves them as a
+  JSON file to keep or attach to an issue. The record is a person's review of
+  the order files, not a test result, DRC run or supplier approval.
 - **Pin maps.** Every part whose symbol names its pins is listed with each pad,
   pin name and net, smallest parts first. Compare each row with the
   manufacturer's datasheet, especially transistors, diodes and regulators.

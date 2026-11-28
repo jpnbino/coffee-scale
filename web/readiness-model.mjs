@@ -42,8 +42,9 @@ export function readiness({ validation, order, parts, assembly, check, manufactu
   const factory = parts.filter(part => part.Stage === 'factory');
   const withMpn = factory.filter(part => part.MPN).length, reviewed = factory.filter(part => part.Verified).length;
   const kindOf = f => f.kind ?? (/paste/i.test(f.message) ? 'paste' : 'placement');
-  const placement = check?.findings.filter(f => kindOf(f) !== 'paste') ?? [];
-  const paste = check?.findings.filter(f => kindOf(f) === 'paste') ?? [];
+  const placement = check?.findings.filter(f => ['placement', 'side', 'unknown'].includes(kindOf(f))) ?? [];
+  const paste = check?.findings.filter(f => kindOf(f).startsWith('paste')) ?? [];
+  const measuredPaste = check?.parts.some(part => part.pads.some(pad => pad.pasteCoverage !== undefined));
   const pinParts = check?.parts.filter(part => part.pads.some(pad => pad.name && !/^(Pin_)?\d+$/i.test(pad.name))).length ?? 0;
   const bare = [
     { state: 'ok', text: `Design checks: ${validation}` },
@@ -57,7 +58,7 @@ export function readiness({ validation, order, parts, assembly, check, manufactu
     { state: reviewed === factory.length ? 'ok' : 'todo', text: `${reviewed} of ${factory.length} factory-placed parts reviewed` },
     check ? { state: placement.length ? 'todo' : 'ok', text: placement.length ? `${placement.length} placement item${placement.length > 1 ? 's' : ''} to review (${placement.map(f => f.ref).join(', ')})` : 'Placement file agrees with the board', link: ['Gerber inspection', 'gerbers.html'] }
       : { state: 'pending', text: 'Placement not checked for this revision' },
-    check ? { state: paste.length ? 'todo' : 'ok', text: paste.length ? `${paste.length} part${paste.length > 1 ? 's' : ''} with pads missing solder paste` : 'Every factory-placed pad gets solder paste' } : null,
+    check ? { state: paste.length ? 'todo' : 'ok', text: paste.length ? `${paste.length} solder paste item${paste.length > 1 ? 's' : ''} to review (${[...new Set(paste.map(f => f.ref))].join(', ')})` : measuredPaste ? 'Every factory-placed pad gets solder paste, 50–110 % of its copper' : 'Every factory-placed pad gets solder paste', link: ['Gerber inspection', 'gerbers.html'] } : null,
     check ? { state: 'todo', text: `${pinParts} pin map${pinParts === 1 ? "" : "s"} to compare with datasheets`, link: ['Pin maps', 'gerbers.html'] } : null,
   ].filter(Boolean);
   const hand = parts.filter(part => part.Stage === 'manual' || part.Stage === 'wire-pad').map(part => ({ ref: part.Reference, value: part.Value, note: part.Notes }));
