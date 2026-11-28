@@ -61,3 +61,22 @@ test('Documentation without a lead sentence is rejected', () => {
   const bad = template.replace('<h1>Test guide</h1><p>Load-cell wiring guide.</p>', '<h1>Test guide</h1><table></table>');
   assert.throws(() => portalPages(bad), /lead paragraph/);
 });
+
+test('View-tool buttons get one shared icon set and accessible names', async () => {
+  const { expandIcons } = await import('../tools/build-portal.mjs');
+  const out = expandIcons('<button type="button" data-icon="fit" id="x" title="Fit board (F)"></button><button type="button" data-icon="fullscreen" data-fullscreen title="Fullscreen"></button>');
+  assert.match(out, /<button type="button" id="x" title="Fit board \(F\)" aria-label="Fit board"><svg /);
+  assert.match(out, /aria-label="Fullscreen" aria-pressed="false"><svg /);
+  assert.throws(() => expandIcons('<button data-icon="nope" title="x"></button>'), /Unknown view-tool icon/);
+  for (const [name, html] of pages) assert.doesNotMatch(html, /data-icon=/, `${name}: unexpanded icon button`);
+  const gerbers = pages.get('gerbers.html');
+  for (const [, attrs] of gerbers.matchAll(/<button([^>]*)><svg/g)) assert.match(attrs, /aria-label="[^"]+"/);
+});
+
+test('Tool pages link to the guide that explains them, and guides link back', () => {
+  // The fixture has only the manufacturing-control guide; real builds have them all.
+  assert.match(pages.get('statistics.html'), /class="page-guide">How this page works: <a href="doc-07-manufacturing-control.html">Manufacturing control<\/a>/);
+  assert.match(pages.get('stackup.html'), /href="doc-07-manufacturing-control.html"/);
+  assert.match(pages.get('doc-07-manufacturing-control.html'), /Open the tools: <a href="statistics.html">Board statistics<\/a> · <a href="stackup.html">Layer stackup<\/a>/);
+  assert.doesNotMatch(pages.get('gerbers.html'), /class="page-guide"/, 'no link to a guide that is not built');
+});
