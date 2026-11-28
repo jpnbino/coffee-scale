@@ -195,6 +195,20 @@ async function gerberPart(page) {
   const selection = await page.waitFor(`(t => t.includes("J4") && t)(${text('#fab-selection')})`, 20000, '#fab-selection to mention J4');
   return `"${selection.slice(0, 60)}${selection.length > 60 ? '…' : ''}"`;
 }
+async function gerberSharedView(page) {
+  await page.waitFor(`document.getElementById("gerber-mirror")?.checked === true && Boolean(document.querySelector('#gerber-canvas [data-layer]'))`, 20000, 'side=bottom to mirror the view');
+  // The address keeps following the view, so a copied link reopens it.
+  await page.waitFor(`new URL(location.href).searchParams.get("view")?.split(",").length === 4`, 5000, 'view= in the address');
+  return new URL(await page.evaluate('location.href')).search;
+}
+async function gerberGuidedReview(page) {
+  await page.waitFor(`(g => g && !g.hidden && !document.getElementById("review-start").disabled)(document.getElementById("review-guide"))`, 20000, 'the guided review to be ready');
+  await page.evaluate(`document.getElementById("review-start").click()`);
+  await page.waitFor(`!document.getElementById("review-step").hidden && document.getElementById("review-title").textContent.length > 0`, 3000, 'the first review step');
+  await page.evaluate(`document.getElementById("review-ok").click()`);
+  const progress = await page.waitFor(`(t => t.startsWith("1 of") && t)(${text('#review-progress')})`, 3000, 'progress to read "1 of …"');
+  return `"${progress}"`;
+}
 async function stackupOrder(page) {
   await page.waitFor(`Boolean(document.querySelector(".order-ok"))`, 15000, '.order-ok (order parameters agree)');
   return 'order parameters agree';
@@ -228,6 +242,8 @@ export const FUNCTIONAL_CHECKS = [
   ['gerbers: layers and fabrication summary', 'gerbers.html', gerberRender],
   ['gerbers: bottom preset mirrors the view', 'gerbers.html', gerberBottomPreset],
   ['gerbers: ?part=J4 selects J4', 'gerbers.html?part=J4', gerberPart],
+  ['gerbers: shared view link restores side and zoom', 'gerbers.html?layer=gbl,gbs,gm1&side=bottom&view=150,100,20,12', gerberSharedView],
+  ['gerbers: guided review records a step', 'gerbers.html', gerberGuidedReview],
   ['stackup: order parameters agree', 'stackup.html', stackupOrder],
   ['statistics: manufacturability against JLCPCB and PCBWay', 'statistics.html', statisticsManufacturability],
   ['versions: change summary and list', 'versions.html', versionsSummary],

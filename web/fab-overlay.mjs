@@ -93,11 +93,15 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
   }
   function pinTable(part) {
     const table = el("table", undefined, { className: "fab-pins" });
-    const head = el("tr"); for (const label of ["Pad", "Pin", "Net"]) head.append(el("th", label));
+    const paste = part.pads.some(pad => pad.pasteCoverage !== undefined);
+    const head = el("tr"); for (const label of ["Pad", "Pin", "Net", ...(paste ? ["Paste"] : [])]) head.append(el("th", label));
     table.append(head);
     for (const pad of pinRows(part.pads)) {
       const row = el("tr"); row.append(el("td", pad.number), el("td", pad.name ?? "—"));
-      const cell = el("td"); cell.append(netButton(pad.net)); row.append(cell); table.append(row);
+      const cell = el("td"); cell.append(netButton(pad.net)); row.append(cell);
+      // Stencil opening as a share of the pad's copper (with the number of openings for exposed pads).
+      if (paste) row.append(el("td", pad.pasteCoverage === undefined ? "—" : `${Math.round(pad.pasteCoverage * 100)} %${pad.pasteOpenings > 1 ? ` (${pad.pasteOpenings} openings)` : ""}`));
+      table.append(row);
     }
     return table;
   }
@@ -118,6 +122,7 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
     if (!panel) return;
     panel.replaceChildren();
     if (!selection) { panel.append(el("h3", "Nothing selected"), el("p", "Click a pad, track or part on the board to see what it is and highlight its net.", { className: "muted" })); return; }
+    if (hit?.kind === "pour") panel.append(el("p", `${shownNet(hit.net)} copper pour, ${hit.layer === "B.Cu" ? "bottom" : "top"} layer`, { className: "fab-hit" }));
     if (hit?.kind === "pad") panel.append(el("p", hit.pad.number ? `Pad ${hit.pad.number}${hit.pad.name ? ` (${hit.pad.name})` : ""} of ${hit.part.ref}` : `Unnumbered pad or hole of ${hit.part.ref}`, { className: "fab-hit" }));
     if (selection.net) {
       const pads = [...new Set(check.parts.flatMap(part => part.pads.filter(pad => pad.net === selection.net).map(pad => `${part.ref}.${pad.number}`)))];
@@ -127,6 +132,11 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
   }
   function select(next, { zoom = false, hit = null } = {}) {
     selection = next;
+    // Keep the selection in the address with the rest of the view.
+    const url = new URL(location.href);
+    if (selection?.part) url.searchParams.set("part", selection.part.ref); else url.searchParams.delete("part");
+    if (selection?.net && !selection.part) url.searchParams.set("net", selection.net); else url.searchParams.delete("net");
+    history.replaceState(history.state, "", url);
     redraw(); renderSelection(hit);
     if (!zoom || !selection) return;
     if (selection.part?.body) { const b = selection.part.body; zoomTo([[b.minX, b.minY], [b.maxX, b.maxY]]); }
@@ -190,6 +200,13 @@ export function createFabOverlay({ svg, viewport, isMeasuring, mirrored }) {
   return {
     redraw,
     setSide(value) { side = value; redraw(); },
+    get check() { return check; },
+    // Used by the guided review: select and zoom to a part, or to a point.
+    focus(ref, at = null) {
+      const part = check?.parts.find(p => p.ref === ref);
+      if (part) select({ part }, { zoom: true });
+      else if (at) { select(null); zoomTo([at]); }
+    },
     async render(nextVersion, context) {
       group = context.group; bounds = context.bounds; version = nextVersion; selection = null; check = null; layer = null;
       const panel = byId("fab-panels"), pinmap = document.querySelector(".fab-pinmap");

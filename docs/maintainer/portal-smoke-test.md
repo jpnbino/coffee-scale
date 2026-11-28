@@ -40,6 +40,9 @@ sure a hung browser cannot hang CI.
   `#gerber-canvas` has at least three layer groups, and `#fab-summary` has
   text. Clicking `[data-preset="bottom"]` checks `#gerber-mirror`.
   `gerbers.html?part=J4` puts J4 in `#fab-selection`.
+  `gerbers.html?layer=gbl,gbs,gm1&side=bottom&view=150,100,20,12` checks
+  `#gerber-mirror` and keeps a four-number `view=` in the address. Pressing
+  `#review-start` then `#review-ok` makes `#review-progress` read "1 of …".
 - **Stackup** (`stackup.html`): `.order-ok` is shown, so the KiCad stackup
   and the release's manufacturing settings agree.
 - **Statistics** (`statistics.html`): the manufacturability table has at least
