@@ -23,7 +23,7 @@ export function statisticsRows(stats, metadata) {
 const VERDICT = { ok: ['✓', 'Clears the published minimum'], tight: ['≈', 'Within 10 % of the published minimum'], below: ['✗', 'Below the published minimum'], unpublished: ['–', 'No published value'], unmeasured: ['–', 'Not measured here'] };
 
 /** The manufacturability table, a one-paragraph summary and the method notes. */
-export function renderManufacturability(rows, capabilities) {
+export function renderManufacturability(rows, capabilities, measures = null) {
   const body = document.getElementById('mfg-body'); if (!body) return;
   body.replaceChildren(...rows.map(row => {
     const tr = make('tr', undefined, { className: row.fabs.some(f => f.verdict === 'below') ? 'mfg-below' : '' });
@@ -56,7 +56,18 @@ export function renderManufacturability(rows, capabilities) {
   method.replaceChildren(
     make('p', `Maker pages read on ${capabilities.accessed}. Where a maker publishes two values for one limit, the stricter is used and the cell's note says so.`, { className: 'muted' }),
     ...Object.values(capabilities.fabs).map(fab => { const p = make('p', `${fab.name} (${fab.process}): `); fab.sources.forEach((url, i) => { if (i) p.append(', '); p.append(make('a', url.replace(/^https:\/\//, ''), { href: url })); }); return p; }),
-    make('p', 'Measured from board.json: tracks and arcs, vias, pad copper and drills, and the board outline. Clearance is KiCad DRC\'s measured minimum. Copper pours are not included in the edge and hole distances. The mask strip is the gap between neighbouring pad edges of one part, before any mask expansion. Silkscreen is not measured.', { className: 'muted' }));
+    make('p', methodNote(measures), { className: 'muted' }));
+}
+
+/** What the table was measured from; says plainly what is left out. */
+export function methodNote(measures) {
+  const pours = measures?.pours, silk = measures?.silkscreen;
+  return [
+    'Measured from board.json: tracks and arcs, vias, pad copper and drills, and the board outline. Clearance is KiCad DRC\'s measured minimum.',
+    pours ? `Copper pours are included in the edge and hole distances, measured from the ${pours.filledPolygons} filled copper areas saved in the board file (hole edge to filled copper, for via and plated pad holes on other nets); a fill that is out of date in KiCad is measured as saved.` : 'Copper pours are not included in the edge and hole distances.',
+    'The mask strip is the gap between neighbouring pad edges of one part, before any mask expansion.',
+    silk ? 'Silkscreen line width covers graphic lines and text strokes as set in KiCad (filled shapes are not lines); text height is KiCad\'s text size for visible silkscreen text.' : 'Silkscreen is not measured.',
+  ].join(' ');
 }
 
 export function renderStatistics(container, stats, metadata) {

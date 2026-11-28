@@ -73,6 +73,7 @@ export function buildReview({ root, output, config, buildId, kicad }) {
     const pick = (dir, pattern) => filesIn(dir).filter(file => pattern.test(file));
     const pasteArgs = stencil.length ? [`--paste=${pick(stencil[0], /\.g[tb]p$/i).join(',')}`, `--copper=${pick(gerbers, /\.g[tb]l$/i).join(',')}`] : [];
     runNode(join(tools, 'fab-check.mjs'), [nativePcb, nativeSch, `${folder}/board.json`, `${folder}/fab-check.json`, ...placement, ...pasteArgs], `Fab check failed: ${id}`);
+    runNode(join(tools, 'board-measures.mjs'), [nativePcb, `${folder}/board-measures.json`], `Board measures failed: ${id}`);
     zipDirectory(`${folder}/gerbers`, `${folder}/fabrication.zip`);
     if (id !== 'current') {
       zipDirectory(project, `${folder}/source.zip`);
@@ -95,6 +96,7 @@ export function buildReview({ root, output, config, buildId, kicad }) {
       id, label: definition.label, artifacts, buildId: id === 'current' ? buildId : null,
       boardSha256: fileDigest(nativePcb), schematicSha256: fileDigest(nativeSch),
       metadata: `${id}/board.json`, statistics: `${id}/statistics.json`, gerbers: `${id}/rendered/layers.json`, fabCheck: `${id}/fab-check.json`,
+      boardMeasures: `${id}/board-measures.json`,
       pcbTop: `${id}/pcb-top.svg`, pcbBottom: `${id}/pcb-bottom.svg`, schematicPdf: `${id}/schematic.pdf`,
       fabricationZip: `${id}/fabrication.zip`, sourcePcb: `${id}/source/${name}.kicad_pcb`, validation,
     });
