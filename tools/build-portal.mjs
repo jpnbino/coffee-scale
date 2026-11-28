@@ -1,8 +1,25 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { ICONS } from './lib/icons.mjs';
+
+// View-tool buttons are written once as <button data-icon="fit" title="Fit board (F)"></button>:
+// the icon, an aria-label (the title without its key hint) and the fullscreen
+// toggle state are filled in here, so every toolbar looks and reads the same.
+export function expandIcons(template) {
+  return template.replace(/<button([^>]*?) data-icon="([\w-]+)"([^>]*)><\/button>/g, (match, before, name, after) => {
+    if (!ICONS[name]) throw new Error(`Unknown view-tool icon: ${name}`);
+    let attributes = `${before}${after}`;
+    const title = attributes.match(/ title="([^"]*)"/)?.[1];
+    if (!title) throw new Error(`View-tool button "${name}" needs a title`);
+    if (!/ aria-label=/.test(attributes)) attributes += ` aria-label="${title.replace(/\s*\([^)]*\)$/, '')}"`;
+    if (/ data-fullscreen/.test(attributes) && !/ aria-pressed=/.test(attributes)) attributes += ' aria-pressed="false"';
+    return `<button${attributes}>${ICONS[name]}</button>`;
+  });
+}
 
 export function portalPages(template) {
+  template = expandIcons(template);
   const sections = new Map([...template.matchAll(/<section id="([^"]+)"[^>]*>[\s\S]*?<\/section>/g)].map(match => [match[1], match[0]]));
   const take = id => { if (!sections.has(id)) throw new Error(`Missing portal section: ${id}`); return sections.get(id); };
   // Each page: id, title, sidebar group, one-sentence lead (also the card summary), template sections.
@@ -39,6 +56,22 @@ export function portalPages(template) {
   const footer = template.match(/<footer>[\s\S]*?<\/footer>/)[0].replace('</footer>', `<small class="build-id">Portal build ${build}</small></footer>`);
   const index = pages.map(page => ({url: `${page.id}.html`, title: page.title.replace(/<[^>]*>/g, ''), text: page.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')}));
   const files = new Map();
+  // Each tool page names the guide that explains it, and each guide lists the
+  // tools it explains, so a reader can go from a view to its method and back.
+  const guides = {
+    explore: ['doc-02-circuit', '', 'What the circuit does'], statistics: ['doc-07-manufacturing-control', ''], stackup: ['doc-07-manufacturing-control', ''],
+    gerbers: ['doc-06-revision-review', 'checks-before-ordering'], manufacture: ['doc-04-assembly-testing', 'state-of-the-assembly-data'],
+    mechanical: ['doc-05-mechanics-notes', 'enclosure-collaboration'], versions: ['doc-06-revision-review', 'comparing-layouts'],
+  };
+  const guideFor = page => {
+    const [doc, anchor, label = 'How this page works'] = guides[page.id] ?? [];
+    const article = doc && articles.find(item => item.id === doc);
+    return article ? `<p class="page-guide">${label}: <a href="${doc}.html${anchor ? `#${anchor}` : ''}">${article.title}</a></p>` : '';
+  };
+  const toolsFor = page => {
+    const tools = navigation.filter(item => guides[item.id]?.[0] === page.id);
+    return tools.length ? `<p class="page-guide">Open the tool${tools.length > 1 ? 's' : ''}: ${tools.map(item => `<a href="${item.id}.html">${item.title}</a>`).join(' · ')}</p>` : '';
+  };
   const schematicSvg=template.match(/<object data="([^"]+)"[^>]*aria-label="Full schematic"/)[1];
   const artifactPaths={'pcb-top.svg':'pcbTop','pcb-bottom.svg':'pcbBottom',[schematicSvg]:'schematicSvg','schematic.pdf':'schematicPdf','board.glb':'model','top.png':'hero','stackup.json':'stackup','native/provenance.json':'nativeProvenance','native/board.kicad_pcb':'nativeBoard','native/schematic-nets.json':'schematicNets','files/fabrication.zip':'fabrication','files/assembly-DRAFT.zip':'assembly','files/source.zip':'source','files/validation.json':'validation','files/mechanical.zip':'mechanical','files/mechanical/README.md':'mechanicalGuide'};
   for (const page of pages) {
@@ -53,7 +86,7 @@ export function portalPages(template) {
     const body = page.id === 'index' || page.document ? page.content : strip(page.content).replace(/<p class="eyebrow">\d\d \/ [^<]*<\/p>/g, '');
     const head = page.id === 'index' || page.document ? '' : `<header class="page-head"><p class="eyebrow">${page.group.toUpperCase()}</p><h1>${page.title}</h1><p class="lead">${page.summary}</p></header>`;
     const crumb = page.document ? `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="documentation.html">Documentation</a> / <span aria-current="page">${page.title}</span></nav>` : '';
-    const content=(head+body).replace(/\b(?:href|src|data-src)="([^"]+)"/g,(attribute,path)=>artifactPaths[path]?`data-artifact="${artifactPaths[path]}"`:attribute).replace(/ poster="top.png"/g,'');
+    const content=(head+body+(page.document ? toolsFor(page) : guideFor(page))).replace(/\b(?:href|src|data-src)="([^"]+)"/g,(attribute,path)=>artifactPaths[path]?`data-artifact="${artifactPaths[path]}"`:attribute).replace(/ poster="top.png"/g,'');
     const banner='<p id="revision-banner" class="revision-banner" role="status" hidden></p>';
     files.set(`${page.id}.html`, shell.replace(/<title>[\s\S]*?<\/title>/, `<title>${page.title} · Coffee scale hardware</title>`).replace('{{RAIL}}', rail).replace('{{SCRIPTS}}', scripts) + `<main id="main" tabindex="-1">${banner}${crumb}<div class="revision-content">${content}</div>${footer}</main></body></html>`);
   }
