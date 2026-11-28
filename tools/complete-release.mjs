@@ -71,6 +71,11 @@ the final-instrument BOM. No firmware/calibration or functional acceptance is im
     if (native.board?.sourceSha256 !== version.boardSha256 || fileDigest(at('nativeBoard')) !== native.board.viewerSha256) throw new Error(`Selected-revision viewer board mismatch: ${version.id}`);
     const nets = readJson(at('schematicNets'));
     if (nets.sourceSha256 !== version.schematicSha256 || nets.boardSha256 !== version.boardSha256) throw new Error(`Selected-revision schematic net map mismatch: ${version.id}`);
+    if (version.boardMeasures) {
+      const measuresPath = resolveChildPath(site, `review/${version.boardMeasures}`);
+      if (!existsSync(measuresPath)) throw new Error(`Missing selected-revision board measures: ${version.id} / ${version.boardMeasures}`);
+      if (readJson(measuresPath).boardSha256 !== version.boardSha256) throw new Error(`Selected-revision board measures mismatch: ${version.id}`);
+    }
   }
   // The order settings in release.json must describe the board KiCad defines.
   const current = catalog.versions.find(version => version.id === 'current');

@@ -59,12 +59,19 @@ export function edgeDistance(p, outline) {
 }
 
 /** A plated hole as a segment with a radius (a round hole is a zero-length segment). */
-function holeOf(pad) {
+export function holeOf(pad) {
   if (pad.drill.length < 2 || pad.drill[0] === pad.drill[1]) return { a: [pad.x, pad.y], b: [pad.x, pad.y], r: (pad.drill[0] ?? 0) / 2 };
   const [dw, dh] = pad.drill, a = pad.angle * Math.PI / 180, long = Math.max(dw, dh), r = Math.min(dw, dh) / 2, half = long / 2 - r;
   const [u, v] = dw >= dh ? [half, 0] : [0, half];
   const off = [u * Math.cos(a) + v * Math.sin(a), -u * Math.sin(a) + v * Math.cos(a)];
   return { a: [pad.x - off[0], pad.y - off[1]], b: [pad.x + off[0], pad.y + off[1]], r };
+}
+
+/** The smaller of two measured results, keeping every value so counts below a limit cover both. */
+export function least(a, b) {
+  if (!a || !b) return a || b ? { value: (a ?? b).value, where: (a ?? b).where, values: (a ?? b).values } : null;
+  const best = b.value < a.value ? b : a;
+  return { value: best.value, where: best.where, values: [...(a.values ?? [a.value]), ...(b.values ?? [b.value])] };
 }
 
 function smallest(items, value, describe) {
@@ -77,9 +84,10 @@ function smallest(items, value, describe) {
 /**
  * The board's smallest features, each with where it occurs. `statistics` is
  * KiCad's board statistics export (its clearance is DRC-measured); `board`
- * is the release's board.json.
+ * is the release's board.json; `measures` is board-measures.json (silkscreen
+ * and copper pours, tools/board-measures.mjs), or null when there is none.
  */
-export function measure(board, statistics = null) {
+export function measure(board, statistics = null, measures = null) {
   const pads = board.components.flatMap(c => c.pads.map(p => ({ ...p, ref: c.ref, net: strip(p.net) })));
   const plated = pads.filter(p => p.type === 'thru_hole' && p.drill.length);
   const tracks = [...board.segments, ...(board.arcs ?? [])].map(t => ({ ...t, net: strip(t.net), start: t.start, end: t.end ?? t.start }));
@@ -134,7 +142,17 @@ export function measure(board, statistics = null) {
     }
   }
   results.maskWeb = web && { value: round(web.value), where: web.where };
-  results.silkscreen = null;
+  // Copper pours: the smaller of the track/via/pad value and the pour value.
+  const pours = measures?.pours;
+  if (pours) {
+    results.copperToEdge = least(results.copperToEdge ?? null, pours.toEdge);
+    results.viaToTrack = least(results.viaToTrack, pours.viaHoleToPour);
+    results.pthToTrack = least(results.pthToTrack, pours.padHoleToPour);
+  }
+  // Silkscreen: line width counts graphics and text strokes; text height on its own.
+  const silk = measures?.silkscreen;
+  results.silkscreen = silk ? least(silk.lineWidth, silk.textThickness) : null;
+  results.silkText = silk?.textHeight ? { value: silk.textHeight.value, where: silk.textHeight.where, values: silk.textHeight.values } : null;
   return results;
 }
 
