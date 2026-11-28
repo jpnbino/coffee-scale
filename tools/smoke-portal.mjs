@@ -207,6 +207,14 @@ async function versionsSummary(page) {
   await page.waitFor(`document.querySelectorAll("#comparison-summary .change-tile").length >= 5 && document.querySelectorAll("#change-list button").length > 0`, 20000, 'the change summary and change list');
   return 'summary tiles and change list';
 }
+async function versionsGerberDifference(page) {
+  await page.waitFor(`document.querySelectorAll("#comparison-summary .change-tile").length >= 5`, 20000, 'the change summary');
+  await page.evaluate(`document.querySelector('#compare [data-mode="gerber"]').click()`);
+  const layer = await page.waitFor(`document.getElementById("gdiff-results")?.dataset.ready`, 30000, 'the selected Gerber layer to be compared');
+  const summary = await page.waitFor(`(t => /added.*removed/.test(t) && t)(${text('#change-list .gdiff-message')})`, 5000, 'an added/removed summary in #change-list');
+  await page.waitFor(`(rows => rows.length > 0 && rows.every(r => r.dataset.state !== "pending"))([...document.querySelectorAll("#gdiff-body tr")])`, 60000, 'every layer row of #gdiff-body to be compared');
+  return `${layer}: "${summary}"`;
+}
 async function mechanicsDrawing(page) {
   await page.waitFor(`document.querySelectorAll("#mech-features tr").length >= 5 && document.querySelectorAll("#mech-drawing circle").length >= 4`, 15000, 'the mechanics drawing and feature table');
   return 'drawing and feature table';
@@ -231,6 +239,7 @@ export const FUNCTIONAL_CHECKS = [
   ['stackup: order parameters agree', 'stackup.html', stackupOrder],
   ['statistics: manufacturability against JLCPCB and PCBWay', 'statistics.html', statisticsManufacturability],
   ['versions: change summary and list', 'versions.html', versionsSummary],
+  ['versions: Gerber difference summarises a layer', 'versions.html', versionsGerberDifference],
   ['mechanical: drawing and features', 'mechanical.html', mechanicsDrawing],
   ['explore: ?net=HX_DOUT opens the viewer on HX_DOUT', 'explore.html?net=HX_DOUT', viewerNet],
 ];

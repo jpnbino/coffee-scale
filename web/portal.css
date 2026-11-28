@@ -126,3 +126,11 @@ table.mech-table td.overhang{color:#8a4b1f;font-weight:600}
 .goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0 26px}.goal-grid a{display:block;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)}.goal-grid a:hover{border-color:var(--green)}.goal-grid strong{display:block;font-size:15px;color:var(--green);margin-bottom:4px}.goal-grid span{font-size:12px;color:var(--muted)}
 .system-figure{margin:10px 0 30px}.system-figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:6px}.system-figure figcaption{font-size:12px;color:var(--muted);margin-top:6px}
 @media(max-width:900px){.overview-grid{grid-template-columns:1fr}.goal-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.goal-grid{grid-template-columns:1fr}}
+/* Versions: Gerber difference between two revisions' released files. */
+.gdiff-layer{display:flex;align-items:center;gap:8px;font-size:12px}.gdiff-layer[hidden]{display:none}.gdiff-layer>span{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:10px}.gdiff-layer select{padding:6px 10px;border:1px solid var(--line);border-radius:5px;background:var(--card);font:inherit;font-size:12px}
+.change-panel [hidden]{display:none!important}.change-legend.gdiff-legend .add{color:#168566}.change-legend.gdiff-legend .del{color:#bf4271}.change-legend.gdiff-legend .same{color:#8d978f}.change-legend.gdiff-legend .mov{color:#b87519}.gdiff-message{padding:6px 8px;font-size:12px;color:var(--muted)}
+.compare-canvas image.gdiff-image{image-rendering:pixelated}
+.gdiff-results[hidden]{display:none}.gdiff-results .section-title{font-size:16px;margin:22px 0 8px}table.gdiff-table td{font-variant-numeric:tabular-nums}table.gdiff-table td:first-child{font-weight:400}table.gdiff-table td:nth-child(3){font-size:12px;max-width:none}table.gdiff-table td.add{color:#168566}table.gdiff-table td.del{color:#bf4271}table.gdiff-table td small{color:var(--muted);font-size:11px}
+table.gdiff-table button{font:inherit;font-weight:600;color:var(--green);background:none;border:0;padding:0;cursor:pointer;text-align:left}table.gdiff-table tr[aria-current="true"]{background:#e8efe9}
+.view-side[hidden]{display:none}
+.gdiff-layer select{width:auto;max-width:100%;margin:0}

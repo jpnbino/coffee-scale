@@ -46,6 +46,10 @@ sure a hung browser cannot hang CI.
   ten checked cells and the summary names JLCPCB.
 - **Versions** (`versions.html`): the five summary tiles and the change list are
   filled.
+- **Gerber difference** (`versions.html`): clicking `[data-mode="gerber"]`
+  compares a layer within 30 s (`#gdiff-results[data-ready]`), puts an
+  added/removed summary in `#change-list .gdiff-message`, and every row of
+  `#gdiff-body` leaves the `pending` state within 60 s.
 - **Mechanics** (`mechanical.html`): the drawing has the four mounting holes and
   the feature table has at least five rows.
 - **Interactive viewer** (`explore.html?net=HX_DOUT`): the viewer opens (`#design-viewer[open]`, or `#design-viewer-app` shown now that it is the default tab).

@@ -36,6 +36,17 @@ semantic schematic changes. A source change without visible differences may
 belong to one of those omitted areas. Pad shapes in routing review are simplified;
 use manufacturing layers to inspect actual fabricated shapes.
 
+*Gerber difference*, the fourth view, compares the released Gerber and drill
+files of the two revisions one layer at a time, from top silkscreen to the
+outline. Green areas are only in the selected revision, magenta only in the
+earlier one, grey in both. A table gives the added and removed area and the
+number of changed regions for every layer, and the list beside the board
+zooms to each region, largest first. A layer that only one revision has, such
+as the current build's paste, is named instead of compared. Areas come from
+rasterising both layers at a stated resolution (normally 20 px/mm), so they are
+estimates, and features finer than one pixel may not show. This compares
+drawn geometry only, not Gerber attributes, and does not approve a file set.
+
 ## Manufacturing layers
 
 The Gerber viewer renders the actual exported Gerber and Excellon files. Every
